@@ -126,7 +126,7 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
   <button class="cta" id="start" data-i="start">Start swiping</button>
   <button class="cta2" id="a2hs">📲 <span data-i="a2hs">Add to Home Screen</span></button></div></section>
  <section class="screen" id="s-swipe" hidden style="overflow:hidden">
-  <div style="display:flex;align-items:center;justify-content:center;gap:10px;padding-bottom:8px"><div class="hint" id="phaseLabel" style="padding:0"></div><button class="fbtn" id="fbtn">⚙︎ <span data-i="filters">Filters</span><i id="fcount" hidden></i></button></div><div class="stage" id="stage"></div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:10px;padding-bottom:8px"><div class="hint" id="phaseLabel" style="padding:0"></div><button class="fbtn" id="fbtn">⚙︎ <span data-i="filters">Filters</span><i id="fcount" hidden></i></button></div><div class="hint" id="matchBanner" hidden style="color:var(--yes);padding:0 0 6px"></div><div class="stage" id="stage"></div>
   <div class="actions"><button class="btn no" id="bNo" aria-label="No">✕</button><button class="btn small" id="bUndo" aria-label="Undo">↶</button><button class="btn small" id="bSkip" aria-label="Not sure" title="Not sure">🤷</button><button class="btn small" id="bSeen" aria-label="I watched this" title="I watched this">👁</button><button class="btn yes" id="bYes" aria-label="Yes">♥</button></div>
   <div class="hint" id="seenHint" data-i="legend">✕ skip · ↶ undo · 👁 watched it · ♥ want to watch</div></section>
  <section class="screen" id="s-list" hidden><div class="list" id="list"></div></section>
@@ -138,6 +138,8 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
  <section class="screen" id="s-together" hidden><div class="list" id="tgbox"></div></section>
  <section class="screen" id="s-taste" hidden><div class="taste" id="taste"></div></section>
 </main>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script>
 const IMG="https://image.tmdb.org/t/p/";
 const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"Right means yes, left means no. Genres first, then your streaming services, then movies that fit you.",country:'Your country (for "where to watch")',start:"Start swiping",legend:"✕ don't like · ↶ undo · 🤷 not sure · 👁 watched it · ♥ like",search:"Type a movie name…",
@@ -154,7 +156,7 @@ const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"R
  playTitle:"Play &amp; <em>watch.</em>",playIntro:"Answer 8 quick questions. We'll turn your answers into 10 picks for tonight.",playStart:"Let's play",playNext:"Next",playResult:"Your 10 picks",playAgain:"Play again",playQ:"Question {a} of {b}",add:"♥ Add",added:"✓ Added",
  q1:"What do you want to feel tonight?",q1o:["😂 Laugh","😭 Feel something","💥 Adrenaline","😱 Be scared","🧠 Think","✨ Escape"],q2:"Who's watching?",q2o:["🧍 Just me","💑 Date night","👯 Friends","👨‍👩‍👧 Family"],q3:"How much energy do you have?",q3o:["🛋️ Easy & light","🔥 Something intense","🏔️ An epic journey"],
  q4:"Old or new?",q4o:["🆕 Fresh (last 3 years)","🎞️ Classics","🤷 Don't care"],q5:"Where should it take you?",q5o:["🌍 The real world","🪐 Another world","⏳ The past","🎲 Surprise me"],q6:"Pace?",q6o:["⚡ Fast","🕯️ Slow burn"],q7:"How should it end?",q7o:["😊 Happy","🌀 With a twist","😶 Doesn't matter"],q8:"Language?",q8o:["🇸🇦 Arabic","🇬🇧 English","🌐 Both"],
- together:"Together",tgTitle:"Pick a movie <em>with a friend.</em>",tgIntro:"You both swipe the same 16 picks, built from your taste and your services. Then we show what you both liked and the one to watch tonight.",tgStart:"Start a session",tgMe:"Your turn · {a} of {b}",tgFriend:"Friend's turn · {a} of {b}",tgGuest:"{n} wants to pick a movie with you · {a} of {b}",
+ together:"Room",rmIntro:"Create a room and share the code. Everyone swipes the same picks at the same time — when two people heart the same title, it's a match. Works with 2 or more.",rmCreate:"Create a room",rmJoin:"Join",rmCodePh:"CODE",rmRoom:"Room",rmLobby:"Share the code or the link. When everyone is in, the host starts.",rmInvite:"Invite on WhatsApp",rmStart:"Start swiping",rmWaitHost:"Waiting for the host to start…",rmLeave:"Leave room",rmYou:"you",rmReady:"in the room",rmDone:"finished",rmProgress:"{a} of {b}",rmWaitOthers:"You're done. Waiting for the others to finish…",rmMatches:"{n} match so far — keep going!",rmFriend:"Friend",rmBad:"That room doesn't exist or has expired.",rmShareText:"🎬 {n} invites you to pick a movie together. Room code {c}:",tgTitle:"Pick a movie <em>with a friend.</em>",tgIntro:"You both swipe the same 16 picks, built from your taste and your services. Then we show what you both liked and the one to watch tonight.",tgStart:"Start a session",tgMe:"Your turn · {a} of {b}",tgFriend:"Friend's turn · {a} of {b}",tgGuest:"{n} wants to pick a movie with you · {a} of {b}",
  tgDoneMe:"You're done. Now your friend swipes the same deck.",tgHand:"🤝 Hand the phone to my friend",tgSend:"📲 Send to my friend on WhatsApp",tgWait:"Waiting for your friend. When they finish, they'll send you a link back — open it and the matches appear here.",tgResend:"Send the link again",
  tgGuestDone:"All done! Send your picks back so you both see the matches.",tgSendBack:"📲 Send my picks back",tgMatches:"You both liked",tgTop:"Tonight's pick",tgNoMatch:"No exact match. Here's what came closest:",tgEither:"Liked by one of you",tgNew:"Start a new session",tgDeckBad:"This session link doesn't work. Ask your friend to send it again.",
  tgShareText:"🎬 Let's pick a movie together! Swipe these and send me your picks:",tgBackText:"🎬 Here are my picks! Open this to see what we matched on:",tgMyName:"Your name (so your friend knows who's asking)",tgFriendTurn:"Friend's turn",tgSameDevice:"Pass the phone: your friend swipes the same deck now.",
@@ -173,7 +175,7 @@ const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"R
  playTitle:"العب &amp; <em>شاهد.</em>",playIntro:"أجب عن 8 أسئلة سريعة. سنحوّل إجاباتك إلى 10 ترشيحات لهذه الليلة.",playStart:"يلا نلعب",playNext:"التالي",playResult:"ترشيحاتك العشرة",playAgain:"العب مجدداً",playQ:"سؤال {a} من {b}",add:"♥ أضف",added:"✓ أُضيف",
  q1:"شو بدك تحس الليلة؟",q1o:["😂 أضحك","😭 أتأثر","💥 أدرينالين","😱 أنخاف","🧠 أفكّر","✨ أهرب من الواقع"],q2:"مين عم يتفرج؟",q2o:["🧍 لحالي","💑 مع شريكي","👯 مع أصحابي","👨‍👩‍👧 مع العيلة"],q3:"قديش عندك طاقة؟",q3o:["🛋️ شي خفيف","🔥 شي قوي","🏔️ رحلة ملحمية"],
  q4:"قديم ولا جديد؟",q4o:["🆕 جديد (آخر 3 سنين)","🎞️ كلاسيكي","🤷 ما يفرق"],q5:"لوين بدو ياخدك؟",q5o:["🌍 العالم الحقيقي","🪐 عالم تاني","⏳ الماضي","🎲 فاجئني"],q6:"الإيقاع؟",q6o:["⚡ سريع","🕯️ بطيء ومتدرّج"],q7:"كيف بدك تخلص؟",q7o:["😊 نهاية سعيدة","🌀 بمفاجأة","😶 ما يفرق"],q8:"اللغة؟",q8o:["🇸🇦 عربي","🇬🇧 أجنبي","🌐 الاثنين"],
- together:"مع صديق",tgTitle:"اختر فيلماً <em>مع صديق.</em>",tgIntro:"كلاكما يسحب نفس الـ16 ترشيحاً، المبنية على ذوقك وخدماتك. ثم نعرض ما أعجبكما معاً والفيلم المناسب لهذه الليلة.",tgStart:"ابدأ جلسة",tgMe:"دورك · {a} من {b}",tgFriend:"دور صديقك · {a} من {b}",tgGuest:"{n} يريد اختيار فيلم معك · {a} من {b}",
+ together:"غرفة",rmIntro:"أنشئ غرفة وشارك الرمز. الكل يسحب نفس الترشيحات بنفس الوقت — إذا اثنين حبّوا نفس الفيلم، صار تطابق. تشتغل مع 2 أو أكثر.",rmCreate:"أنشئ غرفة",rmJoin:"انضم",rmCodePh:"الرمز",rmRoom:"غرفة",rmLobby:"شارك الرمز أو الرابط. لما الكل يدخل، المضيف يبدأ.",rmInvite:"ادعُ على واتساب",rmStart:"ابدأ السحب",rmWaitHost:"بانتظار المضيف ليبدأ…",rmLeave:"اترك الغرفة",rmYou:"أنت",rmReady:"في الغرفة",rmDone:"خلّص",rmProgress:"{a} من {b}",rmWaitOthers:"خلّصت. بانتظار الباقين…",rmMatches:"{n} تطابق لهلق — كمّل!",rmFriend:"صديق",rmBad:"هالغرفة مو موجودة أو انتهت.",rmShareText:"🎬 {n} عم يدعيك تختاروا فيلم مع بعض. رمز الغرفة {c}:",tgTitle:"اختر فيلماً <em>مع صديق.</em>",tgIntro:"كلاكما يسحب نفس الـ16 ترشيحاً، المبنية على ذوقك وخدماتك. ثم نعرض ما أعجبكما معاً والفيلم المناسب لهذه الليلة.",tgStart:"ابدأ جلسة",tgMe:"دورك · {a} من {b}",tgFriend:"دور صديقك · {a} من {b}",tgGuest:"{n} يريد اختيار فيلم معك · {a} من {b}",
  tgDoneMe:"انتهيت. الآن صديقك يسحب نفس المجموعة.",tgHand:"🤝 أعط الهاتف لصديقي",tgSend:"📲 أرسل لصديقي على واتساب",tgWait:"بانتظار صديقك. عندما ينتهي سيرسل لك رابطاً — افتحه وستظهر النتائج هنا.",tgResend:"أرسل الرابط مجدداً",
  tgGuestDone:"انتهيت! أرسل اختياراتك ليرى كلاكما النتائج.",tgSendBack:"📲 أرسل اختياراتي",tgMatches:"أعجبكما معاً",tgTop:"فيلم الليلة",tgNoMatch:"لا يوجد تطابق كامل. هذا الأقرب:",tgEither:"أعجب أحدكما",tgNew:"ابدأ جلسة جديدة",tgDeckBad:"رابط الجلسة لا يعمل. اطلب من صديقك إرساله مجدداً.",
  tgShareText:"🎬 خلينا نختار فيلم مع بعض! اسحب هذه وأرسل لي اختياراتك:",tgBackText:"🎬 هذه اختياراتي! افتح الرابط لترى ما تطابقنا عليه:",tgMyName:"اسمك (ليعرف صديقك من يسأل)",tgFriendTurn:"دور صديقك",tgSameDevice:"أعط الهاتف: صديقك يسحب نفس المجموعة الآن.",
@@ -265,7 +267,7 @@ function whereHtml(r){r=r||{};const have=new Set(PROVIDERS.filter(p=>state.prov[
 
 // ---------- cards ----------
 async function currentCard(){
- if(state.tg&&state.tg.active){const T=state.tg;const deck=T.deck;const i=T.i;if(i>=deck.length)return null;const m=deck[i];norm(m,m.media_type);const prov=await providersFor(m);
+ if(state.tg&&state.tg.active){const T=state.tg;const deck=(ROOM&&ROOM.deck)||[];const i=T.i;if(i>=deck.length)return null;const m=deck[i];norm(m,m.media_type);const prov=await providersFor(m);
   return{kind:"movie",tg:true,key:m.id,m,prov,big:m.title,img:m.poster_path?IMG+"w500"+m.poster_path:(m.backdrop_path?IMG+"w780"+m.backdrop_path:""),p:m.overview}}
  if(state.phase==="genres"){const g=GENRES[state.idx];if(!g){state.phase="providers";state.idx=0;return currentCard()}
   return{kind:"genre",key:g.id,big:g.name,img:g.backdrop,sub:t("doyoulike"),p:(g.example?t("think",{x:g.example})+" ":"")+t("genreHint")}}
@@ -310,8 +312,8 @@ async function openTrailer(m){const o=document.createElement("div");o.className=
 async function render(){const stage=$("stage");stage.innerHTML=`<div class="empty">${t("loading")}</div>`;
  const c=await currentCard();cur=c;
  const T=state.tg;$("fbtn").hidden=state.phase!=="movies"||!!(T&&T.active);$("bSeen").hidden=!!(T&&T.active);$("bSkip").hidden=state.phase!=="movies";
- if(T&&T.active){$("phaseLabel").textContent=T.role==="guest"?t("tgGuest",{n:T.host||"",a:Math.min(T.i+1,T.deck.length),b:T.deck.length}):T.turn==="friend"?t("tgFriend",{a:Math.min(T.i+1,T.deck.length),b:T.deck.length}):t("tgMe",{a:Math.min(T.i+1,T.deck.length),b:T.deck.length});}
- else $("phaseLabel").textContent=state.phase==="genres"?t("genres",{a:state.idx+1,b:GENRES.length}):state.phase==="providers"?t("services",{a:state.idx+1,b:PROVIDERS.length}):t("picked",{a:state.liked.length});
+ if(T&&T.active){const dn=(ROOM&&ROOM.deck||[]).length;$("phaseLabel").textContent=t("rmRoom")+" "+T.code+" · "+t("tgMe",{a:Math.min(T.i+1,dn),b:dn});updateMatchBanner()}else{const mb=$("matchBanner");if(mb)mb.hidden=true;
+  $("phaseLabel").textContent=state.phase==="genres"?t("genres",{a:state.idx+1,b:GENRES.length}):state.phase==="providers"?t("services",{a:state.idx+1,b:PROVIDERS.length}):t("picked",{a:state.liked.length});}
  if(!c){if(state.tg&&state.tg.active){state.tg.active=false;save();show("together");return}stage.innerHTML=`<div class="empty">${t("nomore")}</div>`;return}
  stage.innerHTML="";const under=document.createElement("div");under.className="card under";stage.appendChild(under);
  const el=cardEl(c);stage.appendChild(el);attachDrag(el);
@@ -319,14 +321,14 @@ async function render(){const stage=$("stage");stage.innerHTML=`<div class="empt
 }
 function snapshot(){return JSON.stringify({genre:state.genre,prov:state.prov,decade:state.decade,seen:state.seen,liked:state.liked,watched:state.watched||[],phase:state.phase,idx:state.idx})}
 function decide(yes){if(!cur)return;const c=cur;
- if(c.tg){const T=state.tg;const key=mt(c.m)+"-"+c.m.id;const arr=T.role==="guest"||T.turn==="friend"?T.friend:T.mine;if(yes&&!arr.includes(key))arr.push(key);T.i++;save();render();return}
+ if(c.tg){roomSwipe(c.m,yes);return}
  state.history.push(snapshot());if(state.history.length>30)state.history.shift();const d=yes?1:-1;
  if(c.kind==="genre"){state.genre[c.key]=d;state.idx++}else if(c.kind==="prov"){state.prov[c.key]=d;state.idx++}
  else{const m=c.m;state.seen[mt(m)+m.id]=d;const w=yes?0.7:-0.6;m.genre_ids.forEach(g=>state.genre[g]=Math.max(-6,Math.min(8,(state.genre[g]||0)+w)));
   const dec=decadeOf(+String(m.release_date).slice(0,4));state.decade[dec]=(state.decade[dec]||0)+d*0.5;if(m.original_language)state.langW[m.original_language]=(state.langW[m.original_language]||0)+d*0.4;
   if(yes)state.liked.push({id:m.id,type:mt(m),title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,prov:(c.prov||[]).map(p=>p.provider_name)});}
  $("count").textContent=state.liked.length;save();render()}
-function undo(){if(state.tg&&state.tg.active){const T=state.tg;if(T.i>0){T.i--;const key=mt(T.deck[T.i])+"-"+T.deck[T.i].id;const arr=T.role==="guest"||T.turn==="friend"?T.friend:T.mine;T[arr===T.friend?"friend":"mine"]=arr.filter(k=>k!==key);save();render()}return}const h=state.history.pop();if(!h)return;Object.assign(state,JSON.parse(h));$("count").textContent=state.liked.length;save();render()}
+function undo(){if(state.tg&&state.tg.active)return;const h=state.history.pop();if(!h)return;Object.assign(state,JSON.parse(h));$("count").textContent=state.liked.length;save();render()}
 const RATE_LABELS=()=>t("rates");
 const RATE_WEIGHT=[0,-1.5,-1,0,1,1.6];
 $("bSeen").onclick=()=>{if(!cur||cur.kind!=="movie")return;rateDialog(cur.m,$("stage"),r=>markWatched(cur.m,r,cur.prov))};
@@ -343,7 +345,7 @@ function markWatched(m,r,prov){state.history.push(snapshot());if(state.history.l
  (state.watched=state.watched||[]).unshift({id:m.id,type:mt(m),title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,r});
  save();if(!$("s-swipe").hidden)render()}
 $("bSkip").onclick=()=>{if(!cur||cur.kind!=="movie")return;const el=$("stage").querySelector(".card:not(.under)");if(el){el.classList.add("leave");el.style.transform="translateY(-120%) scale(.9)";el.style.opacity="0"}
- setTimeout(()=>{const c=cur;if(c.tg){state.tg.i++;save();render();return}state.history.push(snapshot());if(state.history.length>30)state.history.shift();state.seen[mt(c.m)+c.m.id]=0;save();render()},220)};
+ setTimeout(()=>{const c=cur;if(c.tg){roomSwipe(c.m,false);return}state.history.push(snapshot());if(state.history.length>30)state.history.shift();state.seen[mt(c.m)+c.m.id]=0;save();render()},220)};
 $("bYes").onclick=()=>fling(true);$("bNo").onclick=()=>fling(false);$("bUndo").onclick=undo;
 document.addEventListener("keydown",e=>{if($("s-swipe").hidden)return;if(e.key==="ArrowRight")fling(true);if(e.key==="ArrowLeft")fling(false)});
 function fling(yes){const el=$("stage").querySelector(".card:not(.under)");if(!el){decide(yes);return}
@@ -407,39 +409,53 @@ function showA2HS(){const o=document.createElement("div");o.className="trailer";
  o.innerHTML=`<button class="x" aria-label="${t("close")}">✕</button><div class="steps"><b>${t("a2hsT")}</b>${standalone?`<p>${t("installed")}</p>`:steps.map((x,i)=>`<p><span>${i+1}</span>${x}</p>`).join("")}${deferredInstall?`<button class="cta" id="doInstall">${t("installNow")}</button>`:""}</div>`;
  document.body.appendChild(o);o.querySelector(".x").onclick=()=>o.remove();o.onclick=e=>{if(e.target===o)o.remove()};
  const di=o.querySelector("#doInstall");if(di)di.onclick=async()=>{deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;o.remove()}}
-const slim=m=>({id:m.id,media_type:mt(m),title:m.title,release_date:m.release_date,vote_average:m.vote_average,poster_path:m.poster_path,backdrop_path:m.backdrop_path,overview:m.overview,genre_ids:m.genre_ids||[]});
-async function buildDeck(){pool=[];MOVIES={};refill.page=0;await refill();if(pool.length<16)await refill();const seenLiked=new Set(state.liked.map(x=>x.id));
- let cand=pool.filter(m=>passF(m)).sort((a,b)=>score(b)-score(a));const top=cand.slice(0,10),rest=cand.slice(10).sort(()=>Math.random()-.5).slice(0,6);return [...top,...rest].sort(()=>Math.random()-.5).map(slim)}
-async function tgStart(){const b=$("tgbox");b.innerHTML=`<div class="empty">${t("loading")}</div>`;const deck=await buildDeck();if(!deck.length){b.innerHTML=`<div class="empty">${t("nomore")}</div>`;return}
- state.tg={active:true,role:"host",turn:"me",i:0,deck,mine:[],friend:[],sent:false};save();show("swipe");render()}
-function tgLink(kind){const u=new URL(location.href);u.search="";u.hash="";const T=state.tg;
- if(kind==="deck")u.searchParams.set("t",T.deck.map(m=>mt(m)[0]+m.id).join(".")+"~"+encodeURIComponent(state.name||""));else u.searchParams.set("r",T.friend.map(k=>k[0]+k.split("-")[1]).join(".")+"~"+(T.sid||""));return u.toString()}
-async function tgShare(kind){const url=tgLink(kind);const text=t(kind==="deck"?"tgShareText":"tgBackText");if(navigator.share){try{await navigator.share({text,url});return}catch(e){if(e.name==="AbortError")return}}window.open("https://wa.me/?text="+encodeURIComponent(text+"\n"+url),"_blank")}
-async function tgLoadDeck(q){const [ids,host]=q.split("~");const items=ids.split(".").filter(Boolean).map(x=>({type:x[0]==="t"?"tv":"movie",id:+x.slice(1)}));if(!items.length)return null;
- const deck=await Promise.all(items.map(async it=>{try{const m=await api(`/${it.type}/${it.id}`);norm(m,it.type);m.genre_ids=(m.genres||[]).map(g=>g.id);return slim(m)}catch(e){return null}}));return{deck:deck.filter(Boolean),host:decodeURIComponent(host||"")}}
-function tgResults(){const T=state.tg;const mine=new Set(T.mine);const both=T.deck.filter(m=>mine.has(mt(m)+"-"+m.id)&&T.friend.includes(mt(m)+"-"+m.id)).sort((a,b)=>score(b)-score(a));
- const either=T.deck.filter(m=>(mine.has(mt(m)+"-"+m.id)||T.friend.includes(mt(m)+"-"+m.id))&&!both.includes(m)).sort((a,b)=>score(b)-score(a));return{both,either}}
-function tgItem(m){return`<div class="item open" data-dt="${mt(m)}" data-did="${m.id}"><div class="head"><img src="${m.poster_path?IMG+"w185"+m.poster_path:""}" alt=""><div class="t"><b>${m.title}</b><span>${String(m.release_date||"").slice(0,4)} · ★ ${(m.vote_average||0).toFixed(1)}</span></div><button aria-label="Share" data-tsh="${m.id}" data-tsht="${mt(m)}">↗</button></div><div class="where" data-lw="${m.id}" data-lt="${mt(m)}"></div></div>`}
-async function renderTogether(){const b=$("tgbox");const T=state.tg;b.innerHTML="";
- if(!T){b.innerHTML=`<div class="tg"><h2>${t("tgTitle")}</h2><p>${t("tgIntro")}</p><label for="myname" style="font-size:13px;color:var(--muted)">${t("tgMyName")}</label><input id="myname" value="${(state.name||"").replace(/"/g,"&quot;")}"><button class="cta" id="tgStart">${t("tgStart")}</button></div>`;
-  $("tgStart").onclick=()=>{state.name=$("myname").value.trim();save();tgStart()};return}
- if(T.active){b.innerHTML=`<div class="tg"><p>${T.role==="guest"?t("tgGuest",{n:T.host,a:T.i+1,b:T.deck.length}):t("tgMe",{a:T.i+1,b:T.deck.length})}</p><button class="cta" id="tgResume">${t("swipe")} →</button><button class="link" id="tgNew">${t("tgNew")}</button></div>`;$("tgResume").onclick=()=>{show("swipe");render()};$("tgNew").onclick=()=>{state.tg=null;save();renderTogether()};return}
- if(T.role==="guest"){b.innerHTML=`<div class="tg"><h2>${t("tgGuestDone").split(".")[0]}.</h2><p>${t("tgGuestDone")}</p><button class="cta" id="tgBack">${t("tgSendBack")}</button><button class="link" id="tgNew">${t("tgNew")}</button></div>`;$("tgBack").onclick=()=>tgShare("back");$("tgNew").onclick=()=>{state.tg=null;save();renderTogether()};return}
- if(T.turn==="me"&&!T.friendDone){b.innerHTML=`<div class="tg"><h2>${t("tgDoneMe").split(".")[0]}.</h2><p>${T.sent?t("tgWait"):t("tgDoneMe")}</p><button class="cta" id="tgSend">${T.sent?t("tgResend"):t("tgSend")}</button><button class="cta2" id="tgHand">${t("tgHand")}</button><button class="link" id="tgNew">${t("tgNew")}</button></div>`;
-  $("tgSend").onclick=()=>{T.sent=true;save();tgShare("deck")};$("tgHand").onclick=()=>{T.turn="friend";T.i=0;T.friend=[];T.active=true;T.deck=[...T.deck].sort(()=>Math.random()-.5);save();show("swipe");render()};$("tgNew").onclick=()=>{state.tg=null;save();renderTogether()};return}
- // results
- const {both,either}=tgResults();const top=both[0]||either[0];
- let h=`<div class="tg">`;
- if(top){h+=`<div><span class="badge">${t("tgTop")}</span></div><div class="top"><div class="cover" style="background-image:url('${top.backdrop_path?IMG+"w780"+top.backdrop_path:(top.poster_path?IMG+"w500"+top.poster_path:"")}')"><h3>${top.title}</h3></div><div class="body"><div class="row"><b>${String(top.release_date||"").slice(0,4)}</b><span>★ ${(top.vote_average||0).toFixed(1)}</span><button class="sharebtn" data-tsh="${top.id}" data-tsht="${mt(top)}">↗ ${t("share")}</button></div><p style="font-size:13px;color:var(--fg)">${top.overview||""}</p><div class="where" data-lw="${top.id}" data-lt="${mt(top)}"></div><div class="acts" style="display:flex;gap:8px"><button class="cta2" style="flex:1" data-ttr="${top.id}" data-ty="${mt(top)}">${t("trailer")}</button><button class="cta2" style="flex:1" data-tcast="${top.id}" data-ty="${mt(top)}">${t("cast")}</button></div></div></div>`}
- if(both.length>1)h+=`<h3 style="font-family:var(--display);font-weight:400;letter-spacing:.04em;font-size:22px;margin:6px 0 0">${t("tgMatches")}</h3>`+both.slice(1).map(tgItem).join("");
- if(!both.length)h+=`<p>${t("tgNoMatch")}</p>`;
- if(either.length>(both.length?0:1))h+=`<h3 style="font-family:var(--display);font-weight:400;letter-spacing:.04em;font-size:22px;margin:6px 0 0">${t("tgEither")}</h3>`+either.slice(both.length?0:1).map(tgItem).join("");
- h+=`<button class="link" id="tgNew">${t("tgNew")}</button></div>`;b.innerHTML=h;
- b.querySelectorAll("[data-lw]").forEach(async w=>{try{const d=await api(`/${w.dataset.lt}/${w.dataset.lw}/watch/providers`);w.innerHTML=whereHtml(d.results[state.region]||{})}catch(e){}});
- const find=(id,ty)=>T.deck.find(m=>m.id==id&&mt(m)===ty);
- b.querySelectorAll("[data-tsh]").forEach(x=>x.onclick=e=>{e.stopPropagation();shareItem(find(x.dataset.tsh,x.dataset.tsht))});
- b.querySelectorAll("[data-ttr]").forEach(x=>x.onclick=()=>openTrailer(find(x.dataset.ttr,x.dataset.ty)));b.querySelectorAll("[data-tcast]").forEach(x=>x.onclick=()=>openCast(find(x.dataset.tcast,x.dataset.ty)));
- $("tgNew").onclick=()=>{state.tg=null;save();renderTogether()}}
+const slim=m=>({id:m.id,media_type:mt(m),title:m.title,release_date:m.release_date,vote_average:m.vote_average,poster_path:m.poster_path,backdrop_path:m.backdrop_path,overview:m.overview,genre_ids:m.genre_ids||[],original_language:m.original_language});
+const FB={apiKey:"AIzaSyArHnFRiu0ThyWeJS0K25J4DIfVCvUc2pY",authDomain:"banbouk-movie-finder.firebaseapp.com",databaseURL:"https://banbouk-movie-finder-default-rtdb.europe-west1.firebasedatabase.app",projectId:"banbouk-movie-finder"};
+let db=null;function fdb(){if(!db){firebase.initializeApp(FB);db=firebase.database()}return db}
+const myId=(()=>{try{let v=localStorage.getItem("bmf-uid");if(!v){v=Math.random().toString(36).slice(2,10);localStorage.setItem("bmf-uid",v)}return v}catch(e){return Math.random().toString(36).slice(2,10)}})();
+let roomRef=null,roomUnsub=null,ROOM=null;
+async function buildDeck(n=20){pool=[];MOVIES={};refill.page=0;await refill();if(pool.length<n)await refill();
+ let cand=pool.filter(m=>passF(m)&&m.poster_path).sort((a,b)=>score(b)-score(a));const top=cand.slice(0,Math.ceil(n*0.6)),rest=cand.slice(Math.ceil(n*0.6)).sort(()=>Math.random()-.5).slice(0,n-top.length);return [...top,...rest].sort(()=>Math.random()-.5).map(slim)}
+function roomCode(){const A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let c="";for(let i=0;i<4;i++)c+=A[Math.floor(Math.random()*A.length)];return c}
+function roomLink(code){const u=new URL(location.href);u.search="";u.hash="";u.searchParams.set("room",code);return u.toString()}
+async function createRoom(){const b=$("tgbox");b.innerHTML=`<div class="empty">${t("loading")}</div>`;const deck=await buildDeck(20);if(!deck.length){b.innerHTML=`<div class="empty">${t("nomore")}</div>`;return}
+ const code=roomCode();await fdb().ref("rooms/"+code).set({created:Date.now(),host:myId,deck,status:"lobby",players:{[myId]:{name:state.name||"Host",done:false,n:0}}});joinRoom(code)}
+async function joinRoom(code){code=code.toUpperCase();const ref=fdb().ref("rooms/"+code);const snap=await ref.get();if(!snap.exists()){$("tgbox").innerHTML=`<div class="tg"><p>${t("rmBad")}</p><button class="cta2" id="tgNew">${t("tgNew")}</button></div>`;$("tgNew").onclick=leaveRoom;return}
+ state.tg={code,i:0,likes:[],active:false};save();await ref.child("players/"+myId).update({name:state.name||t("rmFriend"),done:false,n:0});
+ if(roomUnsub)roomUnsub();roomRef=ref;const h=sn=>{ROOM=sn.val();if(!ROOM){leaveRoom();return}onRoom()};ref.on("value",h);roomUnsub=()=>ref.off("value",h)}
+function leaveRoom(){if(roomUnsub)roomUnsub();roomUnsub=null;roomRef=null;ROOM=null;state.tg=null;save();if(!$("s-swipe").hidden)show("together");else renderTogether()}
+function onRoom(){const T=state.tg;if(!T||!ROOM)return;
+ if(ROOM.status==="playing"&&!T.active&&!(ROOM.players[myId]||{}).done){T.active=true;T.i=0;T.likes=[];save();show("swipe");render();return}
+ if(ROOM.status==="done"&&T.active){T.active=false;save();show("together");return}
+ if(!$("s-together").hidden)renderTogether();
+ if(T.active&&!$("s-swipe").hidden)updateMatchBanner()}
+function roomMatches(){if(!ROOM)return[];const L=ROOM.likes||{};const ids=Object.keys(L).filter(k=>Object.keys(L[k]||{}).length>=2);const deck=ROOM.deck||[];return ids.map(k=>deck.find(m=>mt(m)+"-"+m.id===k)).filter(Boolean)}
+function updateMatchBanner(){const n=roomMatches().length;const el=$("matchBanner");if(!el)return;el.hidden=!n;el.textContent=`🎉 ${t("rmMatches",{n})}`}
+async function roomSwipe(m,yes){const T=state.tg;const key=mt(m)+"-"+m.id;if(yes){T.likes.push(key);await roomRef.child("likes/"+key+"/"+myId).set(true)}
+ T.i++;save();const done=T.i>=(ROOM.deck||[]).length;await roomRef.child("players/"+myId).update({n:T.i,done});
+ if(done){T.active=false;save();const all=Object.values(ROOM.players||{}).every(p=>p.done||p===ROOM.players[myId]);if(all&&Object.keys(ROOM.players||{}).length>=2)await roomRef.update({status:"done"});show("together")}else render()}
+function renderTogether(){const b=$("tgbox");const T=state.tg;b.innerHTML="";
+ if(!T||!ROOM){b.innerHTML=`<div class="tg"><h2>${t("tgTitle")}</h2><p>${t("rmIntro")}</p><label for="myname" style="font-size:13px;color:var(--muted)">${t("tgMyName")}</label><input id="myname" value="${(state.name||"").replace(/"/g,"&quot;")}"><button class="cta" id="rmCreate">${t("rmCreate")}</button>
+  <div class="row" style="gap:8px;margin-top:6px"><input id="rmCode" placeholder="${t("rmCodePh")}" maxlength="4" style="flex:1;text-transform:uppercase;letter-spacing:.2em;font-weight:700;text-align:center"><button class="cta2" id="rmJoin">${t("rmJoin")}</button></div></div>`;
+  $("rmCreate").onclick=()=>{state.name=$("myname").value.trim();save();createRoom()};$("rmJoin").onclick=()=>{state.name=$("myname").value.trim();save();const c=$("rmCode").value.trim();if(c.length===4)joinRoom(c)};return}
+ const players=Object.entries(ROOM.players||{});const isHost=ROOM.host===myId;const me=ROOM.players[myId]||{};const deckN=(ROOM.deck||[]).length;
+ const plist=`<div class="list" style="gap:6px">${players.map(([id,p])=>`<div class="item" style="padding:8px 12px"><div class="t"><b>${p.name||"?"}${id===myId?" ("+t("rmYou")+")":""}</b><span>${ROOM.status==="lobby"?t("rmReady"):p.done?t("rmDone"):t("rmProgress",{a:p.n||0,b:deckN})}</span></div><span class="chip ${p.done||ROOM.status==="lobby"?"on":""}">${p.done?"✓":(ROOM.status==="lobby"?"●":"…")}</span></div>`).join("")}</div>`;
+ if(ROOM.status==="lobby"){b.innerHTML=`<div class="tg"><div class="hint" style="text-align:start;padding:0">${t("rmRoom")}</div><h2 style="font-size:64px;letter-spacing:.15em">${T.code}</h2><p>${t("rmLobby")}</p>${plist}
+   <button class="cta2" id="rmShare">📲 ${t("rmInvite")}</button>${isHost?`<button class="cta" id="rmStart" ${players.length<2?"disabled style='opacity:.5'":""}>${t("rmStart")}</button>`:`<p>${t("rmWaitHost")}</p>`}<button class="link" id="rmLeave">${t("rmLeave")}</button></div>`;
+  $("rmShare").onclick=async()=>{const url=roomLink(T.code);const text=t("rmShareText",{n:state.name||"",c:T.code});if(navigator.share){try{await navigator.share({text,url});return}catch(e){if(e.name==="AbortError")return}}window.open("https://wa.me/?text="+encodeURIComponent(text+"\n"+url),"_blank")};
+  if(isHost&&$("rmStart"))$("rmStart").onclick=()=>roomRef.update({status:"playing"});$("rmLeave").onclick=leaveRoom;return}
+ const matches=roomMatches().sort((a,b)=>score(b)-score(a));
+ if(ROOM.status==="playing"){b.innerHTML=`<div class="tg"><div class="hint" style="text-align:start;padding:0">${t("rmRoom")} ${T.code}</div>${plist}${me.done?`<p>${t("rmWaitOthers")}</p>`:`<button class="cta" id="rmResume">${t("swipe")} →</button>`}
+   ${matches.length?`<h3 style="font-family:var(--display);font-weight:400;letter-spacing:.04em;font-size:22px;margin:6px 0 0">${t("tgMatches")} (${matches.length})</h3>`+matches.map(m=>resItem(m)).join(""):""}<button class="link" id="rmLeave">${t("rmLeave")}</button></div>`;
+  if($("rmResume"))$("rmResume").onclick=()=>{T.active=true;save();show("swipe");render()};$("rmLeave").onclick=leaveRoom;wireResults(b,matches);return}
+ // done
+ const L=ROOM.likes||{};const deck=ROOM.deck||[];const either=deck.filter(m=>L[mt(m)+"-"+m.id]&&!matches.includes(m)).sort((a,b)=>Object.keys(L[mt(b)+"-"+b.id]).length-Object.keys(L[mt(a)+"-"+a.id]).length);const top=matches[0]||either[0];
+ let h=`<div class="tg"><div class="hint" style="text-align:start;padding:0">${t("rmRoom")} ${T.code} · ${players.map(([,p])=>p.name).join(" + ")}</div>`;
+ if(top){h+=`<div><span class="badge">${t("tgTop")}</span></div><div class="top"><div class="cover" style="background-image:url('${top.backdrop_path?IMG+"w780"+top.backdrop_path:(top.poster_path?IMG+"w500"+top.poster_path:"")}')"><h3>${top.title}</h3></div><div class="body"><div class="row"><b>${String(top.release_date||"").slice(0,4)}</b><span>★ ${(top.vote_average||0).toFixed(1)}</span><button class="sharebtn" data-rsh="${top.id}">↗ ${t("share")}</button></div><p style="font-size:13px;color:var(--fg)">${top.overview||""}</p><div class="where" data-lw="${top.id}" data-lt="${mt(top)}"></div><div class="acts" style="display:flex;gap:8px"><button class="cta2" style="flex:1" data-rtr="${top.id}">${t("trailer")}</button><button class="cta2" style="flex:1" data-rcast="${top.id}">${t("cast")}</button><button class="cta2" style="flex:1" data-radd="${top.id}">${t("add")}</button></div></div></div>`}
+ if(matches.length>1)h+=`<h3 style="font-family:var(--display);font-weight:400;letter-spacing:.04em;font-size:22px;margin:6px 0 0">${t("tgMatches")}</h3>`+matches.slice(1).map(m=>resItem(m)).join("");
+ if(!matches.length)h+=`<p>${t("tgNoMatch")}</p>`;
+ const rest=either.slice(matches.length?0:1);if(rest.length)h+=`<h3 style="font-family:var(--display);font-weight:400;letter-spacing:.04em;font-size:22px;margin:6px 0 0">${t("tgEither")}</h3>`+rest.map(m=>resItem(m)).join("");
+ h+=`<button class="link" id="rmLeave">${t("tgNew")}</button></div>`;b.innerHTML=h;wireResults(b,[...matches,...either]);$("rmLeave").onclick=leaveRoom}
 function resItem(m,why){const inL=state.liked.some(x=>x.id===m.id);return`<div class="item open" data-rid="${m.id}" data-rty="${mt(m)}"><div class="head"><img src="${m.poster_path?IMG+"w185"+m.poster_path:""}" alt=""><div class="t"><b>${m.title}</b><span>${String(m.release_date||"").slice(0,4)} · ★ ${(m.vote_average||0).toFixed(1)}${mt(m)==="tv"?" · "+t("series"):""}${why?"<br>"+why:""}</span></div><button class="sharebtn" data-radd="${m.id}" style="margin:0">${inL?t("added"):t("add")}</button><button aria-label="Share" data-rsh="${m.id}">↗</button></div>
  <div class="row" style="gap:12px"><button class="link" style="padding:4px 0" data-rtr="${m.id}">${t("watchtrailer")}</button><button class="link" style="padding:4px 0" data-rcast="${m.id}">${t("castlink")}</button></div><div class="where" data-lw="${m.id}" data-lt="${mt(m)}"></div></div>`}
 function wireResults(box,items){const find=id=>items.find(m=>m.id==id);
@@ -497,7 +513,9 @@ async function showDetail(type,id){const o=document.createElement("div");o.class
   o.querySelector("#dAdd").onclick=()=>{if(inList())return;state.liked.push({id:m.id,type,title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,prov:[]});state.seen[type+m.id]=1;$("count").textContent=state.liked.length;save();o.querySelector("#dAdd").textContent=t("inList")};
   o.querySelector("#dTr").onclick=()=>openTrailer(m);o.querySelector("#dCast").onclick=()=>openCast(m);o.querySelector("#dShare").onclick=()=>shareItem(m);
  }catch(e){o.querySelector(".detail").innerHTML=`<div class="body"><p>${t("searchfail")}</p></div>`}}
-(function(){const sp=new URLSearchParams(location.search);const tq=sp.get("t"),rq=sp.get("r");
+(function(){const sp=new URLSearchParams(location.search);const rm=sp.get("room");
+ if(rm){history.replaceState(null,"",location.pathname);(async()=>{try{if(!GENRES.length)await boot()}catch(e){}state.tg=null;show("together");$("tgbox").innerHTML=`<div class="empty">${t("loading")}</div>`;joinRoom(rm)})();return}
+ const tq=sp.get("t"),rq=sp.get("r");
  if(tq||rq){history.replaceState(null,"",location.pathname);(async()=>{try{if(!GENRES.length)await boot()}catch(e){}
   if(tq){const d=await tgLoadDeck(tq);if(!d||!d.deck.length){alert(t("tgDeckBad"));return}state.tg={active:true,role:"guest",turn:"friend",i:0,deck:d.deck,mine:[],friend:[],host:d.host};save();show("swipe");render()}
   else{const ids=rq.split("~")[0].split(".").filter(Boolean).map(x=>(x[0]==="t"?"tv":"movie")+"-"+x.slice(1));if(state.tg&&state.tg.role==="host"){state.tg.friend=ids;state.tg.friendDone=true;state.tg.active=false;save();show("together")}else show("together")}})();return}
@@ -523,6 +541,7 @@ function showFilters(){const F={...state.f};const o=document.createElement("div"
  o.querySelector("#fApply").onclick=apply;o.querySelector("#fClear").onclick=()=>{Object.assign(F,{svc:"",rating:0,year:"",genre:"",type:"",lang:"",rt:"",sort:"best"});apply()}}
 $("fbtn").onclick=showFilters;fcount();
 applyLang();
+if(state.tg&&state.tg.code){state.tg.active=false;setTimeout(()=>joinRoom(state.tg.code),500)}else state.tg=null;
 $("count").textContent=state.liked.length;
 if(state.key&&(state.phase!=="genres"||state.idx>0)){boot().then(()=>{show("swipe");render()}).catch(()=>show("intro"))}else show("intro");
 </script></body></html>
