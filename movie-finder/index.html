@@ -60,7 +60,7 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 .sheet h4{margin:0 0 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}.chips button{background:none;border:1px solid var(--line);color:var(--fg);border-radius:999px;padding:7px 12px;font:600 13px var(--body)}.chips button.on{background:var(--accent);color:#000;border-color:var(--accent)}
 .sheet .acts{display:flex;gap:10px}.sheet .acts .cta{flex:1}
-.tbtn.share{top:auto;bottom:14px;left:14px}html[dir="rtl"] .tbtn.share{left:auto;right:14px}
+.sharebtn{padding:10px;font-size:13px;margin-top:4px}
 .detail{width:100%;max-width:460px;max-height:88vh;overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;text-align:start}
 .detail .cover{aspect-ratio:16/9;background-size:cover;background-position:center;position:relative;display:flex;align-items:flex-end;padding:16px}
 .detail .cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.8))}
@@ -238,13 +238,14 @@ async function currentCard(){
 
 function cardEl(c){const el=document.createElement("div");el.className="card";let meta="",art="";
  if(c.kind==="prov")art=`<div class="art center" style="background:linear-gradient(160deg,#2a2735,#0b0a0f)">${c.logo?`<img class="logo" src="${c.logo}" alt="">`:`<div class="big">${c.big}</div>`}</div>`;
- else art=`<div class="art" style="background-image:url('${c.img}')">${c.kind==="movie"?`<button class="tbtn" data-trailer="${c.m.id}">${t("trailer")}</button><button class="tbtn cast">${t("cast")}</button><button class="tbtn share">↗ ${t("share")}</button>`:""}<div class="big">${c.big}</div></div>`;
+ else art=`<div class="art" style="background-image:url('${c.img}')">${c.kind==="movie"?`<button class="tbtn" data-trailer="${c.m.id}">${t("trailer")}</button><button class="tbtn cast">${t("cast")}</button>`:""}<div class="big">${c.big}</div></div>`;
  if(c.kind==="movie"){const m=c.m;const gn=m.genre_ids.map(id=>(GENRES.find(g=>g.id===id)||{}).name).filter(Boolean).slice(0,3).join(" · ");
   meta=`<div class="row"><b>${String(m.release_date).slice(0,4)}</b><span>★ ${(m.vote_average||0).toFixed(1)}</span>${mt(m)==="tv"?`<span class="chip on">${t("series")}</span>`:""}<span>${gn}</span></div>
-  <p>${c.p||""}</p><div class="where">${whereHtml(m._all)}</div>`}
+  <p>${c.p||""}</p><div class="where">${whereHtml(m._all)}</div><button class="cta2 sharebtn">↗ ${t("share")}</button>`}
  else meta=`<div class="row" style="font-size:12px;letter-spacing:.08em;text-transform:uppercase">${c.sub} ${c.kind==="prov"?c.big:""}</div><p>${c.p}</p>`;
  el.innerHTML=`<div class="stamp like">${t("like")}</div><div class="stamp nope">${t("nope")}</div>${art}<div class="meta">${meta}</div>`;
  el.querySelectorAll(".tbtn").forEach(tb=>{tb.addEventListener("pointerdown",e=>e.stopPropagation());tb.onclick=e=>{e.stopPropagation();tb.classList.contains("share")?shareItem(c.m):tb.classList.contains("cast")?openCast(c.m):openTrailer(c.m)}});
+ const sb=el.querySelector(".sharebtn");if(sb){sb.addEventListener("pointerdown",e=>e.stopPropagation());sb.onclick=e=>{e.stopPropagation();shareItem(c.m)}}
  if(c.kind==="movie")setupGallery(el,c.m,c.img);return el}
 async function setupGallery(el,m,first){const art=el.querySelector(".art");let imgs=[first];let i=0;
  const dots=document.createElement("div");dots.className="dots";art.appendChild(dots);
