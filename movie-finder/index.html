@@ -67,6 +67,12 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 .detail .cover h3{position:relative;z-index:1;font-family:var(--display);font-size:34px;font-weight:400;margin:0;color:#fff;letter-spacing:.03em;line-height:.95}
 .detail .body{padding:14px 16px 18px;display:flex;flex-direction:column;gap:10px}.detail .body p{margin:0;font-size:14px;line-height:1.5}
 .detail .acts{display:flex;gap:8px;flex-wrap:wrap}.detail .acts button{flex:1;min-width:110px}
+.tg{display:flex;flex-direction:column;gap:14px;text-align:start}.tg h2{font-family:var(--display);font-size:40px;font-weight:400;margin:0;letter-spacing:.03em;line-height:.95;text-wrap:balance}.tg h2 em{font-style:normal;color:var(--accent)}
+.tg p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}.tg .big{display:flex;flex-direction:column;gap:8px}
+.top{border:2px solid var(--accent);border-radius:18px;overflow:hidden;background:var(--surface)}.top .cover{aspect-ratio:16/9;background-size:cover;background-position:center;position:relative;display:flex;align-items:flex-end;padding:14px}
+.top .cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.8))}.top .cover h3{position:relative;z-index:1;font-family:var(--display);font-size:32px;font-weight:400;margin:0;color:#fff;letter-spacing:.03em;line-height:.95}
+.top .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px}.badge{display:inline-block;background:var(--accent);color:#000;border-radius:999px;padding:3px 10px;font:700 11px var(--body);letter-spacing:.08em;text-transform:uppercase}
+.tgbar{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted)}.tgbar i{flex:1;height:6px;border-radius:3px;background:var(--line);overflow:hidden}.tgbar i b{display:block;height:100%;background:var(--accent)}
 .cta2{background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:14px;padding:14px;font:700 15px var(--body)}
 .steps{display:flex;flex-direction:column;gap:10px;max-width:420px;width:100%;text-align:start;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px}
 .steps b{display:block;font-family:var(--display);font-size:22px;letter-spacing:.04em;font-weight:400}.steps p{margin:0;font-size:15px;line-height:1.5;color:var(--fg)}.steps p strong{color:var(--accent)}.steps p span{display:inline-block;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#000;text-align:center;line-height:24px;font-weight:700;margin-inline-end:8px;font-size:13px}
@@ -104,7 +110,7 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
  <button class="lang" id="lang" aria-label="Language" style="margin-inline-start:auto">عربي</button><div class="tabs" id="tabs" hidden>
   <button class="tab" aria-selected="true" data-tab="swipe" data-i="swipe">Swipe</button>
   <button class="tab" aria-selected="false" data-tab="list"><span data-i="mylist">My list</span> <span id="count">0</span></button>
-  <button class="tab" aria-selected="false" data-tab="find" data-i="find">Find</button><button class="tab" aria-selected="false" data-tab="taste" data-i="taste">Taste</button></div></header>
+  <button class="tab" aria-selected="false" data-tab="find" data-i="find">Find</button><button class="tab" aria-selected="false" data-tab="together" data-i="together">Together</button><button class="tab" aria-selected="false" data-tab="taste" data-i="taste">Taste</button></div></header>
 <main>
  <section class="screen" id="s-intro"><div class="intro">
   <h1 id="h1">SWIPE.<br>DON'T<br><em>SCROLL.</em></h1>
@@ -125,6 +131,7 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
  <section class="screen" id="s-find" hidden><div class="list">
   <input id="q" placeholder="Type a movie name…" data-ph="search" autocomplete="off">
   <div id="found"></div></div></section>
+ <section class="screen" id="s-together" hidden><div class="list" id="tgbox"></div></section>
  <section class="screen" id="s-taste" hidden><div class="taste" id="taste"></div></section>
 </main>
 <script>
@@ -137,7 +144,11 @@ const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"R
  nocast:"No cast listed.",castfail:"Could not load cast.",directed:"Directed by {x}",loadcast:"Loading cast…",notrailer:"No trailer available for this one.",trailerfail:"Could not load trailer.",
  searching:"Searching…",nomovie:'No movie called "{x}".',searchfail:"Search failed",where:"Where?",watchtrailer:"▶ Watch trailer",castlink:"👥 Cast",
  empty:"Nothing saved yet. Swipe right on a movie and it lands here.",wanttowatch:"Want to watch",watched:"Watched",notrated:"not rated",
- tasteIntro:"{a} movies swiped, {b} watched. Every swipe shifts these weights; the next card is the best unseen match on a service you have.",tGenres:"Genres",tEra:"Era",tServices:"Services",reset:"Reset taste and start over",share:"Share",shareText:"Check out {t} ({y}) on Banbouk Movie Finder 🎬",addList:"♥ Add to my list",inList:"✓ In my list",shared:"Shared with you",copied:"Link copied",fTitle:"Filters",fService:"Service",fAnyMine:"Any of mine",fRating:"Minimum rating",fAny:"Any",fYear:"Year",fOlder:"Before 2000",fGenre:"Genre",fType:"Type",fLang:"Language",fRuntime:"Length",fShort:"Under 100 min",fLong:"Over 2 hours",fApply:"Apply",fClear:"Clear all",fSort:"Sort by",fBest:"Best match",fTop:"Top rated",fNew:"Newest",fPopular:"Most popular",a2hsT:"Install Banbouk Movie Finder",ios:["Tap the <strong>Share</strong> button at the bottom of Safari (the square with an arrow ↑).","Scroll down and tap <strong>Add to Home Screen</strong>.","Tap <strong>Add</strong> in the top corner. The app icon appears on your Home Screen."],android:["Tap the <strong>⋮</strong> menu at the top of Chrome.","Tap <strong>Add to Home screen</strong> or <strong>Install app</strong>.","Tap <strong>Install</strong>. The app icon appears on your Home Screen."],desktop:["In Chrome or Edge, click the install icon at the right end of the address bar.","Click <strong>Install</strong>."],installed:"Already installed — you are running it from your Home Screen.",installNow:"Install now",close:"Close",cAny:"Arabic + English",cAr:"Arabic",cEn:"English",tMovies:"Movies",tSeries:"Series",tBoth:"Both",series:"Series",movie:"Movie",seasons:"{x} seasons"},
+ tasteIntro:"{a} movies swiped, {b} watched. Every swipe shifts these weights; the next card is the best unseen match on a service you have.",tGenres:"Genres",tEra:"Era",tServices:"Services",reset:"Reset taste and start over",together:"Together",tgTitle:"Pick a movie <em>with a friend.</em>",tgIntro:"You both swipe the same 16 picks, built from your taste and your services. Then we show what you both liked and the one to watch tonight.",tgStart:"Start a session",tgMe:"Your turn · {a} of {b}",tgFriend:"Friend's turn · {a} of {b}",tgGuest:"{n} wants to pick a movie with you · {a} of {b}",
+ tgDoneMe:"You're done. Now your friend swipes the same deck.",tgHand:"🤝 Hand the phone to my friend",tgSend:"📲 Send to my friend on WhatsApp",tgWait:"Waiting for your friend. When they finish, they'll send you a link back — open it and the matches appear here.",tgResend:"Send the link again",
+ tgGuestDone:"All done! Send your picks back so you both see the matches.",tgSendBack:"📲 Send my picks back",tgMatches:"You both liked",tgTop:"Tonight's pick",tgNoMatch:"No exact match. Here's what came closest:",tgEither:"Liked by one of you",tgNew:"Start a new session",tgDeckBad:"This session link doesn't work. Ask your friend to send it again.",
+ tgShareText:"🎬 Let's pick a movie together! Swipe these and send me your picks:",tgBackText:"🎬 Here are my picks! Open this to see what we matched on:",tgMyName:"Your name (so your friend knows who's asking)",tgFriendTurn:"Friend's turn",tgSameDevice:"Pass the phone: your friend swipes the same deck now.",
+ share:"Share",shareText:"Check out {t} ({y}) on Banbouk Movie Finder 🎬",addList:"♥ Add to my list",inList:"✓ In my list",shared:"Shared with you",copied:"Link copied",fTitle:"Filters",fService:"Service",fAnyMine:"Any of mine",fRating:"Minimum rating",fAny:"Any",fYear:"Year",fOlder:"Before 2000",fGenre:"Genre",fType:"Type",fLang:"Language",fRuntime:"Length",fShort:"Under 100 min",fLong:"Over 2 hours",fApply:"Apply",fClear:"Clear all",fSort:"Sort by",fBest:"Best match",fTop:"Top rated",fNew:"Newest",fPopular:"Most popular",a2hsT:"Install Banbouk Movie Finder",ios:["Tap the <strong>Share</strong> button at the bottom of Safari (the square with an arrow ↑).","Scroll down and tap <strong>Add to Home Screen</strong>.","Tap <strong>Add</strong> in the top corner. The app icon appears on your Home Screen."],android:["Tap the <strong>⋮</strong> menu at the top of Chrome.","Tap <strong>Add to Home screen</strong> or <strong>Install app</strong>.","Tap <strong>Install</strong>. The app icon appears on your Home Screen."],desktop:["In Chrome or Edge, click the install icon at the right end of the address bar.","Click <strong>Install</strong>."],installed:"Already installed — you are running it from your Home Screen.",installNow:"Install now",close:"Close",cAny:"Arabic + English",cAr:"Arabic",cEn:"English",tMovies:"Movies",tSeries:"Series",tBoth:"Both",series:"Series",movie:"Movie",seasons:"{x} seasons"},
  ar:{swipe:"اسحب",mylist:"قائمتي",find:"ابحث",taste:"ذوقي",intro:"يمين يعني نعم، يسار يعني لا. الأنواع أولاً، ثم خدمات البث عندك، ثم أفلام على ذوقك.",country:"بلدك (لمعرفة أين تشاهد)",start:"ابدأ السحب",legend:"✕ تخطّي · ↶ تراجع · 👁 شاهدته · ♥ أريد مشاهدته",search:"اكتب اسم الفيلم…",
  h1:"اسحب.<br>لا <em>تتصفح.</em>",logo:"بنبوك <b>لإيجاد الأفلام</b>",like:"أعجبني",nope:"لا",trailer:"▶ الإعلان",cast:"👥 الممثلون",doyoulike:"هل تحب",doyouhave:"هل عندك",genreHint:"اسحب يميناً إذا كان هذا نوعك المفضل.",think:'مثل "{x}".',provHint:"اسحب يميناً إذا كان بإمكانك مشاهدة {x} الآن.",iptvHint:"IPTV يعني عندك كل شيء. لن نصفّي حسب الخدمة.",
  genres:"الأنواع · {a} من {b}",services:"خدماتك · {a} من {b}",picked:"مختارة لك · {a} محفوظة",nomore:"لا مزيد من الأفلام على خدماتك. راجع قائمتك أو أعد الضبط.",loading:"جارٍ التحميل…",
@@ -146,13 +157,17 @@ const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"R
  nocast:"لا يوجد ممثلون مدرجون.",castfail:"تعذّر تحميل الممثلين.",directed:"إخراج {x}",loadcast:"جارٍ تحميل الممثلين…",notrailer:"لا يوجد إعلان لهذا الفيلم.",trailerfail:"تعذّر تحميل الإعلان.",
  searching:"جارٍ البحث…",nomovie:'لا يوجد فيلم باسم "{x}".',searchfail:"فشل البحث",where:"أين؟",watchtrailer:"▶ شاهد الإعلان",castlink:"👥 الممثلون",
  empty:"لا شيء محفوظ بعد. اسحب يميناً على فيلم ليظهر هنا.",wanttowatch:"أريد مشاهدته",watched:"شاهدته",notrated:"بدون تقييم",
- tasteIntro:"{a} فيلم سحبته، {b} شاهدته. كل سحبة تغيّر هذه الأوزان؛ البطاقة التالية هي أفضل فيلم لم تره على خدمة عندك.",tGenres:"الأنواع",tEra:"الحقبة",tServices:"الخدمات",reset:"إعادة ضبط الذوق والبدء من جديد",share:"مشاركة",shareText:"شوف {t} ({y}) على بنبوك لإيجاد الأفلام 🎬",addList:"♥ أضف إلى قائمتي",inList:"✓ في قائمتي",shared:"تمت مشاركته معك",copied:"تم نسخ الرابط",fTitle:"الفلاتر",fService:"الخدمة",fAnyMine:"أي خدمة عندي",fRating:"أقل تقييم",fAny:"الكل",fYear:"السنة",fOlder:"قبل 2000",fGenre:"النوع",fType:"النوع",fLang:"اللغة",fRuntime:"المدة",fShort:"أقل من 100 دقيقة",fLong:"أكثر من ساعتين",fApply:"تطبيق",fClear:"مسح الكل",fSort:"ترتيب حسب",fBest:"الأنسب لي",fTop:"الأعلى تقييماً",fNew:"الأحدث",fPopular:"الأكثر شعبية",a2hsT:"ثبّت تطبيق بنبوك لإيجاد الأفلام",ios:["اضغط زر <strong>المشاركة</strong> أسفل سفاري (المربع مع السهم ↑).","انزل للأسفل واضغط <strong>إضافة إلى الشاشة الرئيسية</strong>.","اضغط <strong>إضافة</strong> في الزاوية العلوية. ستظهر أيقونة التطبيق على شاشتك الرئيسية."],android:["اضغط قائمة <strong>⋮</strong> أعلى كروم.","اضغط <strong>إضافة إلى الشاشة الرئيسية</strong> أو <strong>تثبيت التطبيق</strong>.","اضغط <strong>تثبيت</strong>. ستظهر أيقونة التطبيق على شاشتك الرئيسية."],desktop:["في كروم أو إيدج، اضغط أيقونة التثبيت في طرف شريط العنوان.","اضغط <strong>تثبيت</strong>."],installed:"مثبّت بالفعل — أنت تشغّله من الشاشة الرئيسية.",installNow:"ثبّت الآن",close:"إغلاق",cAny:"عربي + أجنبي",cAr:"عربي",cEn:"أجنبي",tMovies:"أفلام",tSeries:"مسلسلات",tBoth:"الاثنين",series:"مسلسل",movie:"فيلم",seasons:"{x} مواسم"}};
+ tasteIntro:"{a} فيلم سحبته، {b} شاهدته. كل سحبة تغيّر هذه الأوزان؛ البطاقة التالية هي أفضل فيلم لم تره على خدمة عندك.",tGenres:"الأنواع",tEra:"الحقبة",tServices:"الخدمات",reset:"إعادة ضبط الذوق والبدء من جديد",together:"مع صديق",tgTitle:"اختر فيلماً <em>مع صديق.</em>",tgIntro:"كلاكما يسحب نفس الـ16 ترشيحاً، المبنية على ذوقك وخدماتك. ثم نعرض ما أعجبكما معاً والفيلم المناسب لهذه الليلة.",tgStart:"ابدأ جلسة",tgMe:"دورك · {a} من {b}",tgFriend:"دور صديقك · {a} من {b}",tgGuest:"{n} يريد اختيار فيلم معك · {a} من {b}",
+ tgDoneMe:"انتهيت. الآن صديقك يسحب نفس المجموعة.",tgHand:"🤝 أعط الهاتف لصديقي",tgSend:"📲 أرسل لصديقي على واتساب",tgWait:"بانتظار صديقك. عندما ينتهي سيرسل لك رابطاً — افتحه وستظهر النتائج هنا.",tgResend:"أرسل الرابط مجدداً",
+ tgGuestDone:"انتهيت! أرسل اختياراتك ليرى كلاكما النتائج.",tgSendBack:"📲 أرسل اختياراتي",tgMatches:"أعجبكما معاً",tgTop:"فيلم الليلة",tgNoMatch:"لا يوجد تطابق كامل. هذا الأقرب:",tgEither:"أعجب أحدكما",tgNew:"ابدأ جلسة جديدة",tgDeckBad:"رابط الجلسة لا يعمل. اطلب من صديقك إرساله مجدداً.",
+ tgShareText:"🎬 خلينا نختار فيلم مع بعض! اسحب هذه وأرسل لي اختياراتك:",tgBackText:"🎬 هذه اختياراتي! افتح الرابط لترى ما تطابقنا عليه:",tgMyName:"اسمك (ليعرف صديقك من يسأل)",tgFriendTurn:"دور صديقك",tgSameDevice:"أعط الهاتف: صديقك يسحب نفس المجموعة الآن.",
+ share:"مشاركة",shareText:"شوف {t} ({y}) على بنبوك لإيجاد الأفلام 🎬",addList:"♥ أضف إلى قائمتي",inList:"✓ في قائمتي",shared:"تمت مشاركته معك",copied:"تم نسخ الرابط",fTitle:"الفلاتر",fService:"الخدمة",fAnyMine:"أي خدمة عندي",fRating:"أقل تقييم",fAny:"الكل",fYear:"السنة",fOlder:"قبل 2000",fGenre:"النوع",fType:"النوع",fLang:"اللغة",fRuntime:"المدة",fShort:"أقل من 100 دقيقة",fLong:"أكثر من ساعتين",fApply:"تطبيق",fClear:"مسح الكل",fSort:"ترتيب حسب",fBest:"الأنسب لي",fTop:"الأعلى تقييماً",fNew:"الأحدث",fPopular:"الأكثر شعبية",a2hsT:"ثبّت تطبيق بنبوك لإيجاد الأفلام",ios:["اضغط زر <strong>المشاركة</strong> أسفل سفاري (المربع مع السهم ↑).","انزل للأسفل واضغط <strong>إضافة إلى الشاشة الرئيسية</strong>.","اضغط <strong>إضافة</strong> في الزاوية العلوية. ستظهر أيقونة التطبيق على شاشتك الرئيسية."],android:["اضغط قائمة <strong>⋮</strong> أعلى كروم.","اضغط <strong>إضافة إلى الشاشة الرئيسية</strong> أو <strong>تثبيت التطبيق</strong>.","اضغط <strong>تثبيت</strong>. ستظهر أيقونة التطبيق على شاشتك الرئيسية."],desktop:["في كروم أو إيدج، اضغط أيقونة التثبيت في طرف شريط العنوان.","اضغط <strong>تثبيت</strong>."],installed:"مثبّت بالفعل — أنت تشغّله من الشاشة الرئيسية.",installNow:"ثبّت الآن",close:"إغلاق",cAny:"عربي + أجنبي",cAr:"عربي",cEn:"أجنبي",tMovies:"أفلام",tSeries:"مسلسلات",tBoth:"الاثنين",series:"مسلسل",movie:"فيلم",seasons:"{x} مواسم"}};
 function t(k,v){let x=STR[state.lang||"en"][k];if(x==null)x=STR.en[k];if(typeof x==="string"&&v)Object.entries(v).forEach(([a,b])=>x=x.split("{"+a+"}").join(b));return x}
 function applyLang(){const L=state.lang||"en";document.documentElement.lang=L;document.documentElement.dir=L==="ar"?"rtl":"ltr";
  document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));document.querySelectorAll("[data-ph]").forEach(e=>e.placeholder=t(e.dataset.ph));
  $("h1").innerHTML=t("h1");$("logoTxt").innerHTML=t("logo");$("lang").textContent=L==="ar"?"EN":"عربي";}
 const PREFERRED=["Netflix","Amazon Prime Video","Apple TV+","Apple TV Plus","Shahid VIP","Shahid"];
-let state={lang:"en",clang:"any",ctype:"movie",f:{svc:"",rating:0,year:"",genre:"",type:"",lang:"",rt:"",sort:"best"},phase:"genres",idx:0,genre:{},prov:{},decade:{},seen:{},liked:[],watched:[],history:[],key:"4b978fa1cf7f0d286ab2bfa47f92027a",region:"AE"};
+let state={lang:"en",clang:"any",ctype:"movie",name:"",tg:null,f:{svc:"",rating:0,year:"",genre:"",type:"",lang:"",rt:"",sort:"best"},phase:"genres",idx:0,genre:{},prov:{},decade:{},seen:{},liked:[],watched:[],history:[],key:"4b978fa1cf7f0d286ab2bfa47f92027a",region:"AE"};
 try{Object.assign(state,JSON.parse(localStorage.getItem("banbouk-movie-finder")||"{}"))}catch(e){}
 const save=()=>{try{localStorage.setItem("banbouk-movie-finder",JSON.stringify(state))}catch(e){}};
 const $=id=>document.getElementById(id);
@@ -175,9 +190,9 @@ async function boot(){
  PROVIDERS.push({provider_id:0,provider_name:"IPTV",logo_path:""});
 }
 
-function show(name){["intro","swipe","list","find","taste"].forEach(s=>$("s-"+s).hidden=s!==name);
+function show(name){["intro","swipe","list","find","together","taste"].forEach(s=>$("s-"+s).hidden=s!==name);
  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.tab===name));$("tabs").hidden=name==="intro";
- if(name==="list")renderList();if(name==="taste")renderTaste();}
+ if(name==="list")renderList();if(name==="taste")renderTaste();if(name==="together")renderTogether();}
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.tab));
 state.f=Object.assign({svc:"",rating:0,year:"",genre:"",type:"",lang:"",rt:"",sort:"best"},state.f||{});
 $("key").value=state.key;$("region").value=state.region;
@@ -229,6 +244,8 @@ function whereHtml(r){r=r||{};const have=new Set(PROVIDERS.filter(p=>state.prov[
 
 // ---------- cards ----------
 async function currentCard(){
+ if(state.tg&&state.tg.active){const T=state.tg;const deck=T.deck;const i=T.i;if(i>=deck.length)return null;const m=deck[i];norm(m,m.media_type);const prov=await providersFor(m);
+  return{kind:"movie",tg:true,key:m.id,m,prov,big:m.title,img:m.poster_path?IMG+"w500"+m.poster_path:(m.backdrop_path?IMG+"w780"+m.backdrop_path:""),p:m.overview}}
  if(state.phase==="genres"){const g=GENRES[state.idx];if(!g){state.phase="providers";state.idx=0;return currentCard()}
   return{kind:"genre",key:g.id,big:g.name,img:g.backdrop,sub:t("doyoulike"),p:(g.example?t("think",{x:g.example})+" ":"")+t("genreHint")}}
  if(state.phase==="providers"){const p=PROVIDERS[state.idx];if(!p){state.phase="movies";state.idx=0;return currentCard()}
@@ -271,20 +288,24 @@ async function openTrailer(m){const o=document.createElement("div");o.className=
 
 async function render(){const stage=$("stage");stage.innerHTML=`<div class="empty">${t("loading")}</div>`;
  const c=await currentCard();cur=c;
- $("fbtn").hidden=state.phase!=="movies";$("phaseLabel").textContent=state.phase==="genres"?t("genres",{a:state.idx+1,b:GENRES.length}):state.phase==="providers"?t("services",{a:state.idx+1,b:PROVIDERS.length}):t("picked",{a:state.liked.length});
- if(!c){stage.innerHTML=`<div class="empty">${t("nomore")}</div>`;return}
+ const T=state.tg;$("fbtn").hidden=state.phase!=="movies"||!!(T&&T.active);$("bSeen").hidden=!!(T&&T.active);
+ if(T&&T.active){$("phaseLabel").textContent=T.role==="guest"?t("tgGuest",{n:T.host||"",a:Math.min(T.i+1,T.deck.length),b:T.deck.length}):T.turn==="friend"?t("tgFriend",{a:Math.min(T.i+1,T.deck.length),b:T.deck.length}):t("tgMe",{a:Math.min(T.i+1,T.deck.length),b:T.deck.length});}
+ else $("phaseLabel").textContent=state.phase==="genres"?t("genres",{a:state.idx+1,b:GENRES.length}):state.phase==="providers"?t("services",{a:state.idx+1,b:PROVIDERS.length}):t("picked",{a:state.liked.length});
+ if(!c){if(state.tg&&state.tg.active){state.tg.active=false;save();show("together");return}stage.innerHTML=`<div class="empty">${t("nomore")}</div>`;return}
  stage.innerHTML="";const under=document.createElement("div");under.className="card under";stage.appendChild(under);
  const el=cardEl(c);stage.appendChild(el);attachDrag(el);
  if(c.kind==="movie")nextMovie(); // warm the pool
 }
 function snapshot(){return JSON.stringify({genre:state.genre,prov:state.prov,decade:state.decade,seen:state.seen,liked:state.liked,watched:state.watched||[],phase:state.phase,idx:state.idx})}
-function decide(yes){if(!cur)return;const c=cur;state.history.push(snapshot());if(state.history.length>30)state.history.shift();const d=yes?1:-1;
+function decide(yes){if(!cur)return;const c=cur;
+ if(c.tg){const T=state.tg;const key=mt(c.m)+"-"+c.m.id;const arr=T.role==="guest"||T.turn==="friend"?T.friend:T.mine;if(yes&&!arr.includes(key))arr.push(key);T.i++;save();render();return}
+ state.history.push(snapshot());if(state.history.length>30)state.history.shift();const d=yes?1:-1;
  if(c.kind==="genre"){state.genre[c.key]=d;state.idx++}else if(c.kind==="prov"){state.prov[c.key]=d;state.idx++}
  else{const m=c.m;state.seen[mt(m)+m.id]=d;m.genre_ids.forEach(g=>state.genre[g]=(state.genre[g]||0)+d*0.5);
   const dec=decadeOf(+String(m.release_date).slice(0,4));state.decade[dec]=(state.decade[dec]||0)+d*0.5;
   if(yes)state.liked.push({id:m.id,type:mt(m),title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,prov:(c.prov||[]).map(p=>p.provider_name)});}
  $("count").textContent=state.liked.length;save();render()}
-function undo(){const h=state.history.pop();if(!h)return;Object.assign(state,JSON.parse(h));$("count").textContent=state.liked.length;save();render()}
+function undo(){if(state.tg&&state.tg.active){const T=state.tg;if(T.i>0){T.i--;const key=mt(T.deck[T.i])+"-"+T.deck[T.i].id;const arr=T.role==="guest"||T.turn==="friend"?T.friend:T.mine;T[arr===T.friend?"friend":"mine"]=arr.filter(k=>k!==key);save();render()}return}const h=state.history.pop();if(!h)return;Object.assign(state,JSON.parse(h));$("count").textContent=state.liked.length;save();render()}
 const RATE_LABELS=()=>t("rates");
 const RATE_WEIGHT=[0,-1.5,-1,0,1,1.6];
 $("bSeen").onclick=()=>{if(!cur||cur.kind!=="movie")return;rateDialog(cur.m,$("stage"),r=>markWatched(cur.m,r,cur.prov))};
@@ -356,6 +377,39 @@ function showA2HS(){const o=document.createElement("div");o.className="trailer";
  o.innerHTML=`<button class="x" aria-label="${t("close")}">✕</button><div class="steps"><b>${t("a2hsT")}</b>${standalone?`<p>${t("installed")}</p>`:steps.map((x,i)=>`<p><span>${i+1}</span>${x}</p>`).join("")}${deferredInstall?`<button class="cta" id="doInstall">${t("installNow")}</button>`:""}</div>`;
  document.body.appendChild(o);o.querySelector(".x").onclick=()=>o.remove();o.onclick=e=>{if(e.target===o)o.remove()};
  const di=o.querySelector("#doInstall");if(di)di.onclick=async()=>{deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;o.remove()}}
+const slim=m=>({id:m.id,media_type:mt(m),title:m.title,release_date:m.release_date,vote_average:m.vote_average,poster_path:m.poster_path,backdrop_path:m.backdrop_path,overview:m.overview,genre_ids:m.genre_ids||[]});
+async function buildDeck(){pool=[];MOVIES={};refill.page=0;await refill();if(pool.length<16)await refill();const seenLiked=new Set(state.liked.map(x=>x.id));
+ let cand=pool.filter(m=>passF(m)).sort((a,b)=>score(b)-score(a));const top=cand.slice(0,10),rest=cand.slice(10).sort(()=>Math.random()-.5).slice(0,6);return [...top,...rest].sort(()=>Math.random()-.5).map(slim)}
+async function tgStart(){const b=$("tgbox");b.innerHTML=`<div class="empty">${t("loading")}</div>`;const deck=await buildDeck();if(!deck.length){b.innerHTML=`<div class="empty">${t("nomore")}</div>`;return}
+ state.tg={active:true,role:"host",turn:"me",i:0,deck,mine:[],friend:[],sent:false};save();show("swipe");render()}
+function tgLink(kind){const u=new URL(location.href);u.search="";u.hash="";const T=state.tg;
+ if(kind==="deck")u.searchParams.set("t",T.deck.map(m=>mt(m)[0]+m.id).join(".")+"~"+encodeURIComponent(state.name||""));else u.searchParams.set("r",T.friend.map(k=>k[0]+k.split("-")[1]).join(".")+"~"+(T.sid||""));return u.toString()}
+async function tgShare(kind){const url=tgLink(kind);const text=t(kind==="deck"?"tgShareText":"tgBackText");if(navigator.share){try{await navigator.share({text,url});return}catch(e){if(e.name==="AbortError")return}}window.open("https://wa.me/?text="+encodeURIComponent(text+"\n"+url),"_blank")}
+async function tgLoadDeck(q){const [ids,host]=q.split("~");const items=ids.split(".").filter(Boolean).map(x=>({type:x[0]==="t"?"tv":"movie",id:+x.slice(1)}));if(!items.length)return null;
+ const deck=await Promise.all(items.map(async it=>{try{const m=await api(`/${it.type}/${it.id}`);norm(m,it.type);m.genre_ids=(m.genres||[]).map(g=>g.id);return slim(m)}catch(e){return null}}));return{deck:deck.filter(Boolean),host:decodeURIComponent(host||"")}}
+function tgResults(){const T=state.tg;const mine=new Set(T.mine);const both=T.deck.filter(m=>mine.has(mt(m)+"-"+m.id)&&T.friend.includes(mt(m)+"-"+m.id)).sort((a,b)=>score(b)-score(a));
+ const either=T.deck.filter(m=>(mine.has(mt(m)+"-"+m.id)||T.friend.includes(mt(m)+"-"+m.id))&&!both.includes(m)).sort((a,b)=>score(b)-score(a));return{both,either}}
+function tgItem(m){return`<div class="item open" data-dt="${mt(m)}" data-did="${m.id}"><div class="head"><img src="${m.poster_path?IMG+"w185"+m.poster_path:""}" alt=""><div class="t"><b>${m.title}</b><span>${String(m.release_date||"").slice(0,4)} · ★ ${(m.vote_average||0).toFixed(1)}</span></div><button aria-label="Share" data-tsh="${m.id}" data-tsht="${mt(m)}">↗</button></div><div class="where" data-lw="${m.id}" data-lt="${mt(m)}"></div></div>`}
+async function renderTogether(){const b=$("tgbox");const T=state.tg;b.innerHTML="";
+ if(!T){b.innerHTML=`<div class="tg"><h2>${t("tgTitle")}</h2><p>${t("tgIntro")}</p><label for="myname" style="font-size:13px;color:var(--muted)">${t("tgMyName")}</label><input id="myname" value="${(state.name||"").replace(/"/g,"&quot;")}"><button class="cta" id="tgStart">${t("tgStart")}</button></div>`;
+  $("tgStart").onclick=()=>{state.name=$("myname").value.trim();save();tgStart()};return}
+ if(T.active){b.innerHTML=`<div class="tg"><p>${T.role==="guest"?t("tgGuest",{n:T.host,a:T.i+1,b:T.deck.length}):t("tgMe",{a:T.i+1,b:T.deck.length})}</p><button class="cta" id="tgResume">${t("swipe")} →</button><button class="link" id="tgNew">${t("tgNew")}</button></div>`;$("tgResume").onclick=()=>{show("swipe");render()};$("tgNew").onclick=()=>{state.tg=null;save();renderTogether()};return}
+ if(T.role==="guest"){b.innerHTML=`<div class="tg"><h2>${t("tgGuestDone").split(".")[0]}.</h2><p>${t("tgGuestDone")}</p><button class="cta" id="tgBack">${t("tgSendBack")}</button><button class="link" id="tgNew">${t("tgNew")}</button></div>`;$("tgBack").onclick=()=>tgShare("back");$("tgNew").onclick=()=>{state.tg=null;save();renderTogether()};return}
+ if(T.turn==="me"&&!T.friendDone){b.innerHTML=`<div class="tg"><h2>${t("tgDoneMe").split(".")[0]}.</h2><p>${T.sent?t("tgWait"):t("tgDoneMe")}</p><button class="cta" id="tgSend">${T.sent?t("tgResend"):t("tgSend")}</button><button class="cta2" id="tgHand">${t("tgHand")}</button><button class="link" id="tgNew">${t("tgNew")}</button></div>`;
+  $("tgSend").onclick=()=>{T.sent=true;save();tgShare("deck")};$("tgHand").onclick=()=>{T.turn="friend";T.i=0;T.friend=[];T.active=true;T.deck=[...T.deck].sort(()=>Math.random()-.5);save();show("swipe");render()};$("tgNew").onclick=()=>{state.tg=null;save();renderTogether()};return}
+ // results
+ const {both,either}=tgResults();const top=both[0]||either[0];
+ let h=`<div class="tg">`;
+ if(top){h+=`<div><span class="badge">${t("tgTop")}</span></div><div class="top"><div class="cover" style="background-image:url('${top.backdrop_path?IMG+"w780"+top.backdrop_path:(top.poster_path?IMG+"w500"+top.poster_path:"")}')"><h3>${top.title}</h3></div><div class="body"><div class="row"><b>${String(top.release_date||"").slice(0,4)}</b><span>★ ${(top.vote_average||0).toFixed(1)}</span><button class="sharebtn" data-tsh="${top.id}" data-tsht="${mt(top)}">↗ ${t("share")}</button></div><p style="font-size:13px;color:var(--fg)">${top.overview||""}</p><div class="where" data-lw="${top.id}" data-lt="${mt(top)}"></div><div class="acts" style="display:flex;gap:8px"><button class="cta2" style="flex:1" data-ttr="${top.id}" data-ty="${mt(top)}">${t("trailer")}</button><button class="cta2" style="flex:1" data-tcast="${top.id}" data-ty="${mt(top)}">${t("cast")}</button></div></div></div>`}
+ if(both.length>1)h+=`<h3 style="font-family:var(--display);font-weight:400;letter-spacing:.04em;font-size:22px;margin:6px 0 0">${t("tgMatches")}</h3>`+both.slice(1).map(tgItem).join("");
+ if(!both.length)h+=`<p>${t("tgNoMatch")}</p>`;
+ if(either.length>(both.length?0:1))h+=`<h3 style="font-family:var(--display);font-weight:400;letter-spacing:.04em;font-size:22px;margin:6px 0 0">${t("tgEither")}</h3>`+either.slice(both.length?0:1).map(tgItem).join("");
+ h+=`<button class="link" id="tgNew">${t("tgNew")}</button></div>`;b.innerHTML=h;
+ b.querySelectorAll("[data-lw]").forEach(async w=>{try{const d=await api(`/${w.dataset.lt}/${w.dataset.lw}/watch/providers`);w.innerHTML=whereHtml(d.results[state.region]||{})}catch(e){}});
+ const find=(id,ty)=>T.deck.find(m=>m.id==id&&mt(m)===ty);
+ b.querySelectorAll("[data-tsh]").forEach(x=>x.onclick=e=>{e.stopPropagation();shareItem(find(x.dataset.tsh,x.dataset.tsht))});
+ b.querySelectorAll("[data-ttr]").forEach(x=>x.onclick=()=>openTrailer(find(x.dataset.ttr,x.dataset.ty)));b.querySelectorAll("[data-tcast]").forEach(x=>x.onclick=()=>openCast(find(x.dataset.tcast,x.dataset.ty)));
+ $("tgNew").onclick=()=>{state.tg=null;save();renderTogether()}}
 function shareUrl(m){const u=new URL(location.href);u.search="";u.hash="";u.searchParams.set("m",mt(m)+"-"+m.id);return u.toString()}
 async function shareItem(m){const url=shareUrl(m);const text=t("shareText",{t:m.title,y:String(m.release_date||"").slice(0,4)});
  if(navigator.share){try{await navigator.share({title:m.title,text,url});return}catch(e){if(e.name==="AbortError")return}}
@@ -371,7 +425,11 @@ async function showDetail(type,id){const o=document.createElement("div");o.class
   o.querySelector("#dAdd").onclick=()=>{if(inList())return;state.liked.push({id:m.id,type,title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,prov:[]});state.seen[type+m.id]=1;$("count").textContent=state.liked.length;save();o.querySelector("#dAdd").textContent=t("inList")};
   o.querySelector("#dTr").onclick=()=>openTrailer(m);o.querySelector("#dCast").onclick=()=>openCast(m);o.querySelector("#dShare").onclick=()=>shareItem(m);
  }catch(e){o.querySelector(".detail").innerHTML=`<div class="body"><p>${t("searchfail")}</p></div>`}}
-(function(){const q=new URLSearchParams(location.search).get("m");if(q){const [ty,id]=q.split("-");if(id){history.replaceState(null,"",location.pathname);const open=()=>showDetail(ty,+id);if($("s-intro").hidden)open();else{$("start").addEventListener("click",()=>setTimeout(open,800),{once:true});(async()=>{if(!GENRES.length)try{await boot()}catch(e){}})();open()}}}})();
+(function(){const sp=new URLSearchParams(location.search);const tq=sp.get("t"),rq=sp.get("r");
+ if(tq||rq){history.replaceState(null,"",location.pathname);(async()=>{try{if(!GENRES.length)await boot()}catch(e){}
+  if(tq){const d=await tgLoadDeck(tq);if(!d||!d.deck.length){alert(t("tgDeckBad"));return}state.tg={active:true,role:"guest",turn:"friend",i:0,deck:d.deck,mine:[],friend:[],host:d.host};save();show("swipe");render()}
+  else{const ids=rq.split("~")[0].split(".").filter(Boolean).map(x=>(x[0]==="t"?"tv":"movie")+"-"+x.slice(1));if(state.tg&&state.tg.role==="host"){state.tg.friend=ids;state.tg.friendDone=true;state.tg.active=false;save();show("together")}else show("together")}})();return}
+ const q=sp.get("m");if(q){const [ty,id]=q.split("-");if(id){history.replaceState(null,"",location.pathname);const open=()=>showDetail(ty,+id);if($("s-intro").hidden)open();else{$("start").addEventListener("click",()=>setTimeout(open,800),{once:true});(async()=>{if(!GENRES.length)try{await boot()}catch(e){}})();open()}}}})();
 $("a2hs").onclick=showA2HS;
 function fcount(){const F=state.f;const n=["svc","rating","year","genre","type","lang","rt"].filter(k=>F[k]).length+(F.sort&&F.sort!=="best"?1:0);$("fcount").hidden=!n;$("fcount").textContent=n}
 function showFilters(){const F={...state.f};const o=document.createElement("div");o.className="trailer";
