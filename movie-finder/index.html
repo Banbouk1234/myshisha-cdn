@@ -8,22 +8,22 @@
  --display:"Bebas Neue",Impact,sans-serif;--body:"Manrope",system-ui,sans-serif;color-scheme:dark}
 *{box-sizing:border-box}[hidden]{display:none!important}html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);display:flex;flex-direction:column;overflow:hidden;
- padding:max(8px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
-header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:6px 0 10px}
-.logo{font-family:var(--display);font-size:22px;letter-spacing:.04em;white-space:nowrap;line-height:1}.logo b{color:var(--accent);font-weight:400}
-.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;width:100%}.tabs .tab:nth-child(9){grid-column:span 1}.tab{white-space:nowrap;flex:1;text-align:center;background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:8px 4px;font:600 13px var(--body)}
+ padding:max(4px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(4px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;padding:2px 0 6px}
+.logo{font-family:var(--display);font-size:20px;letter-spacing:.04em;white-space:nowrap;line-height:1}.logo b{color:var(--accent);font-weight:400}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:100%}.tabs .tab:nth-child(9){grid-column:span 1}.tab{white-space:nowrap;flex:1;text-align:center;background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:6px 2px;font:600 12px var(--body)}
 .tab[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 main{flex:1;min-height:0;display:flex;flex-direction:column}
 .hint{text-align:center;color:var(--muted);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding-bottom:8px}
 .stage{flex:1;min-height:0;position:relative}
-.card{position:absolute;inset:0;margin:auto;max-width:420px;border-radius:22px;overflow:hidden;background:var(--surface);box-shadow:0 20px 50px rgba(0,0,0,.5);touch-action:none;user-select:none;display:flex;flex-direction:column}
+.card{position:absolute;inset:0;margin:auto;max-width:460px;border-radius:22px;overflow:hidden;background:var(--surface);box-shadow:0 20px 50px rgba(0,0,0,.5);touch-action:none;user-select:none;display:flex;flex-direction:column}
 .card.under{transform:scale(.95) translateY(14px);opacity:.6}.card.leave{transition:transform .35s,opacity .35s}
 .art{flex:1;min-height:0;position:relative;background-size:cover;background-position:center top;background-color:#222;display:flex;align-items:flex-end;padding:18px}
 .art::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.85))}
 .art .big{position:relative;z-index:1;font-family:var(--display);color:#fff;font-size:clamp(34px,10vw,54px);line-height:.95;text-shadow:0 2px 12px rgba(0,0,0,.6);text-wrap:balance}
 .art img.logo{position:relative;z-index:1;width:140px;height:140px;object-fit:contain;border-radius:28px;margin:auto;background:#fff;padding:12px}
 .art.center{align-items:center;justify-content:center}
-.meta{padding:10px 16px 12px;display:flex;flex-direction:column;gap:5px;max-height:46%;overflow:auto}
+.meta{padding:8px 14px 10px;display:flex;flex-direction:column;gap:4px;max-height:42%;overflow:auto}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--muted)}.row b{color:var(--fg)}
 .meta p{margin:0;font-size:14px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .chip{border:1px solid var(--line);border-radius:999px;padding:3px 9px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
@@ -31,9 +31,9 @@ main{flex:1;min-height:0;display:flex;flex-direction:column}
 .plogo{width:22px;height:22px;border-radius:5px;vertical-align:middle}
 .stamp{position:absolute;top:22px;font-family:var(--display);font-size:40px;letter-spacing:.08em;padding:4px 12px;border:4px solid;border-radius:8px;opacity:0;z-index:2}
 .stamp.like{left:20px;color:var(--yes);border-color:var(--yes);transform:rotate(-14deg)}.stamp.nope{right:20px;color:var(--no);border-color:var(--no);transform:rotate(14deg)}
-.actions{display:flex;justify-content:center;gap:16px;padding:14px 0 6px}
-.btn{width:60px;height:60px;border-radius:50%;border:2px solid;background:var(--surface);font-size:28px;display:grid;place-items:center}
-.btn.no{color:var(--no);border-color:var(--no)}.btn.yes{color:var(--yes);border-color:var(--yes)}.btn.small{width:44px;height:44px;font-size:18px;color:var(--muted);border-color:var(--line);align-self:center}
+.actions{display:flex;justify-content:center;gap:14px;padding:10px 0 2px}
+.btn{width:56px;height:56px;border-radius:50%;border:2px solid;background:var(--surface);font-size:28px;display:grid;place-items:center}
+.btn.no{color:var(--no);border-color:var(--no)}.btn.yes{color:var(--yes);border-color:var(--yes)}.btn.small{width:42px;height:42px;font-size:17px;color:var(--muted);border-color:var(--line);align-self:center}
 .screen{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:14px;padding:8px 0}
 .intro{margin:auto;max-width:420px;display:flex;flex-direction:column;gap:16px}
 .intro h1{font-family:var(--display);font-size:clamp(52px,16vw,88px);line-height:.9;margin:0}.intro h1 em{font-style:normal;color:var(--accent)}
@@ -54,7 +54,7 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 .bar span{color:var(--muted);text-align:end}
 .link{background:none;border:none;color:var(--muted);text-decoration:underline;font:500 13px var(--body);padding:8px}
 .err{color:var(--no);font-size:13px}
-.fbtn{background:var(--surface);border:1px solid var(--line);color:var(--fg);border-radius:999px;padding:6px 12px;font:700 12px var(--body);display:inline-flex;align-items:center;gap:6px}
+.fbtn{background:var(--surface);border:1px solid var(--line);color:var(--fg);border-radius:999px;padding:4px 10px;font:700 12px var(--body);display:inline-flex;align-items:center;gap:6px}
 .fbtn i{font-style:normal;background:var(--accent);color:#000;border-radius:999px;padding:0 7px;font-size:11px}
 .sheet{width:100%;max-width:460px;max-height:85vh;overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px;text-align:start}
 .sheet h3{font-family:var(--display);font-size:26px;font-weight:400;margin:0;letter-spacing:.04em}
@@ -117,8 +117,8 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
 .pv{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 4px;font-size:12px}
 .item.open{flex-direction:column;align-items:stretch}.item .head{display:flex;gap:12px;align-items:center}
 </style></head><body>
-<header><div style="display:flex;align-items:center;gap:8px"><div class="logo" id="logoTxt">BANBOUK <b>MOVIE FINDER</b></div></div>
- <button class="lang" id="me" aria-label="Account" style="margin-inline-start:auto;padding:4px 8px;display:flex;align-items:center;gap:6px"><span id="meAv" style="width:24px;height:24px;border-radius:50%;background:var(--line);display:inline-block;overflow:hidden"></span><span id="meTxt" data-i="login">Login</span></button><button class="lang" id="lang" aria-label="Language">عربي</button><div class="tabs" id="tabs" hidden>
+<header><div style="display:flex;align-items:center;gap:6px;flex:1;min-width:0"><div class="logo" id="logoTxt">BANBOUK <b>MOVIE FINDER</b></div></div>
+ <button class="lang" id="me" aria-label="Account" style="padding:3px 8px 3px 3px;display:flex;align-items:center;gap:5px;max-width:150px"><span id="meAv" style="width:24px;height:24px;border-radius:50%;background:var(--line);display:inline-block;overflow:hidden"></span><span id="meTxt" data-i="login" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Login</span></button><button class="lang" id="lang" aria-label="Language" style="padding:5px 8px">عربي</button><div class="tabs" id="tabs" hidden>
   <button class="tab" aria-selected="true" data-tab="swipe" data-i="swipe">Swipe</button>
   <button class="tab" aria-selected="false" data-tab="list"><span data-i="mylist">My list</span> <span id="count">0</span></button>
   <button class="tab" aria-selected="false" data-tab="find" data-i="find">Find</button><button class="tab" aria-selected="false" data-tab="mood" data-i="mood">Mood</button><button class="tab" aria-selected="false" data-tab="play" data-i="play">Play</button><button class="tab" aria-selected="false" data-tab="together" data-i="together">Together</button><button class="tab" aria-selected="false" data-tab="friends" data-i="friends">Friends</button><button class="tab" aria-selected="false" data-tab="taste" data-i="taste">Taste</button></div></header>
@@ -135,9 +135,9 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
   <button class="cta" id="start" data-i="start">Start swiping</button>
   <button class="cta2" id="a2hs">📲 <span data-i="a2hs">Add to Home Screen</span></button></div></section>
  <section class="screen" id="s-swipe" hidden style="overflow:hidden">
-  <div style="display:flex;align-items:center;justify-content:center;gap:10px;padding-bottom:8px"><div class="hint" id="phaseLabel" style="padding:0"></div><button class="fbtn" id="fbtn">⚙︎ <span data-i="filters">Filters</span><i id="fcount" hidden></i></button></div><div class="hint" id="matchBanner" hidden style="color:var(--yes);padding:0 0 6px"></div><div class="stage" id="stage"></div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:10px;padding:2px 0 6px"><div class="hint" id="phaseLabel" style="padding:0;font-size:11px"></div><button class="fbtn" id="fbtn">⚙︎ <span data-i="filters">Filters</span><i id="fcount" hidden></i></button></div><div class="hint" id="matchBanner" hidden style="color:var(--yes);padding:0 0 6px"></div><div class="stage" id="stage"></div>
   <div class="actions"><button class="btn no" id="bNo" aria-label="No">✕</button><button class="btn small" id="bUndo" aria-label="Undo">↶</button><button class="btn small" id="bSkip" aria-label="Not sure" title="Not sure">🤷</button><button class="btn small" id="bSeen" aria-label="I watched this" title="I watched this">👁</button><button class="btn yes" id="bYes" aria-label="Yes">♥</button></div>
-  <div class="hint" id="seenHint" data-i="legend">✕ skip · ↶ undo · 👁 watched it · ♥ want to watch</div></section>
+  <div class="hint" id="seenHint" data-i="legend" style="display:none">✕ skip · ↶ undo · 👁 watched it · ♥ want to watch</div></section>
  <section class="screen" id="s-list" hidden><div class="list" id="list"></div></section>
  <section class="screen" id="s-find" hidden><div class="list">
   <input id="q" placeholder="Type a movie name…" data-ph="search" autocomplete="off">
