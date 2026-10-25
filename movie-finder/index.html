@@ -23,7 +23,7 @@ main{flex:1;min-height:0;display:flex;flex-direction:column}
 .art .big{position:relative;z-index:1;font-family:var(--display);color:#fff;font-size:clamp(34px,10vw,54px);line-height:.95;text-shadow:0 2px 12px rgba(0,0,0,.6);text-wrap:balance}
 .art img.logo{position:relative;z-index:1;width:140px;height:140px;object-fit:contain;border-radius:28px;margin:auto;background:#fff;padding:12px}
 .art.center{align-items:center;justify-content:center}
-.meta{padding:12px 18px 14px;display:flex;flex-direction:column;gap:6px;max-height:46%;overflow:auto}
+.meta{padding:10px 16px 12px;display:flex;flex-direction:column;gap:5px;max-height:46%;overflow:auto}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--muted)}.row b{color:var(--fg)}
 .meta p{margin:0;font-size:14px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .chip{border:1px solid var(--line);border-radius:999px;padding:3px 9px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
@@ -60,7 +60,7 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 .sheet h4{margin:0 0 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}.chips button{background:none;border:1px solid var(--line);color:var(--fg);border-radius:999px;padding:7px 12px;font:600 13px var(--body)}.chips button.on{background:var(--accent);color:#000;border-color:var(--accent)}
 .sheet .acts{display:flex;gap:10px}.sheet .acts .cta{flex:1}
-.sharebtn{padding:10px;font-size:13px;margin-top:4px}
+.sharebtn{margin-inline-start:auto;background:none;border:1px solid var(--line);color:var(--fg);border-radius:999px;padding:4px 10px;font:700 12px var(--body)}
 .detail{width:100%;max-width:460px;max-height:88vh;overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;text-align:start}
 .detail .cover{aspect-ratio:16/9;background-size:cover;background-position:center;position:relative;display:flex;align-items:flex-end;padding:16px}
 .detail .cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.8))}
@@ -95,7 +95,7 @@ html[dir="rtl"] .stamp.like{left:auto;right:20px;transform:rotate(14deg)}html[di
 html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto;left:14px}
 .lang{background:none;border:1px solid var(--line);color:var(--fg);border-radius:999px;padding:6px 10px;font:700 12px var(--body)}
 .trailer h3{font-family:var(--display);font-size:28px;font-weight:400;margin:0;letter-spacing:.04em;color:var(--fg)}
-.where{display:flex;flex-direction:column;gap:6px;margin-top:4px}.where h4{margin:6px 0 0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.where{display:flex;flex-direction:column;gap:6px;margin-top:4px}.where h4{margin:2px 0 0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .where .free h4{color:var(--yes)}.where .paid h4{color:var(--no)}.where .row{gap:6px}
 .pv{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 4px;font-size:12px}
 .item.open{flex-direction:column;align-items:stretch}.item .head{display:flex;gap:12px;align-items:center}
@@ -240,8 +240,8 @@ function cardEl(c){const el=document.createElement("div");el.className="card";le
  if(c.kind==="prov")art=`<div class="art center" style="background:linear-gradient(160deg,#2a2735,#0b0a0f)">${c.logo?`<img class="logo" src="${c.logo}" alt="">`:`<div class="big">${c.big}</div>`}</div>`;
  else art=`<div class="art" style="background-image:url('${c.img}')">${c.kind==="movie"?`<button class="tbtn" data-trailer="${c.m.id}">${t("trailer")}</button><button class="tbtn cast">${t("cast")}</button>`:""}<div class="big">${c.big}</div></div>`;
  if(c.kind==="movie"){const m=c.m;const gn=m.genre_ids.map(id=>(GENRES.find(g=>g.id===id)||{}).name).filter(Boolean).slice(0,3).join(" · ");
-  meta=`<div class="row"><b>${String(m.release_date).slice(0,4)}</b><span>★ ${(m.vote_average||0).toFixed(1)}</span>${mt(m)==="tv"?`<span class="chip on">${t("series")}</span>`:""}<span>${gn}</span></div>
-  <p>${c.p||""}</p><div class="where">${whereHtml(m._all)}</div><button class="cta2 sharebtn">↗ ${t("share")}</button>`}
+  meta=`<div class="row"><b>${String(m.release_date).slice(0,4)}</b><span>★ ${(m.vote_average||0).toFixed(1)}</span><button class="sharebtn">↗ ${t("share")}</button>${mt(m)==="tv"?`<span class="chip on">${t("series")}</span>`:""}<span>${gn}</span></div>
+  <p>${c.p||""}</p><div class="where">${whereHtml(m._all)}</div>`}
  else meta=`<div class="row" style="font-size:12px;letter-spacing:.08em;text-transform:uppercase">${c.sub} ${c.kind==="prov"?c.big:""}</div><p>${c.p}</p>`;
  el.innerHTML=`<div class="stamp like">${t("like")}</div><div class="stamp nope">${t("nope")}</div>${art}<div class="meta">${meta}</div>`;
  el.querySelectorAll(".tbtn").forEach(tb=>{tb.addEventListener("pointerdown",e=>e.stopPropagation());tb.onclick=e=>{e.stopPropagation();tb.classList.contains("share")?shareItem(c.m):tb.classList.contains("cast")?openCast(c.m):openTrailer(c.m)}});
