@@ -22,9 +22,9 @@ main{flex:1;min-height:0;display:flex;flex-direction:column}
 .art .big{position:relative;z-index:1;font-family:var(--display);color:#fff;font-size:clamp(34px,10vw,54px);line-height:.95;text-shadow:0 2px 12px rgba(0,0,0,.6);text-wrap:balance}
 .art img.logo{position:relative;z-index:1;width:140px;height:140px;object-fit:contain;border-radius:28px;margin:auto;background:#fff;padding:12px}
 .art.center{align-items:center;justify-content:center}
-.meta{padding:14px 18px 16px;display:flex;flex-direction:column;gap:6px}
+.meta{padding:12px 18px 14px;display:flex;flex-direction:column;gap:6px;max-height:46%;overflow:auto}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--muted)}.row b{color:var(--fg)}
-.meta p{margin:0;font-size:14px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.meta p{margin:0;font-size:14px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .chip{border:1px solid var(--line);border-radius:999px;padding:3px 9px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .chip.on{color:var(--accent);border-color:var(--accent)}
 .plogo{width:22px;height:22px;border-radius:5px;vertical-align:middle}
@@ -62,7 +62,7 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 .trailer .frame{width:100%;max-width:720px;aspect-ratio:16/9;background:#000;border-radius:14px;overflow:hidden}.trailer iframe{width:100%;height:100%;border:0}
 .trailer .x{position:absolute;top:max(16px,env(safe-area-inset-top));right:16px;width:44px;height:44px;border-radius:50%;background:var(--surface);color:var(--fg);border:1px solid var(--line);font-size:20px}
 .trailer p{color:var(--muted);margin:0;font-size:14px}
-.where{display:flex;flex-direction:column;gap:6px;margin-top:8px}.where h4{margin:6px 0 0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.where{display:flex;flex-direction:column;gap:6px;margin-top:4px}.where h4{margin:6px 0 0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .where .free h4{color:var(--yes)}.where .paid h4{color:var(--no)}.where .row{gap:6px}
 .pv{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 4px;font-size:12px}
 .item.open{flex-direction:column;align-items:stretch}.item .head{display:flex;gap:12px;align-items:center}
@@ -139,7 +139,18 @@ async function refill(){const have=PROVIDERS.filter(p=>state.prov[p.provider_id]
 async function nextMovie(){pool=pool.filter(m=>!state.seen[m.id]);if(pool.length<6)await refill();if(!pool.length)return null;
  pool.sort((a,b)=>score(b)-score(a));const n=Math.min(pool.length,4);return pool[Math.random()<0.78?0:Math.floor(Math.random()*n)];}
 async function providersFor(m){if(m._prov)return m._prov;try{const d=await api(`/movie/${m.id}/watch/providers`);const r=d.results[state.region]||{};
- m._prov=[...(r.flatrate||[]),...(r.ads||[])].slice(0,5)}catch(e){m._prov=[]}return m._prov;}
+ m._prov=[...(r.flatrate||[]),...(r.ads||[])].slice(0,5);m._all=r}catch(e){m._prov=[];m._all={}}return m._prov;}
+function whereHtml(r){r=r||{};const have=new Set(PROVIDERS.filter(p=>state.prov[p.provider_id]>0).map(p=>p.provider_name));
+ const pv=l=>l.map(p=>`<span class="pv ${have.has(p.provider_name)?"on":""}"><img class="plogo" src="${IMG}w92${p.logo_path}" alt="">${p.provider_name}${have.has(p.provider_name)?" ✓":""}</span>`).join("");
+ const free=[...(r.free||[]),...(r.ads||[])];const sub=(r.flatrate||[]);const mine=sub.filter(p=>have.has(p.provider_name));const other=sub.filter(p=>!have.has(p.provider_name));
+ const paid=[...new Map([...(r.rent||[]),...(r.buy||[])].map(p=>[p.provider_id,p])).values()];let h="";
+ if(free.length)h+=`<div class="free"><h4>Free${(r.ads||[]).length?" (with ads)":""}</h4><div class="row">${pv(free)}</div></div>`;
+ if(mine.length)h+=`<div class="free"><h4>Included in your subscription</h4><div class="row">${pv(mine)}</div></div>`;
+ if(other.length)h+=`<div><h4>Other subscriptions</h4><div class="row">${pv(other)}</div></div>`;
+ if(paid.length)h+=`<div class="paid"><h4>${free.length||sub.length?"Also rent / buy":"Paid only — rent or buy"}</h4><div class="row">${pv(paid)}</div></div>`;
+ if(!h)h=`<div class="paid"><h4>Not streaming in ${state.region}</h4><span style="font-size:13px;color:var(--muted)">Not on any service here right now${state.prov[0]>0?" — try your IPTV":""}.</span></div>`;
+ else if(state.prov[0]>0&&!free.length&&!mine.length)h+=`<div class="free"><h4>IPTV</h4><span style="font-size:13px;color:var(--muted)">Likely on your IPTV box.</span></div>`;
+ return h}
 
 // ---------- cards ----------
 async function currentCard(){
@@ -155,7 +166,7 @@ function cardEl(c){const el=document.createElement("div");el.className="card";le
  else art=`<div class="art" style="background-image:url('${c.img}')">${c.kind==="movie"?`<button class="tbtn" data-trailer="${c.m.id}">▶ TRAILER</button>`:""}<div class="big">${c.big}</div></div>`;
  if(c.kind==="movie"){const m=c.m;const gn=m.genre_ids.map(id=>(GENRES.find(g=>g.id===id)||{}).name).filter(Boolean).slice(0,3).join(" · ");
   meta=`<div class="row"><b>${String(m.release_date).slice(0,4)}</b><span>★ ${m.vote_average.toFixed(1)}</span><span>${gn}</span></div>
-  <div class="row">${c.prov.map(p=>`<img class="plogo" src="${IMG}w92${p.logo_path}" title="${p.provider_name}" alt="${p.provider_name}">`).join("")||`<span class="chip">Not streaming in ${state.region}</span>`}</div><p>${c.p||""}</p>`}
+  <p>${c.p||""}</p><div class="where">${whereHtml(m._all)}</div>`}
  else meta=`<div class="row" style="font-size:12px;letter-spacing:.08em;text-transform:uppercase">${c.sub} ${c.kind==="prov"?c.big:""}</div><p>${c.p}</p>`;
  el.innerHTML=`<div class="stamp like">LIKE</div><div class="stamp nope">NOPE</div>${art}<div class="meta">${meta}</div>`;
  const tb=el.querySelector(".tbtn");if(tb){tb.addEventListener("pointerdown",e=>e.stopPropagation());tb.onclick=e=>{e.stopPropagation();openTrailer(c.m)}}return el}
@@ -218,20 +229,8 @@ async function searchMovies(){const q=$("q").value.trim();const box=$("found");i
  box.querySelectorAll("[data-tr]").forEach(b=>b.onclick=e=>{e.stopPropagation();openTrailer({id:+b.dataset.tr,title:b.dataset.title})});
  box.querySelectorAll(".item").forEach(it=>it.onclick=()=>whereToWatch(it));}catch(e){box.innerHTML=`<div class="empty">Search failed: ${e.message}</div>`}}
 async function whereToWatch(it){if(it.classList.contains("open"))return;it.classList.add("open");const w=it.querySelector(".where");w.innerHTML="Checking…";
- const d=await api(`/movie/${it.dataset.id}/watch/providers`);const r=d.results[state.region]||{};
- const have=new Set(PROVIDERS.filter(p=>state.prov[p.provider_id]>0).map(p=>p.provider_name));
- const pv=l=>(l||[]).map(p=>`<span class="pv ${have.has(p.provider_name)?"on":""}"><img class="plogo" src="${IMG}w92${p.logo_path}" alt="">${p.provider_name}${have.has(p.provider_name)?" ✓":""}</span>`).join("");
- const free=[...(r.free||[]),...(r.ads||[])];const sub=(r.flatrate||[]);const mine=sub.filter(p=>have.has(p.provider_name));const other=sub.filter(p=>!have.has(p.provider_name));
- const paid=[...new Map([...(r.rent||[]),...(r.buy||[])].map(p=>[p.provider_id,p])).values()];
- let h="";
- if(free.length)h+=`<div class="free"><h4>Free${free.some(p=>(r.ads||[]).includes(p))?" (with ads)":""}</h4><div class="row">${pv(free)}</div></div>`;
- if(mine.length)h+=`<div class="free"><h4>Included in your subscription</h4><div class="row">${pv(mine)}</div></div>`;
- if(other.length)h+=`<div><h4>Other subscriptions</h4><div class="row">${pv(other)}</div></div>`;
- if(paid.length)h+=`<div class="paid"><h4>${free.length||sub.length?"Also rent / buy":"Paid only — rent or buy"}</h4><div class="row">${pv(paid)}</div></div>`;
- if(!h)h=`<div class="paid"><h4>Not streaming in ${state.region}</h4><span style="font-size:13px;color:var(--muted)">Not on any service here right now${state.prov[0]>0?" — try your IPTV":""}.</span></div>`;
- else if(state.prov[0]>0&&!free.length&&!mine.length)h+=`<div class="free"><h4>IPTV</h4><span style="font-size:13px;color:var(--muted)">Likely on your IPTV box.</span></div>`;
- if(r.link)h+=`<a href="${r.link}" target="_blank" rel="noopener" class="link" style="text-align:left;padding:4px 0">Open on TMDB / JustWatch →</a>`;
- w.innerHTML=h;}
+ const d=await api(`/movie/${it.dataset.id}/watch/providers`);const r=d.results[state.region]||{};let h=whereHtml(r);
+ if(r.link)h+=`<a href="${r.link}" target="_blank" rel="noopener" class="link" style="text-align:left;padding:4px 0">Open on JustWatch →</a>`;w.innerHTML=h;}
 
 // ---------- list & taste ----------
 function renderList(){const l=$("list");const wd=state.watched||[];if(!state.liked.length&&!wd.length){l.innerHTML=`<div class="empty">Nothing saved yet. Swipe right on a movie and it lands here.</div>`;return}
