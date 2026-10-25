@@ -9,9 +9,9 @@
 *{box-sizing:border-box}[hidden]{display:none!important}html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);display:flex;flex-direction:column;overflow:hidden;
  padding:max(8px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
-header{display:flex;align-items:center;justify-content:space-between;padding:6px 0 10px}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:6px 0 10px}
 .logo{font-family:var(--display);font-size:22px;letter-spacing:.04em;white-space:nowrap;line-height:1}.logo b{color:var(--accent);font-weight:400}
-.tabs{display:flex;gap:5px}.tab{white-space:nowrap;background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:6px 10px;font:600 12px var(--body)}
+.tabs{display:flex;gap:5px;width:100%;justify-content:space-between}.tab{white-space:nowrap;flex:1;text-align:center;background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:8px 4px;font:600 13px var(--body)}
 .tab[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 main{flex:1;min-height:0;display:flex;flex-direction:column}
 .hint{text-align:center;color:var(--muted);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding-bottom:8px}
@@ -101,7 +101,7 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
 .item.open{flex-direction:column;align-items:stretch}.item .head{display:flex;gap:12px;align-items:center}
 </style></head><body>
 <header><div style="display:flex;align-items:center;gap:8px"><div class="logo" id="logoTxt">BANBOUK <b>MOVIE FINDER</b></div></div>
- <button class="lang" id="lang" aria-label="Language">عربي</button><div class="tabs" id="tabs" hidden>
+ <button class="lang" id="lang" aria-label="Language" style="margin-inline-start:auto">عربي</button><div class="tabs" id="tabs" hidden>
   <button class="tab" aria-selected="true" data-tab="swipe" data-i="swipe">Swipe</button>
   <button class="tab" aria-selected="false" data-tab="list"><span data-i="mylist">My list</span> <span id="count">0</span></button>
   <button class="tab" aria-selected="false" data-tab="find" data-i="find">Find</button><button class="tab" aria-selected="false" data-tab="taste" data-i="taste">Taste</button></div></header>
