@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Banbouk Movie Finder</title>
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Movie Finder"><meta name="theme-color" content="#0b0a0f">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;700&display=swap">
 <style>
 :root{--bg:#0b0a0f;--surface:#17151f;--fg:#f3efe6;--muted:#9a95a8;--line:#2a2735;--accent:#ffb627;--yes:#3ddc84;--no:#ff4d6d;
@@ -52,6 +53,9 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 .bar span{color:var(--muted);text-align:right}
 .link{background:none;border:none;color:var(--muted);text-decoration:underline;font:500 13px var(--body);padding:8px}
 .err{color:var(--no);font-size:13px}
+.cta2{background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:14px;padding:14px;font:700 15px var(--body)}
+.steps{display:flex;flex-direction:column;gap:10px;max-width:420px;width:100%;text-align:start;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px}
+.steps b{display:block;font-family:var(--display);font-size:22px;letter-spacing:.04em;font-weight:400}.steps p{margin:0;font-size:15px;line-height:1.5;color:var(--fg)}.steps p strong{color:var(--accent)}.steps p span{display:inline-block;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#000;text-align:center;line-height:24px;font-weight:700;margin-inline-end:8px;font-size:13px}
 .seg{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px;gap:4px}
 .seg button{flex:1;background:none;border:none;color:var(--muted);border-radius:10px;padding:12px 6px;font:700 13px var(--body)}.seg button.on{background:var(--accent);color:#000}
 .rate{position:absolute;inset:0;z-index:5;background:rgba(11,10,15,.92);border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;max-width:420px;margin:auto}
@@ -97,7 +101,8 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
   <label for="region" data-i="country">Your country (for "where to watch")</label>
   <input id="region" value="AE" maxlength="2">
   <div class="err" id="err"></div>
-  <button class="cta" id="start" data-i="start">Start swiping</button></div></section>
+  <button class="cta" id="start" data-i="start">Start swiping</button>
+  <button class="cta2" id="a2hs">📲 <span data-i="a2hs">Add to Home Screen</span></button></div></section>
  <section class="screen" id="s-swipe" hidden style="overflow:hidden">
   <div class="hint" id="phaseLabel"></div><div class="stage" id="stage"></div>
   <div class="actions"><button class="btn no" id="bNo" aria-label="No">✕</button><button class="btn small" id="bUndo" aria-label="Undo">↶</button><button class="btn small" id="bSeen" aria-label="I watched this" title="I watched this">👁</button><button class="btn yes" id="bYes" aria-label="Yes">♥</button></div>
@@ -118,7 +123,7 @@ const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"R
  nocast:"No cast listed.",castfail:"Could not load cast.",directed:"Directed by {x}",loadcast:"Loading cast…",notrailer:"No trailer available for this one.",trailerfail:"Could not load trailer.",
  searching:"Searching…",nomovie:'No movie called "{x}".',searchfail:"Search failed",where:"Where?",watchtrailer:"▶ Watch trailer",castlink:"👥 Cast",
  empty:"Nothing saved yet. Swipe right on a movie and it lands here.",wanttowatch:"Want to watch",watched:"Watched",notrated:"not rated",
- tasteIntro:"{a} movies swiped, {b} watched. Every swipe shifts these weights; the next card is the best unseen match on a service you have.",tGenres:"Genres",tEra:"Era",tServices:"Services",reset:"Reset taste and start over",cAny:"Arabic + English",cAr:"Arabic",cEn:"English",tMovies:"Movies",tSeries:"Series",tBoth:"Both",series:"Series",movie:"Movie",seasons:"{x} seasons"},
+ tasteIntro:"{a} movies swiped, {b} watched. Every swipe shifts these weights; the next card is the best unseen match on a service you have.",tGenres:"Genres",tEra:"Era",tServices:"Services",reset:"Reset taste and start over",a2hs:"Add to Home Screen",a2hsT:"Install Banbouk Movie Finder",ios:["Tap the <strong>Share</strong> button at the bottom of Safari (the square with an arrow ↑).","Scroll down and tap <strong>Add to Home Screen</strong>.","Tap <strong>Add</strong> in the top corner. The app icon appears on your Home Screen."],android:["Tap the <strong>⋮</strong> menu at the top of Chrome.","Tap <strong>Add to Home screen</strong> or <strong>Install app</strong>.","Tap <strong>Install</strong>. The app icon appears on your Home Screen."],desktop:["In Chrome or Edge, click the install icon at the right end of the address bar.","Click <strong>Install</strong>."],installed:"Already installed — you are running it from your Home Screen.",installNow:"Install now",close:"Close",cAny:"Arabic + English",cAr:"Arabic",cEn:"English",tMovies:"Movies",tSeries:"Series",tBoth:"Both",series:"Series",movie:"Movie",seasons:"{x} seasons"},
  ar:{swipe:"اسحب",mylist:"قائمتي",find:"ابحث",taste:"ذوقي",intro:"يمين يعني نعم، يسار يعني لا. الأنواع أولاً، ثم خدمات البث عندك، ثم أفلام على ذوقك.",country:"بلدك (لمعرفة أين تشاهد)",start:"ابدأ السحب",legend:"✕ تخطّي · ↶ تراجع · 👁 شاهدته · ♥ أريد مشاهدته",search:"اكتب اسم الفيلم…",
  h1:"اسحب.<br>لا <em>تتصفح.</em>",logo:"بنبوك <b>لإيجاد الأفلام</b>",like:"أعجبني",nope:"لا",trailer:"▶ الإعلان",cast:"👥 الممثلون",doyoulike:"هل تحب",doyouhave:"هل عندك",genreHint:"اسحب يميناً إذا كان هذا نوعك المفضل.",think:'مثل "{x}".',provHint:"اسحب يميناً إذا كان بإمكانك مشاهدة {x} الآن.",iptvHint:"IPTV يعني عندك كل شيء. لن نصفّي حسب الخدمة.",
  genres:"الأنواع · {a} من {b}",services:"خدماتك · {a} من {b}",picked:"مختارة لك · {a} محفوظة",nomore:"لا مزيد من الأفلام على خدماتك. راجع قائمتك أو أعد الضبط.",loading:"جارٍ التحميل…",
@@ -127,7 +132,7 @@ const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"R
  nocast:"لا يوجد ممثلون مدرجون.",castfail:"تعذّر تحميل الممثلين.",directed:"إخراج {x}",loadcast:"جارٍ تحميل الممثلين…",notrailer:"لا يوجد إعلان لهذا الفيلم.",trailerfail:"تعذّر تحميل الإعلان.",
  searching:"جارٍ البحث…",nomovie:'لا يوجد فيلم باسم "{x}".',searchfail:"فشل البحث",where:"أين؟",watchtrailer:"▶ شاهد الإعلان",castlink:"👥 الممثلون",
  empty:"لا شيء محفوظ بعد. اسحب يميناً على فيلم ليظهر هنا.",wanttowatch:"أريد مشاهدته",watched:"شاهدته",notrated:"بدون تقييم",
- tasteIntro:"{a} فيلم سحبته، {b} شاهدته. كل سحبة تغيّر هذه الأوزان؛ البطاقة التالية هي أفضل فيلم لم تره على خدمة عندك.",tGenres:"الأنواع",tEra:"الحقبة",tServices:"الخدمات",reset:"إعادة ضبط الذوق والبدء من جديد",cAny:"عربي + أجنبي",cAr:"عربي",cEn:"أجنبي",tMovies:"أفلام",tSeries:"مسلسلات",tBoth:"الاثنين",series:"مسلسل",movie:"فيلم",seasons:"{x} مواسم"}};
+ tasteIntro:"{a} فيلم سحبته، {b} شاهدته. كل سحبة تغيّر هذه الأوزان؛ البطاقة التالية هي أفضل فيلم لم تره على خدمة عندك.",tGenres:"الأنواع",tEra:"الحقبة",tServices:"الخدمات",reset:"إعادة ضبط الذوق والبدء من جديد",a2hs:"أضف إلى الشاشة الرئيسية",a2hsT:"ثبّت تطبيق بنبوك لإيجاد الأفلام",ios:["اضغط زر <strong>المشاركة</strong> أسفل سفاري (المربع مع السهم ↑).","انزل للأسفل واضغط <strong>إضافة إلى الشاشة الرئيسية</strong>.","اضغط <strong>إضافة</strong> في الزاوية العلوية. ستظهر أيقونة التطبيق على شاشتك الرئيسية."],android:["اضغط قائمة <strong>⋮</strong> أعلى كروم.","اضغط <strong>إضافة إلى الشاشة الرئيسية</strong> أو <strong>تثبيت التطبيق</strong>.","اضغط <strong>تثبيت</strong>. ستظهر أيقونة التطبيق على شاشتك الرئيسية."],desktop:["في كروم أو إيدج، اضغط أيقونة التثبيت في طرف شريط العنوان.","اضغط <strong>تثبيت</strong>."],installed:"مثبّت بالفعل — أنت تشغّله من الشاشة الرئيسية.",installNow:"ثبّت الآن",close:"إغلاق",cAny:"عربي + أجنبي",cAr:"عربي",cEn:"أجنبي",tMovies:"أفلام",tSeries:"مسلسلات",tBoth:"الاثنين",series:"مسلسل",movie:"فيلم",seasons:"{x} مواسم"}};
 function t(k,v){let x=STR[state.lang||"en"][k];if(x==null)x=STR.en[k];if(typeof x==="string"&&v)Object.entries(v).forEach(([a,b])=>x=x.split("{"+a+"}").join(b));return x}
 function applyLang(){const L=state.lang||"en";document.documentElement.lang=L;document.documentElement.dir=L==="ar"?"rtl":"ltr";
  document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));document.querySelectorAll("[data-ph]").forEach(e=>e.placeholder=t(e.dataset.ph));
@@ -311,12 +316,19 @@ function renderTaste(){const tb=$("taste");
  tb.innerHTML=`<p style="color:var(--muted);margin:0;font-size:14px">${t("tasteIntro",{a:Object.keys(state.seen).length,b:(state.watched||[]).length})}</p>`
  +bars(state.genre,t("tGenres"),k=>(GENRES.find(g=>g.id==k)||{name:k}).name)+bars(state.decade,t("tEra"),k=>k+"s")
  +`<h3>${t("tServices")}</h3><div class="row">${PROVIDERS.map(p=>`<span class="chip ${state.prov[p.provider_id]>0?"on":""}">${p.provider_name}</span>`).join("")}</div>
- <button class="link" id="reset">${t("reset")}</button>`;
+ <button class="cta2" id="a2hs2" style="margin-top:10px">📲 ${t("a2hs")}</button><button class="link" id="reset">${t("reset")}</button>`;$("a2hs2").onclick=showA2HS;
  $("reset").onclick=()=>{Object.assign(state,{phase:"genres",idx:0,genre:{},prov:{},decade:{},seen:{},liked:[],watched:[],history:[]});pool=[];MOVIES={};save();$("count").textContent=0;show("intro")};}
 
 $("lang").onclick=async()=>{state.lang=state.lang==="ar"?"en":"ar";save();applyLang();
  if(!$("s-intro").hidden)return;$("stage").innerHTML=`<div class="empty">${t("loading")}</div>`;try{await boot()}catch(e){}pool=[];MOVIES={};
  if(!$("s-swipe").hidden)render();else if(!$("s-list").hidden)renderList();else if(!$("s-find").hidden)searchMovies();else renderTaste()};
+let deferredInstall=null;window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e});
+function showA2HS(){const o=document.createElement("div");o.className="trailer";const standalone=window.matchMedia("(display-mode: standalone)").matches||navigator.standalone;
+ const ua=navigator.userAgent;const ios=/iPhone|iPad|iPod/.test(ua);const android=/Android/.test(ua);const steps=standalone?[]:t(ios?"ios":android?"android":"desktop");
+ o.innerHTML=`<button class="x" aria-label="${t("close")}">✕</button><div class="steps"><b>${t("a2hsT")}</b>${standalone?`<p>${t("installed")}</p>`:steps.map((x,i)=>`<p><span>${i+1}</span>${x}</p>`).join("")}${deferredInstall?`<button class="cta" id="doInstall">${t("installNow")}</button>`:""}</div>`;
+ document.body.appendChild(o);o.querySelector(".x").onclick=()=>o.remove();o.onclick=e=>{if(e.target===o)o.remove()};
+ const di=o.querySelector("#doInstall");if(di)di.onclick=async()=>{deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;o.remove()}}
+$("a2hs").onclick=showA2HS;
 applyLang();
 $("count").textContent=state.liked.length;
 if(state.key&&(state.phase!=="genres"||state.idx>0)){boot().then(()=>{show("swipe");render()}).catch(()=>show("intro"))}else show("intro");
