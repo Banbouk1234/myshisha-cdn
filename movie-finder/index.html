@@ -55,6 +55,7 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 .seg{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px;gap:4px}
 .seg button{flex:1;background:none;border:none;color:var(--muted);border-radius:10px;padding:12px 6px;font:700 13px var(--body)}.seg button.on{background:var(--accent);color:#000}
 .rate{position:absolute;inset:0;z-index:5;background:rgba(11,10,15,.92);border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;max-width:420px;margin:auto}
+.rate.fixed{position:fixed;inset:0;border-radius:0;z-index:60;max-width:none}
 .rate h3{font-family:var(--display);font-size:30px;font-weight:400;margin:0;letter-spacing:.04em}.rate p{margin:0;color:var(--muted);font-size:14px}
 .stars{display:flex;gap:10px}.stars button{background:none;border:none;font-size:40px;color:var(--line);padding:4px;cursor:pointer;line-height:1}.stars button.lit{color:var(--accent)}
 .rate .lbl{font-size:13px;color:var(--accent);min-height:18px}
@@ -256,18 +257,19 @@ function decide(yes){if(!cur)return;const c=cur;state.history.push(snapshot());i
 function undo(){const h=state.history.pop();if(!h)return;Object.assign(state,JSON.parse(h));$("count").textContent=state.liked.length;save();render()}
 const RATE_LABELS=()=>t("rates");
 const RATE_WEIGHT=[0,-1.5,-1,0,1,1.6];
-$("bSeen").onclick=()=>{if(!cur||cur.kind!=="movie")return;const m=cur.m;const st=$("stage");
- const o=document.createElement("div");o.className="rate";o.innerHTML=`<h3>${m.title}</h3><p>${t("howwas")}</p>
+$("bSeen").onclick=()=>{if(!cur||cur.kind!=="movie")return;rateDialog(cur.m,$("stage"),r=>markWatched(cur.m,r,cur.prov))};
+function rateDialog(m,st,done){
+ const o=document.createElement("div");o.className="rate";if(st===document.body)o.classList.add("fixed");o.innerHTML=`<h3>${m.title}</h3><p>${t("howwas")}</p>
  <div class="stars">${[1,2,3,4,5].map(i=>`<button data-r="${i}" aria-label="${RATE_LABELS()[i]}">★</button>`).join("")}</div><div class="lbl"></div><button class="link" id="rateSkip">${t("skiprate")}</button>`;
  st.appendChild(o);const bs=[...o.querySelectorAll(".stars button")];
  const light=n=>{bs.forEach((b,i)=>b.classList.toggle("lit",i<n));o.querySelector(".lbl").textContent=RATE_LABELS()[n]||""};
- bs.forEach(b=>{b.onmouseenter=()=>light(+b.dataset.r);b.onmouseleave=()=>light(0);b.onclick=()=>{light(+b.dataset.r);setTimeout(()=>markWatched(m,+b.dataset.r,cur.prov),250)}});
- $("rateSkip").onclick=()=>markWatched(m,0,cur.prov);};
+ bs.forEach(b=>{b.onmouseenter=()=>light(+b.dataset.r);b.onmouseleave=()=>light(0);b.onclick=()=>{light(+b.dataset.r);setTimeout(()=>{o.remove();done(+b.dataset.r)},250)}});
+ o.querySelector("#rateSkip").onclick=()=>{o.remove();done(0)};o.onclick=e=>{if(e.target===o&&st===document.body)o.remove()}};
 function markWatched(m,r,prov){state.history.push(snapshot());if(state.history.length>30)state.history.shift();
  state.seen[mt(m)+m.id]="w";const w=RATE_WEIGHT[r]||0;
  m.genre_ids.forEach(g=>state.genre[g]=(state.genre[g]||0)+w*0.6);const dec=decadeOf(+String(m.release_date).slice(0,4));state.decade[dec]=(state.decade[dec]||0)+w*0.5;
  (state.watched=state.watched||[]).unshift({id:m.id,type:mt(m),title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,r});
- save();render()}
+ save();if(!$("s-swipe").hidden)render()}
 $("bYes").onclick=()=>fling(true);$("bNo").onclick=()=>fling(false);$("bUndo").onclick=undo;
 document.addEventListener("keydown",e=>{if($("s-swipe").hidden)return;if(e.key==="ArrowRight")fling(true);if(e.key==="ArrowLeft")fling(false)});
 function fling(yes){const el=$("stage").querySelector(".card:not(.under)");if(!el){decide(yes);return}
@@ -296,7 +298,11 @@ async function whereToWatch(it){if(it.classList.contains("open"))return;it.class
 // ---------- list & taste ----------
 function renderList(){const l=$("list");const wd=state.watched||[];if(!state.liked.length&&!wd.length){l.innerHTML=`<div class="empty">${t("empty")}</div>`;return}
  const watchedHtml=wd.length?`<h3 style="font-family:var(--display);font-weight:400;letter-spacing:.04em;font-size:22px;margin:14px 0 0">${t("watched")}</h3>`+wd.map(m=>`<div class="item"><img src="${m.poster?IMG+"w185"+m.poster:""}" alt=""><div class="t"><b>${m.title}</b><span>${m.year} · <span class="r">${m.r?"★".repeat(m.r)+"☆".repeat(5-m.r):t("notrated")}</span></span></div><button aria-label="Remove" data-rw="${m.id}" data-rwt="${m.type||"movie"}">✕</button></div>`).join(""):"";
- l.innerHTML=(state.liked.length?`<h3 style="font-family:var(--display);font-weight:400;letter-spacing:.04em;font-size:22px;margin:0">${t("wanttowatch")}</h3>`:"")+state.liked.map(m=>`<div class="item"><img src="${m.poster?IMG+"w185"+m.poster:""}" alt=""><div class="t"><b>${m.title}</b><span>${m.year} · ★ ${(+m.rating).toFixed(1)}${m.prov.length?" · "+m.prov.join(", "):""}</span></div><button aria-label="Remove" data-rm="${m.id}">✕</button></div>`).join("")+watchedHtml;
+ l.innerHTML=(state.liked.length?`<h3 style="font-family:var(--display);font-weight:400;letter-spacing:.04em;font-size:22px;margin:0">${t("wanttowatch")}</h3>`:"")+state.liked.map(m=>`<div class="item"><img src="${m.poster?IMG+"w185"+m.poster:""}" alt=""><div class="t"><b>${m.title}</b><span>${m.year} · ★ ${(+m.rating).toFixed(1)}${m.prov.length?" · "+m.prov.join(", "):""}</span></div><button aria-label="Watched" title="Watched" data-wl="${m.id}" data-wt="${m.type||"movie"}">👁</button><button aria-label="Remove" data-rm="${m.id}">✕</button></div>`).join("")+watchedHtml;
+ l.querySelectorAll("[data-wl]").forEach(b=>b.onclick=async()=>{const id=+b.dataset.wl,ty=b.dataset.wt;const li=state.liked.find(x=>x.id===id);if(!li)return;
+  let m={id,media_type:ty,title:li.title,release_date:li.year,vote_average:li.rating,poster_path:li.poster,genre_ids:[]};
+  try{const d=await api(`/${ty}/${id}`);m.genre_ids=(d.genres||[]).map(g=>g.id)}catch(e){}
+  rateDialog(m,document.body,r=>{state.liked=state.liked.filter(x=>x.id!==id);markWatched(m,r,[]);$("count").textContent=state.liked.length;renderList()})});
  l.querySelectorAll("[data-rw]").forEach(b=>b.onclick=()=>{state.watched=state.watched.filter(x=>x.id!=+b.dataset.rw);delete state.seen[(b.dataset.rwt||"movie")+b.dataset.rw];save();renderList()});
  l.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{state.liked=state.liked.filter(x=>x.id!=+b.dataset.rm);$("count").textContent=state.liked.length;save();renderList()});}
 function bars(obj,label,name){const keys=Object.keys(obj).filter(k=>obj[k]!==0).sort((a,b)=>obj[b]-obj[a]);if(!keys.length)return"";const max=Math.max(1,...keys.map(k=>Math.abs(obj[k])));
