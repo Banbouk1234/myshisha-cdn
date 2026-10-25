@@ -213,7 +213,11 @@ function show(name){["intro","swipe","list","find","mood","play","together","tas
  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.tab===name));$("tabs").hidden=name==="intro";
  if(name==="list")renderList();if(name==="taste")renderTaste();if(name==="together")renderTogether();if(name==="play")renderPlay();}
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.tab));
-state.langW=state.langW||{};Object.keys(state.genre).forEach(k=>{state.genre[k]=Math.max(-6,Math.min(8,state.genre[k]))});state.f=Object.assign({svc:"",rating:0,year:"",genre:"",type:"",lang:"",rt:"",sort:"best"},state.f||{});
+state.langW=state.langW||{};
+if(!state.tasteV2){const g={};const neg=Object.keys(state.genre).filter(k=>state.genre[k]<0);const passes=Object.values(state.seen).filter(v=>v===-1).length;
+ // keep a gentle negative from passes, scaled so 100 passes ≈ -2 on the most-rejected genres
+ neg.forEach(k=>g[k]=Math.max(-2.5,state.genre[k]/Math.max(1,passes/15)));
+ state.genre=g;state.tasteV2=true;state.rebuildPending=true;}state.f=Object.assign({svc:"",rating:0,year:"",genre:"",type:"",lang:"",rt:"",sort:"best"},state.f||{});
 $("key").value=state.key;$("region").value=state.region;
 function segs(){document.querySelectorAll("#segLang button").forEach(b=>{b.classList.toggle("on",b.dataset.v===state.clang);b.onclick=()=>{state.clang=b.dataset.v;segs()}});
  document.querySelectorAll("#segType button").forEach(b=>{b.classList.toggle("on",b.dataset.v===state.ctype);b.onclick=()=>{state.ctype=b.dataset.v;segs()}})}segs();
@@ -325,7 +329,7 @@ function decide(yes){if(!cur)return;const c=cur;
  if(c.tg){roomSwipe(c.m,yes);return}
  state.history.push(snapshot());if(state.history.length>30)state.history.shift();const d=yes?1:-1;
  if(c.kind==="genre"){state.genre[c.key]=d;state.idx++}else if(c.kind==="prov"){state.prov[c.key]=d;state.idx++}
- else{const m=c.m;state.seen[mt(m)+m.id]=d;const w=yes?0.7:-0.6;m.genre_ids.forEach(g=>state.genre[g]=Math.max(-6,Math.min(8,(state.genre[g]||0)+w)));
+ else{const m=c.m;state.seen[mt(m)+m.id]=d;const w=yes?1.0:-0.25;m.genre_ids.forEach(g=>state.genre[g]=Math.max(-6,Math.min(8,(state.genre[g]||0)+w)));
   const dec=decadeOf(+String(m.release_date).slice(0,4));state.decade[dec]=(state.decade[dec]||0)+d*0.5;if(m.original_language)state.langW[m.original_language]=(state.langW[m.original_language]||0)+d*0.4;
   if(yes)state.liked.push({id:m.id,type:mt(m),title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,prov:(c.prov||[]).map(p=>p.provider_name)});}
  $("count").textContent=state.liked.length;save();render()}
@@ -542,7 +546,11 @@ function showFilters(){const F={...state.f};const o=document.createElement("div"
  const apply=()=>{state.f=F;save();fcount();o.remove();pool=[];MOVIES={};refill.page=0;if(state.phase==="movies"&&!$("s-swipe").hidden)render()};
  o.querySelector("#fApply").onclick=apply;o.querySelector("#fClear").onclick=()=>{Object.assign(F,{svc:"",rating:0,year:"",genre:"",type:"",lang:"",rt:"",sort:"best"});apply()}}
 $("fbtn").onclick=showFilters;fcount();
+async function rebuildTaste(){if(!state.rebuildPending)return;state.rebuildPending=false;const items=[...state.liked.map(x=>({...x,w:1.2})),...(state.watched||[]).map(x=>({...x,w:[0,-1.5,-1,0.3,1.2,1.8][x.r||0]||0.6}))];
+ for(const it of items.slice(0,60)){try{const d=await api(`/${it.type||"movie"}/${it.id}`);(d.genres||[]).forEach(gn=>state.genre[gn.id]=Math.max(-6,Math.min(8,(state.genre[gn.id]||0)+it.w)));if(d.original_language)state.langW[d.original_language]=(state.langW[d.original_language]||0)+it.w*0.3}catch(e){}}
+ save();if(!$("s-taste").hidden)renderTaste()}
 applyLang();
+if(state.rebuildPending)setTimeout(rebuildTaste,800);
 if(state.tg&&state.tg.code){state.tg.active=false;setTimeout(()=>joinRoom(state.tg.code),500)}else state.tg=null;
 $("count").textContent=state.liked.length;
 if(state.key&&(state.phase!=="genres"||state.idx>0)){boot().then(()=>{show("swipe");render()}).catch(()=>show("intro"))}else show("intro");
