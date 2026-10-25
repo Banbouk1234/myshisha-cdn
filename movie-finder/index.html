@@ -213,7 +213,7 @@ function show(name){["intro","swipe","list","find","mood","play","together","tas
  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.tab===name));$("tabs").hidden=name==="intro";
  if(name==="list")renderList();if(name==="taste")renderTaste();if(name==="together")renderTogether();if(name==="play")renderPlay();}
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.tab));
-state.langW=state.langW||{};
+state.langW=state.langW||{};Object.keys(state.seen).forEach(k=>{if(state.seen[k]===0)state.seen[k]="s"});
 if(!state.tasteV2){const g={};const neg=Object.keys(state.genre).filter(k=>state.genre[k]<0);const passes=Object.values(state.seen).filter(v=>v===-1).length;
  // keep a gentle negative from passes, scaled so 100 passes ≈ -2 on the most-rejected genres
  neg.forEach(k=>g[k]=Math.max(-2.5,state.genre[k]/Math.max(1,passes/15)));
@@ -350,7 +350,7 @@ function markWatched(m,r,prov){state.history.push(snapshot());if(state.history.l
  (state.watched=state.watched||[]).unshift({id:m.id,type:mt(m),title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,r});
  save();if(!$("s-swipe").hidden)render()}
 $("bSkip").onclick=()=>{if(!cur||cur.kind!=="movie")return;const el=$("stage").querySelector(".card:not(.under)");if(el){el.classList.add("leave");el.style.transform="translateY(-120%) scale(.9)";el.style.opacity="0"}
- setTimeout(()=>{const c=cur;if(c.tg){roomSwipe(c.m,false);return}state.history.push(snapshot());if(state.history.length>30)state.history.shift();state.seen[mt(c.m)+c.m.id]=0;save();render()},220)};
+ setTimeout(()=>{const c=cur;if(c.tg){roomSwipe(c.m,false);return}state.history.push(snapshot());if(state.history.length>30)state.history.shift();state.seen[mt(c.m)+c.m.id]="s";save();render()},220)};
 $("bYes").onclick=()=>fling(true);$("bNo").onclick=()=>fling(false);$("bUndo").onclick=undo;
 document.addEventListener("keydown",e=>{if($("s-swipe").hidden)return;if(e.key==="ArrowRight")fling(true);if(e.key==="ArrowLeft")fling(false)});
 function fling(yes){const el=$("stage").querySelector(".card:not(.under)");if(!el){decide(yes);return}
