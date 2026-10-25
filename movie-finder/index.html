@@ -62,6 +62,12 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 .trailer .frame{width:100%;max-width:720px;aspect-ratio:16/9;background:#000;border-radius:14px;overflow:hidden}.trailer iframe{width:100%;height:100%;border:0}
 .trailer .x{position:absolute;top:max(16px,env(safe-area-inset-top));right:16px;width:44px;height:44px;border-radius:50%;background:var(--surface);color:var(--fg);border:1px solid var(--line);font-size:20px}
 .trailer p{color:var(--muted);margin:0;font-size:14px}
+.tbtn.cast{left:auto;right:14px}
+.castbox{width:100%;max-width:520px;max-height:80vh;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:12px;padding:4px}
+.actor{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:12px}
+.actor img,.actor .noimg{width:84px;height:84px;border-radius:50%;object-fit:cover;background:var(--surface);display:grid;place-items:center;font-size:28px}
+.actor b{display:block;font-size:12px;color:var(--fg)}.actor span{color:var(--muted);font-size:11px}
+.trailer h3{font-family:var(--display);font-size:28px;font-weight:400;margin:0;letter-spacing:.04em;color:var(--fg)}
 .where{display:flex;flex-direction:column;gap:6px;margin-top:4px}.where h4{margin:6px 0 0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .where .free h4{color:var(--yes)}.where .paid h4{color:var(--no)}.where .row{gap:6px}
 .pv{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 4px;font-size:12px}
@@ -163,13 +169,19 @@ async function currentCard(){
 
 function cardEl(c){const el=document.createElement("div");el.className="card";let meta="",art="";
  if(c.kind==="prov")art=`<div class="art center" style="background:linear-gradient(160deg,#2a2735,#0b0a0f)">${c.logo?`<img class="logo" src="${c.logo}" alt="">`:`<div class="big">${c.big}</div>`}</div>`;
- else art=`<div class="art" style="background-image:url('${c.img}')">${c.kind==="movie"?`<button class="tbtn" data-trailer="${c.m.id}">▶ TRAILER</button>`:""}<div class="big">${c.big}</div></div>`;
+ else art=`<div class="art" style="background-image:url('${c.img}')">${c.kind==="movie"?`<button class="tbtn" data-trailer="${c.m.id}">▶ TRAILER</button><button class="tbtn cast">👥 CAST</button>`:""}<div class="big">${c.big}</div></div>`;
  if(c.kind==="movie"){const m=c.m;const gn=m.genre_ids.map(id=>(GENRES.find(g=>g.id===id)||{}).name).filter(Boolean).slice(0,3).join(" · ");
   meta=`<div class="row"><b>${String(m.release_date).slice(0,4)}</b><span>★ ${m.vote_average.toFixed(1)}</span><span>${gn}</span></div>
   <p>${c.p||""}</p><div class="where">${whereHtml(m._all)}</div>`}
  else meta=`<div class="row" style="font-size:12px;letter-spacing:.08em;text-transform:uppercase">${c.sub} ${c.kind==="prov"?c.big:""}</div><p>${c.p}</p>`;
  el.innerHTML=`<div class="stamp like">LIKE</div><div class="stamp nope">NOPE</div>${art}<div class="meta">${meta}</div>`;
- const tb=el.querySelector(".tbtn");if(tb){tb.addEventListener("pointerdown",e=>e.stopPropagation());tb.onclick=e=>{e.stopPropagation();openTrailer(c.m)}}return el}
+ el.querySelectorAll(".tbtn").forEach(tb=>{tb.addEventListener("pointerdown",e=>e.stopPropagation());tb.onclick=e=>{e.stopPropagation();tb.classList.contains("cast")?openCast(c.m):openTrailer(c.m)}});return el}
+async function openCast(m){const o=document.createElement("div");o.className="trailer";o.innerHTML=`<button class="x" aria-label="Close">✕</button><h3>${m.title}</h3><div class="castbox"><p>Loading cast…</p></div>`;document.body.appendChild(o);
+ o.querySelector(".x").onclick=()=>o.remove();o.onclick=e=>{if(e.target===o)o.remove()};
+ try{const d=await api(`/movie/${m.id}/credits`);const cast=d.cast.slice(0,12);const dir=(d.crew||[]).find(c=>c.job==="Director");
+  o.querySelector(".castbox").innerHTML=(cast.map(a=>`<div class="actor">${a.profile_path?`<img src="${IMG}w185${a.profile_path}" alt="">`:`<div class="noimg">🎭</div>`}<div><b>${a.name}</b><span>${a.character||""}</span></div></div>`).join("")||"<p>No cast listed.</p>");
+  if(dir)o.querySelector("h3").insertAdjacentHTML("afterend",`<p>Directed by ${dir.name}</p>`);
+ }catch(e){o.querySelector(".castbox").innerHTML="<p>Could not load cast.</p>"}}
 async function openTrailer(m){const o=document.createElement("div");o.className="trailer";o.innerHTML=`<button class="x" aria-label="Close">✕</button><div class="frame"></div><p>${m.title}</p>`;document.body.appendChild(o);
  o.querySelector(".x").onclick=()=>o.remove();o.onclick=e=>{if(e.target===o)o.remove()};
  try{const d=await api(`/movie/${m.id}/videos`);const vs=d.results.filter(v=>v.site==="YouTube");
@@ -225,7 +237,8 @@ let qt;$("q").oninput=()=>{clearTimeout(qt);qt=setTimeout(searchMovies,350)};
 async function searchMovies(){const q=$("q").value.trim();const box=$("found");if(q.length<2){box.innerHTML="";return}
  box.innerHTML=`<div class="empty">Searching…</div>`;try{const d=await api("/search/movie",{query:q,include_adult:"false"});
  const res=d.results.slice(0,8);if(!res.length){box.innerHTML=`<div class="empty">No movie called "${q}".</div>`;return}
- box.innerHTML=res.map(m=>`<div class="item" data-id="${m.id}"><div class="head"><img src="${m.poster_path?IMG+"w185"+m.poster_path:""}" alt=""><div class="t"><b>${m.title}</b><span>${String(m.release_date||"").slice(0,4)} · ★ ${(m.vote_average||0).toFixed(1)}</span></div><span class="chip">Where?</span></div><div class="where"></div><button class="link" style="text-align:left;padding:6px 0" data-tr="${m.id}" data-title="${m.title.replace(/"/g,"&quot;")}">▶ Watch trailer</button></div>`).join("");
+ box.innerHTML=res.map(m=>`<div class="item" data-id="${m.id}"><div class="head"><img src="${m.poster_path?IMG+"w185"+m.poster_path:""}" alt=""><div class="t"><b>${m.title}</b><span>${String(m.release_date||"").slice(0,4)} · ★ ${(m.vote_average||0).toFixed(1)}</span></div><span class="chip">Where?</span></div><div class="where"></div><button class="link" style="text-align:left;padding:6px 0" data-tr="${m.id}" data-title="${m.title.replace(/"/g,"&quot;")}">▶ Watch trailer</button><button class="link" style="text-align:left;padding:6px 0" data-cast="${m.id}" data-title="${m.title.replace(/"/g,"&quot;")}">👥 Cast</button></div>`).join("");
+ box.querySelectorAll("[data-cast]").forEach(b=>b.onclick=e=>{e.stopPropagation();openCast({id:+b.dataset.cast,title:b.dataset.title})});
  box.querySelectorAll("[data-tr]").forEach(b=>b.onclick=e=>{e.stopPropagation();openTrailer({id:+b.dataset.tr,title:b.dataset.title})});
  box.querySelectorAll(".item").forEach(it=>it.onclick=()=>whereToWatch(it));}catch(e){box.innerHTML=`<div class="empty">Search failed: ${e.message}</div>`}}
 async function whereToWatch(it){if(it.classList.contains("open"))return;it.classList.add("open");const w=it.querySelector(".where");w.innerHTML="Checking…";
