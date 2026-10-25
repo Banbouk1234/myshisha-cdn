@@ -152,7 +152,7 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script>
-const IMG="https://image.tmdb.org/t/p/";
+const APP_VER="1.26";const IMG="https://image.tmdb.org/t/p/";
 const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"Right means yes, left means no. Genres first, then your streaming services, then movies that fit you.",country:'Your country (for "where to watch")',start:"Start swiping",legend:"✕ don't like · ↶ undo · 🤷 not sure · 👁 watched it · ♥ like",search:"Type a movie name…",
  h1:"SWIPE.<br>DON'T<br><em>SCROLL.</em>",logo:"BANBOUK <b>MOVIE FINDER</b>",like:"LIKE",nope:"NOPE",trailer:"▶ TRAILER",cast:"👥 CAST",doyoulike:"Do you like",doyouhave:"Do you have",genreHint:"Swipe right if this is your kind of night.",think:'Think "{x}".',provHint:"Swipe right if you can watch {x} right now.",iptvHint:"IPTV means you have everything. We'll stop filtering by service.",
  genres:"Genres · {a} of {b}",services:"Your services · {a} of {b}",picked:"Picked for you · {a} saved",nomore:"No more movies for your services. Check your list or reset.",loading:"Loading…",
@@ -422,7 +422,7 @@ function renderTaste(){const tb=$("taste");
  tb.innerHTML=`<div class="tg" style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;gap:8px"><div class="hint" style="text-align:start;padding:0">${t("whatTaste")}</div>${summary}</div><p style="color:var(--muted);margin:0;font-size:14px">${t("tasteIntro",{a:Object.keys(state.seen).length,b:(state.watched||[]).length})}</p>`
  +bars(state.genre,t("tGenres"),k=>(GENRES.find(g=>g.id==k)||{name:k}).name)+bars(state.decade,t("tEra"),k=>k+"s")
  +`<h3>${t("tServices")}</h3><div class="row">${PROVIDERS.map(p=>`<span class="chip ${state.prov[p.provider_id]>0?"on":""}">${p.provider_name}</span>`).join("")}</div>
- <button class="cta2" id="a2hs2" style="margin-top:10px">📲 ${t("a2hs")}</button><button class="link" id="reset">${t("reset")}</button>`;$("a2hs2").onclick=showA2HS;
+ <button class="cta2" id="a2hs2" style="margin-top:10px">📲 ${t("a2hs")}</button><button class="link" id="reset">${t("reset")}</button><p style="color:var(--muted);font-size:11px;text-align:center;margin:0">v${APP_VER}</p>`;$("a2hs2").onclick=showA2HS;
  $("reset").onclick=()=>{Object.assign(state,{phase:"genres",idx:0,genre:{},prov:{},decade:{},seen:{},liked:[],watched:[],history:[]});pool=[];MOVIES={};save();$("count").textContent=0;show("intro")};}
 
 $("lang").onclick=async()=>{state.lang=state.lang==="ar"?"en":"ar";save();applyLang();
