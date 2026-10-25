@@ -5,12 +5,12 @@
 <style>
 :root{--bg:#0b0a0f;--surface:#17151f;--fg:#f3efe6;--muted:#9a95a8;--line:#2a2735;--accent:#ffb627;--yes:#3ddc84;--no:#ff4d6d;
  --display:"Bebas Neue",Impact,sans-serif;--body:"Manrope",system-ui,sans-serif;color-scheme:dark}
-*{box-sizing:border-box}html,body{height:100%}
+*{box-sizing:border-box}[hidden]{display:none!important}html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);display:flex;flex-direction:column;overflow:hidden;
  padding:max(8px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
 header{display:flex;align-items:center;justify-content:space-between;padding:6px 0 10px}
-.logo{font-family:var(--display);font-size:30px;letter-spacing:.04em}.logo b{color:var(--accent);font-weight:400}
-.tabs{display:flex;gap:6px}.tab{background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:6px 12px;font:600 12px var(--body)}
+.logo{font-family:var(--display);font-size:22px;letter-spacing:.04em;white-space:nowrap;line-height:1}.logo b{color:var(--accent);font-weight:400}
+.tabs{display:flex;gap:5px}.tab{white-space:nowrap;background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:6px 10px;font:600 12px var(--body)}
 .tab[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 main{flex:1;min-height:0;display:flex;flex-direction:column}
 .hint{text-align:center;color:var(--muted);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding-bottom:8px}
