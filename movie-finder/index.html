@@ -52,6 +52,8 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 .bar span{color:var(--muted);text-align:right}
 .link{background:none;border:none;color:var(--muted);text-decoration:underline;font:500 13px var(--body);padding:8px}
 .err{color:var(--no);font-size:13px}
+.seg{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px;gap:4px}
+.seg button{flex:1;background:none;border:none;color:var(--muted);border-radius:10px;padding:12px 6px;font:700 13px var(--body)}.seg button.on{background:var(--accent);color:#000}
 .rate{position:absolute;inset:0;z-index:5;background:rgba(11,10,15,.92);border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;max-width:420px;margin:auto}
 .rate h3{font-family:var(--display);font-size:30px;font-weight:400;margin:0;letter-spacing:.04em}.rate p{margin:0;color:var(--muted);font-size:14px}
 .stars{display:flex;gap:10px}.stars button{background:none;border:none;font-size:40px;color:var(--line);padding:4px;cursor:pointer;line-height:1}.stars button.lit{color:var(--accent)}
@@ -89,6 +91,8 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
   <h1 id="h1">SWIPE.<br>DON'T<br><em>SCROLL.</em></h1>
   <p data-i="intro">Right means yes, left means no. Genres first, then your streaming services, then movies that fit you.</p>
   <input id="key" type="hidden">
+  <div class="seg" id="segLang"><button data-v="any" data-i="cAny">Arabic + English</button><button data-v="ar" data-i="cAr">Arabic</button><button data-v="en" data-i="cEn">English</button></div>
+  <div class="seg" id="segType"><button data-v="movie" data-i="tMovies">Movies</button><button data-v="tv" data-i="tSeries">Series</button><button data-v="both" data-i="tBoth">Both</button></div>
   <label for="region" data-i="country">Your country (for "where to watch")</label>
   <input id="region" value="AE" maxlength="2">
   <div class="err" id="err"></div>
@@ -113,7 +117,7 @@ const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"R
  nocast:"No cast listed.",castfail:"Could not load cast.",directed:"Directed by {x}",loadcast:"Loading cast…",notrailer:"No trailer available for this one.",trailerfail:"Could not load trailer.",
  searching:"Searching…",nomovie:'No movie called "{x}".',searchfail:"Search failed",where:"Where?",watchtrailer:"▶ Watch trailer",castlink:"👥 Cast",
  empty:"Nothing saved yet. Swipe right on a movie and it lands here.",wanttowatch:"Want to watch",watched:"Watched",notrated:"not rated",
- tasteIntro:"{a} movies swiped, {b} watched. Every swipe shifts these weights; the next card is the best unseen match on a service you have.",tGenres:"Genres",tEra:"Era",tServices:"Services",reset:"Reset taste and start over"},
+ tasteIntro:"{a} movies swiped, {b} watched. Every swipe shifts these weights; the next card is the best unseen match on a service you have.",tGenres:"Genres",tEra:"Era",tServices:"Services",reset:"Reset taste and start over",cAny:"Arabic + English",cAr:"Arabic",cEn:"English",tMovies:"Movies",tSeries:"Series",tBoth:"Both",series:"Series",movie:"Movie",seasons:"{x} seasons"},
  ar:{swipe:"اسحب",mylist:"قائمتي",find:"ابحث",taste:"ذوقي",intro:"يمين يعني نعم، يسار يعني لا. الأنواع أولاً، ثم خدمات البث عندك، ثم أفلام على ذوقك.",country:"بلدك (لمعرفة أين تشاهد)",start:"ابدأ السحب",legend:"✕ تخطّي · ↶ تراجع · 👁 شاهدته · ♥ أريد مشاهدته",search:"اكتب اسم الفيلم…",
  h1:"اسحب.<br>لا <em>تتصفح.</em>",logo:"بنبوك <b>لإيجاد الأفلام</b>",like:"أعجبني",nope:"لا",trailer:"▶ الإعلان",cast:"👥 الممثلون",doyoulike:"هل تحب",doyouhave:"هل عندك",genreHint:"اسحب يميناً إذا كان هذا نوعك المفضل.",think:'مثل "{x}".',provHint:"اسحب يميناً إذا كان بإمكانك مشاهدة {x} الآن.",iptvHint:"IPTV يعني عندك كل شيء. لن نصفّي حسب الخدمة.",
  genres:"الأنواع · {a} من {b}",services:"خدماتك · {a} من {b}",picked:"مختارة لك · {a} محفوظة",nomore:"لا مزيد من الأفلام على خدماتك. راجع قائمتك أو أعد الضبط.",loading:"جارٍ التحميل…",
@@ -122,13 +126,13 @@ const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"R
  nocast:"لا يوجد ممثلون مدرجون.",castfail:"تعذّر تحميل الممثلين.",directed:"إخراج {x}",loadcast:"جارٍ تحميل الممثلين…",notrailer:"لا يوجد إعلان لهذا الفيلم.",trailerfail:"تعذّر تحميل الإعلان.",
  searching:"جارٍ البحث…",nomovie:'لا يوجد فيلم باسم "{x}".',searchfail:"فشل البحث",where:"أين؟",watchtrailer:"▶ شاهد الإعلان",castlink:"👥 الممثلون",
  empty:"لا شيء محفوظ بعد. اسحب يميناً على فيلم ليظهر هنا.",wanttowatch:"أريد مشاهدته",watched:"شاهدته",notrated:"بدون تقييم",
- tasteIntro:"{a} فيلم سحبته، {b} شاهدته. كل سحبة تغيّر هذه الأوزان؛ البطاقة التالية هي أفضل فيلم لم تره على خدمة عندك.",tGenres:"الأنواع",tEra:"الحقبة",tServices:"الخدمات",reset:"إعادة ضبط الذوق والبدء من جديد"}};
+ tasteIntro:"{a} فيلم سحبته، {b} شاهدته. كل سحبة تغيّر هذه الأوزان؛ البطاقة التالية هي أفضل فيلم لم تره على خدمة عندك.",tGenres:"الأنواع",tEra:"الحقبة",tServices:"الخدمات",reset:"إعادة ضبط الذوق والبدء من جديد",cAny:"عربي + أجنبي",cAr:"عربي",cEn:"أجنبي",tMovies:"أفلام",tSeries:"مسلسلات",tBoth:"الاثنين",series:"مسلسل",movie:"فيلم",seasons:"{x} مواسم"}};
 function t(k,v){let x=STR[state.lang||"en"][k];if(x==null)x=STR.en[k];if(typeof x==="string"&&v)Object.entries(v).forEach(([a,b])=>x=x.split("{"+a+"}").join(b));return x}
 function applyLang(){const L=state.lang||"en";document.documentElement.lang=L;document.documentElement.dir=L==="ar"?"rtl":"ltr";
  document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));document.querySelectorAll("[data-ph]").forEach(e=>e.placeholder=t(e.dataset.ph));
  $("h1").innerHTML=t("h1");$("logoTxt").innerHTML=t("logo");$("lang").textContent=L==="ar"?"EN":"عربي";}
-const PREFERRED=["Netflix","Amazon Prime Video","Disney Plus","Apple TV+","Max","OSN+","Shahid VIP","Starzplay","HBO Max","Apple TV Plus"];
-let state={lang:"en",phase:"genres",idx:0,genre:{},prov:{},decade:{},seen:{},liked:[],watched:[],history:[],key:"4b978fa1cf7f0d286ab2bfa47f92027a",region:"AE"};
+const PREFERRED=["Netflix","Amazon Prime Video","Apple TV+","Apple TV Plus","Shahid VIP","Shahid"];
+let state={lang:"en",clang:"any",ctype:"movie",phase:"genres",idx:0,genre:{},prov:{},decade:{},seen:{},liked:[],watched:[],history:[],key:"4b978fa1cf7f0d286ab2bfa47f92027a",region:"AE"};
 try{Object.assign(state,JSON.parse(localStorage.getItem("banbouk-movie-finder")||"{}"))}catch(e){}
 const save=()=>{try{localStorage.setItem("banbouk-movie-finder",JSON.stringify(state))}catch(e){}};
 const $=id=>document.getElementById(id);
@@ -140,14 +144,14 @@ async function api(path,params={}){const u=new URL("https://api.themoviedb.org/3
  const r=await fetch(u,{headers:h});if(!r.ok)throw new Error("TMDB "+r.status);return r.json();}
 
 async function boot(){
- const [g,p]=await Promise.all([api("/genre/movie/list"),api("/watch/providers/movie",{watch_region:state.region})]);
- GENRES=g.genres.filter(x=>x.name!=="TV Movie");
+ const kind=state.ctype==="tv"?"tv":"movie";
+ const [g,p]=await Promise.all([api(`/genre/${kind}/list`),api("/watch/providers/movie",{watch_region:state.region})]);
+ GENRES=g.genres.filter(x=>!["TV Movie","News","Talk","Soap","Reality"].includes(x.name));
  // picture for each genre: backdrop of its most popular movie
- await Promise.all(GENRES.map(async gen=>{const d=await api("/discover/movie",{with_genres:gen.id,sort_by:"popularity.desc",watch_region:state.region,include_adult:"false"});
-  const m=d.results.find(x=>x.backdrop_path)||d.results[0];gen.backdrop=m?IMG+"w780"+m.backdrop_path:"";gen.example=m?m.title:"";}));
+ await Promise.all(GENRES.map(async gen=>{const d=await api(`/discover/${kind}`,langParams({with_genres:gen.id,sort_by:"popularity.desc",watch_region:state.region,include_adult:"false","vote_count.gte":50}));
+  const m=d.results.find(x=>x.backdrop_path)||d.results[0];gen.backdrop=m?IMG+"w780"+m.backdrop_path:"";gen.example=m?(m.title||m.name):"";}));
  const all=p.results.sort((a,b)=>a.display_priority-b.display_priority);
  PROVIDERS=PREFERRED.map(n=>all.find(x=>x.provider_name===n)).filter(Boolean);
- all.slice(0,14).forEach(x=>{if(!PROVIDERS.includes(x)&&PROVIDERS.length<12)PROVIDERS.push(x)});
  PROVIDERS.push({provider_id:0,provider_name:"IPTV",logo_path:""});
 }
 
@@ -156,12 +160,17 @@ function show(name){["intro","swipe","list","find","taste"].forEach(s=>$("s-"+s)
  if(name==="list")renderList();if(name==="taste")renderTaste();}
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.tab));
 $("key").value=state.key;$("region").value=state.region;
+function segs(){document.querySelectorAll("#segLang button").forEach(b=>{b.classList.toggle("on",b.dataset.v===state.clang);b.onclick=()=>{state.clang=b.dataset.v;segs()}});
+ document.querySelectorAll("#segType button").forEach(b=>{b.classList.toggle("on",b.dataset.v===state.ctype);b.onclick=()=>{state.ctype=b.dataset.v;segs()}})}segs();
 $("start").onclick=async()=>{if($("key").value.trim())state.key=$("key").value.trim();state.region=$("region").value.trim().toUpperCase()||"AE";$("err").textContent="";
  if(!state.key){$("err").textContent="Paste a TMDB key first.";return}
  $("start").textContent="Loading…";try{await boot();save();show("swipe");render()}catch(e){$("err").textContent="Could not reach TMDB: "+e.message;$("start").textContent="Start swiping"}};
 
 // ---------- movie feed ----------
 const decadeOf=y=>Math.floor((y||2000)/10)*10;
+function norm(m,type){if(m.media_type==="tv"||type==="tv"){m.media_type="tv";m.title=m.title||m.name;m.release_date=m.release_date||m.first_air_date||""}else{m.media_type="movie"}m.genre_ids=m.genre_ids||[];return m}
+const mt=m=>m.media_type==="tv"?"tv":"movie";
+function langParams(p){if(state.clang==="ar")p.with_original_language="ar";else if(state.clang==="en")p.with_original_language="en";return p}
 function score(m){let s=0;m.genre_ids.forEach(g=>s+=(state.genre[g]||0)*2);s+=(state.decade[decadeOf(+String(m.release_date).slice(0,4))]||0)*0.8;
  s+=(m.vote_average-6.8)*1.2+Math.log10(m.popularity+1)*0.3;return s;}
 async function refill(){const have=PROVIDERS.filter(p=>state.prov[p.provider_id]>0);const iptv=state.prov[0]>0;
@@ -169,10 +178,12 @@ async function refill(){const have=PROVIDERS.filter(p=>state.prov[p.provider_id]
  const params={sort_by:"popularity.desc",include_adult:"false","vote_count.gte":300,page:1+Math.floor(Object.keys(state.seen).length/15)};
  if(likedG.length)params.with_genres=likedG.join("|");
  if(!iptv&&have.length){params.watch_region=state.region;params.with_watch_providers=have.map(p=>p.provider_id).join("|");}
- const d=await api("/discover/movie",params);d.results.forEach(m=>{if(!MOVIES[m.id]&&!state.seen[m.id]){MOVIES[m.id]=m;pool.push(m)}});}
-async function nextMovie(){pool=pool.filter(m=>!state.seen[m.id]);if(pool.length<6)await refill();if(!pool.length)return null;
+ langParams(params);if(state.clang==="ar")params["vote_count.gte"]=20;
+ const kinds=state.ctype==="both"?["movie","tv"]:[state.ctype];
+ for(const k of kinds){const d=await api(`/discover/${k}`,params);d.results.forEach(m=>{norm(m,k);const key=k+m.id;if(!MOVIES[key]&&!state.seen[key]){MOVIES[key]=m;pool.push(m)}})}}
+async function nextMovie(){pool=pool.filter(m=>!state.seen[mt(m)+m.id]);if(pool.length<6)await refill();if(!pool.length)return null;
  pool.sort((a,b)=>score(b)-score(a));const n=Math.min(pool.length,4);return pool[Math.random()<0.78?0:Math.floor(Math.random()*n)];}
-async function providersFor(m){if(m._prov)return m._prov;try{const d=await api(`/movie/${m.id}/watch/providers`);const r=d.results[state.region]||{};
+async function providersFor(m){if(m._prov)return m._prov;try{const d=await api(`/${mt(m)}/${m.id}/watch/providers`);const r=d.results[state.region]||{};
  m._prov=[...(r.flatrate||[]),...(r.ads||[])].slice(0,5);m._all=r}catch(e){m._prov=[];m._all={}}return m._prov;}
 function whereHtml(r){r=r||{};const have=new Set(PROVIDERS.filter(p=>state.prov[p.provider_id]>0).map(p=>p.provider_name));
  const pv=l=>l.map(p=>`<span class="pv ${have.has(p.provider_name)?"on":""}"><img class="plogo" src="${IMG}w92${p.logo_path}" alt="">${p.provider_name}${have.has(p.provider_name)?" ✓":""}</span>`).join("");
@@ -199,7 +210,7 @@ function cardEl(c){const el=document.createElement("div");el.className="card";le
  if(c.kind==="prov")art=`<div class="art center" style="background:linear-gradient(160deg,#2a2735,#0b0a0f)">${c.logo?`<img class="logo" src="${c.logo}" alt="">`:`<div class="big">${c.big}</div>`}</div>`;
  else art=`<div class="art" style="background-image:url('${c.img}')">${c.kind==="movie"?`<button class="tbtn" data-trailer="${c.m.id}">${t("trailer")}</button><button class="tbtn cast">${t("cast")}</button>`:""}<div class="big">${c.big}</div></div>`;
  if(c.kind==="movie"){const m=c.m;const gn=m.genre_ids.map(id=>(GENRES.find(g=>g.id===id)||{}).name).filter(Boolean).slice(0,3).join(" · ");
-  meta=`<div class="row"><b>${String(m.release_date).slice(0,4)}</b><span>★ ${m.vote_average.toFixed(1)}</span><span>${gn}</span></div>
+  meta=`<div class="row"><b>${String(m.release_date).slice(0,4)}</b><span>★ ${(m.vote_average||0).toFixed(1)}</span>${mt(m)==="tv"?`<span class="chip on">${t("series")}</span>`:""}<span>${gn}</span></div>
   <p>${c.p||""}</p><div class="where">${whereHtml(m._all)}</div>`}
  else meta=`<div class="row" style="font-size:12px;letter-spacing:.08em;text-transform:uppercase">${c.sub} ${c.kind==="prov"?c.big:""}</div><p>${c.p}</p>`;
  el.innerHTML=`<div class="stamp like">${t("like")}</div><div class="stamp nope">${t("nope")}</div>${art}<div class="meta">${meta}</div>`;
@@ -208,20 +219,20 @@ function cardEl(c){const el=document.createElement("div");el.className="card";le
 async function setupGallery(el,m,first){const art=el.querySelector(".art");let imgs=[first];let i=0;
  const dots=document.createElement("div");dots.className="dots";art.appendChild(dots);
  const draw=()=>{dots.innerHTML=imgs.map((_,k)=>`<i class="${k===i?"on":""}"></i>`).join("");art.style.backgroundImage=`url('${imgs[i]}')`};
- try{if(!m._imgs){const d=await api(`/movie/${m.id}/images`,{include_image_language:"null,en"});
+ try{if(!m._imgs){const d=await api(`/${mt(m)}/${m.id}/images`,{include_image_language:"null,en"});
   m._imgs=[...d.backdrops.slice(0,5).map(b=>IMG+"w780"+b.file_path)];}
   imgs=[first,...m._imgs.filter(u=>u!==first)].slice(0,6);imgs.slice(1).forEach(u=>{const im=new Image();im.src=u});draw();}catch(e){draw()}
  let sx=0,sy=0;art.addEventListener("pointerdown",e=>{sx=e.clientX;sy=e.clientY});
  art.addEventListener("pointerup",e=>{if(Math.abs(e.clientX-sx)<8&&Math.abs(e.clientY-sy)<8&&imgs.length>1){i=(i+1)%imgs.length;draw()}});}
 async function openCast(m){const o=document.createElement("div");o.className="trailer";o.innerHTML=`<button class="x" aria-label="Close">✕</button><h3>${m.title}</h3><div class="castbox"><p>${t("loadcast")}</p></div>`;document.body.appendChild(o);
  o.querySelector(".x").onclick=()=>o.remove();o.onclick=e=>{if(e.target===o)o.remove()};
- try{const d=await api(`/movie/${m.id}/credits`);const cast=d.cast.slice(0,12);const dir=(d.crew||[]).find(c=>c.job==="Director");
+ try{const d=await api(`/${mt(m)}/${m.id}/${mt(m)==="tv"?"aggregate_credits":"credits"}`);const cast=d.cast.slice(0,12).map(a=>({...a,character:a.character||(a.roles||[]).map(r=>r.character).join(", ")}));const dir=(d.crew||[]).find(c=>c.job==="Director"||(c.jobs||[]).some(j=>j.job==="Director"));
   o.querySelector(".castbox").innerHTML=(cast.map(a=>`<div class="actor">${a.profile_path?`<img src="${IMG}w185${a.profile_path}" alt="">`:`<div class="noimg">🎭</div>`}<div><b>${a.name}</b><span>${a.character||""}</span></div></div>`).join("")||`<p>${t("nocast")}</p>`);
   if(dir)o.querySelector("h3").insertAdjacentHTML("afterend",`<p>${t("directed",{x:dir.name})}</p>`);
  }catch(e){o.querySelector(".castbox").innerHTML=`<p>${t("castfail")}</p>`}}
 async function openTrailer(m){const o=document.createElement("div");o.className="trailer";o.innerHTML=`<button class="x" aria-label="Close">✕</button><div class="frame"></div><p>${m.title}</p>`;document.body.appendChild(o);
  o.querySelector(".x").onclick=()=>o.remove();o.onclick=e=>{if(e.target===o)o.remove()};
- try{const d=await api(`/movie/${m.id}/videos`);const vs=d.results.filter(v=>v.site==="YouTube");
+ try{const d=await api(`/${mt(m)}/${m.id}/videos`);const vs=d.results.filter(v=>v.site==="YouTube");
   const v=vs.find(v=>v.type==="Trailer"&&v.official)||vs.find(v=>v.type==="Trailer")||vs.find(v=>v.type==="Teaser")||vs[0];
   if(!v){o.querySelector(".frame").innerHTML=`<p style="padding:24px;text-align:center">${t("notrailer")}</p>`;return}
   o.querySelector(".frame").innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${v.key}?autoplay=1&playsinline=1&rel=0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
@@ -238,9 +249,9 @@ async function render(){const stage=$("stage");stage.innerHTML=`<div class="empt
 function snapshot(){return JSON.stringify({genre:state.genre,prov:state.prov,decade:state.decade,seen:state.seen,liked:state.liked,watched:state.watched||[],phase:state.phase,idx:state.idx})}
 function decide(yes){if(!cur)return;const c=cur;state.history.push(snapshot());if(state.history.length>30)state.history.shift();const d=yes?1:-1;
  if(c.kind==="genre"){state.genre[c.key]=d;state.idx++}else if(c.kind==="prov"){state.prov[c.key]=d;state.idx++}
- else{const m=c.m;state.seen[m.id]=d;m.genre_ids.forEach(g=>state.genre[g]=(state.genre[g]||0)+d*0.5);
+ else{const m=c.m;state.seen[mt(m)+m.id]=d;m.genre_ids.forEach(g=>state.genre[g]=(state.genre[g]||0)+d*0.5);
   const dec=decadeOf(+String(m.release_date).slice(0,4));state.decade[dec]=(state.decade[dec]||0)+d*0.5;
-  if(yes)state.liked.push({id:m.id,title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,prov:(c.prov||[]).map(p=>p.provider_name)});}
+  if(yes)state.liked.push({id:m.id,type:mt(m),title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,prov:(c.prov||[]).map(p=>p.provider_name)});}
  $("count").textContent=state.liked.length;save();render()}
 function undo(){const h=state.history.pop();if(!h)return;Object.assign(state,JSON.parse(h));$("count").textContent=state.liked.length;save();render()}
 const RATE_LABELS=()=>t("rates");
@@ -253,9 +264,9 @@ $("bSeen").onclick=()=>{if(!cur||cur.kind!=="movie")return;const m=cur.m;const s
  bs.forEach(b=>{b.onmouseenter=()=>light(+b.dataset.r);b.onmouseleave=()=>light(0);b.onclick=()=>{light(+b.dataset.r);setTimeout(()=>markWatched(m,+b.dataset.r,cur.prov),250)}});
  $("rateSkip").onclick=()=>markWatched(m,0,cur.prov);};
 function markWatched(m,r,prov){state.history.push(snapshot());if(state.history.length>30)state.history.shift();
- state.seen[m.id]="w";const w=RATE_WEIGHT[r]||0;
+ state.seen[mt(m)+m.id]="w";const w=RATE_WEIGHT[r]||0;
  m.genre_ids.forEach(g=>state.genre[g]=(state.genre[g]||0)+w*0.6);const dec=decadeOf(+String(m.release_date).slice(0,4));state.decade[dec]=(state.decade[dec]||0)+w*0.5;
- (state.watched=state.watched||[]).unshift({id:m.id,title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,r});
+ (state.watched=state.watched||[]).unshift({id:m.id,type:mt(m),title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,r});
  save();render()}
 $("bYes").onclick=()=>fling(true);$("bNo").onclick=()=>fling(false);$("bUndo").onclick=undo;
 document.addEventListener("keydown",e=>{if($("s-swipe").hidden)return;if(e.key==="ArrowRight")fling(true);if(e.key==="ArrowLeft")fling(false)});
@@ -272,21 +283,21 @@ function attachDrag(el){let sx=0,sy=0,dx=0,down=false;
 // ---------- find ----------
 let qt;$("q").oninput=()=>{clearTimeout(qt);qt=setTimeout(searchMovies,350)};
 async function searchMovies(){const q=$("q").value.trim();const box=$("found");if(q.length<2){box.innerHTML="";return}
- box.innerHTML=`<div class="empty">${t("searching")}</div>`;try{const d=await api("/search/movie",{query:q,include_adult:"false"});
- const res=d.results.slice(0,8);if(!res.length){box.innerHTML=`<div class="empty">${t("nomovie",{x:q})}</div>`;return}
- box.innerHTML=res.map(m=>`<div class="item" data-id="${m.id}"><div class="head"><img src="${m.poster_path?IMG+"w185"+m.poster_path:""}" alt=""><div class="t"><b>${m.title}</b><span>${String(m.release_date||"").slice(0,4)} · ★ ${(m.vote_average||0).toFixed(1)}</span></div><span class="chip">${t("where")}</span></div><div class="where"></div><button class="link" style="text-align:start;padding:6px 0" data-tr="${m.id}" data-title="${m.title.replace(/"/g,"&quot;")}">${t("watchtrailer")}</button><button class="link" style="text-align:start;padding:6px 0" data-cast="${m.id}" data-title="${m.title.replace(/"/g,"&quot;")}">${t("castlink")}</button></div>`).join("");
- box.querySelectorAll("[data-cast]").forEach(b=>b.onclick=e=>{e.stopPropagation();openCast({id:+b.dataset.cast,title:b.dataset.title})});
- box.querySelectorAll("[data-tr]").forEach(b=>b.onclick=e=>{e.stopPropagation();openTrailer({id:+b.dataset.tr,title:b.dataset.title})});
+ box.innerHTML=`<div class="empty">${t("searching")}</div>`;try{const d=await api("/search/multi",{query:q,include_adult:"false"});
+ const res=d.results.filter(x=>x.media_type==="movie"||x.media_type==="tv").map(x=>norm(x)).slice(0,8);if(!res.length){box.innerHTML=`<div class="empty">${t("nomovie",{x:q})}</div>`;return}
+ box.innerHTML=res.map(m=>`<div class="item" data-id="${m.id}" data-type="${mt(m)}"><div class="head"><img src="${m.poster_path?IMG+"w185"+m.poster_path:""}" alt=""><div class="t"><b>${m.title}</b><span>${String(m.release_date||"").slice(0,4)} · ★ ${(m.vote_average||0).toFixed(1)}${mt(m)==="tv"?" · "+t("series"):""}</span></div><span class="chip">${t("where")}</span></div><div class="where"></div><button class="link" style="text-align:start;padding:6px 0" data-tr="${m.id}" data-ty="${mt(m)}" data-title="${m.title.replace(/"/g,"&quot;")}">${t("watchtrailer")}</button><button class="link" style="text-align:start;padding:6px 0" data-cast="${m.id}" data-ty="${mt(m)}" data-title="${m.title.replace(/"/g,"&quot;")}">${t("castlink")}</button></div>`).join("");
+ box.querySelectorAll("[data-cast]").forEach(b=>b.onclick=e=>{e.stopPropagation();openCast({id:+b.dataset.cast,media_type:b.dataset.ty,title:b.dataset.title})});
+ box.querySelectorAll("[data-tr]").forEach(b=>b.onclick=e=>{e.stopPropagation();openTrailer({id:+b.dataset.tr,media_type:b.dataset.ty,title:b.dataset.title})});
  box.querySelectorAll(".item").forEach(it=>it.onclick=()=>whereToWatch(it));}catch(e){box.innerHTML=`<div class="empty">${t("searchfail")}: ${e.message}</div>`}}
 async function whereToWatch(it){if(it.classList.contains("open"))return;it.classList.add("open");const w=it.querySelector(".where");w.innerHTML="Checking…";
- const d=await api(`/movie/${it.dataset.id}/watch/providers`);const r=d.results[state.region]||{};let h=whereHtml(r);
+ const d=await api(`/${it.dataset.type||"movie"}/${it.dataset.id}/watch/providers`);const r=d.results[state.region]||{};let h=whereHtml(r);
  if(r.link)h+=`<a href="${r.link}" target="_blank" rel="noopener" class="link" style="text-align:start;padding:4px 0">${t("justwatch")}</a>`;w.innerHTML=h;}
 
 // ---------- list & taste ----------
 function renderList(){const l=$("list");const wd=state.watched||[];if(!state.liked.length&&!wd.length){l.innerHTML=`<div class="empty">${t("empty")}</div>`;return}
- const watchedHtml=wd.length?`<h3 style="font-family:var(--display);font-weight:400;letter-spacing:.04em;font-size:22px;margin:14px 0 0">${t("watched")}</h3>`+wd.map(m=>`<div class="item"><img src="${m.poster?IMG+"w185"+m.poster:""}" alt=""><div class="t"><b>${m.title}</b><span>${m.year} · <span class="r">${m.r?"★".repeat(m.r)+"☆".repeat(5-m.r):t("notrated")}</span></span></div><button aria-label="Remove" data-rw="${m.id}">✕</button></div>`).join(""):"";
+ const watchedHtml=wd.length?`<h3 style="font-family:var(--display);font-weight:400;letter-spacing:.04em;font-size:22px;margin:14px 0 0">${t("watched")}</h3>`+wd.map(m=>`<div class="item"><img src="${m.poster?IMG+"w185"+m.poster:""}" alt=""><div class="t"><b>${m.title}</b><span>${m.year} · <span class="r">${m.r?"★".repeat(m.r)+"☆".repeat(5-m.r):t("notrated")}</span></span></div><button aria-label="Remove" data-rw="${m.id}" data-rwt="${m.type||"movie"}">✕</button></div>`).join(""):"";
  l.innerHTML=(state.liked.length?`<h3 style="font-family:var(--display);font-weight:400;letter-spacing:.04em;font-size:22px;margin:0">${t("wanttowatch")}</h3>`:"")+state.liked.map(m=>`<div class="item"><img src="${m.poster?IMG+"w185"+m.poster:""}" alt=""><div class="t"><b>${m.title}</b><span>${m.year} · ★ ${(+m.rating).toFixed(1)}${m.prov.length?" · "+m.prov.join(", "):""}</span></div><button aria-label="Remove" data-rm="${m.id}">✕</button></div>`).join("")+watchedHtml;
- l.querySelectorAll("[data-rw]").forEach(b=>b.onclick=()=>{state.watched=state.watched.filter(x=>x.id!=+b.dataset.rw);delete state.seen[+b.dataset.rw];save();renderList()});
+ l.querySelectorAll("[data-rw]").forEach(b=>b.onclick=()=>{state.watched=state.watched.filter(x=>x.id!=+b.dataset.rw);delete state.seen[(b.dataset.rwt||"movie")+b.dataset.rw];save();renderList()});
  l.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{state.liked=state.liked.filter(x=>x.id!=+b.dataset.rm);$("count").textContent=state.liked.length;save();renderList()});}
 function bars(obj,label,name){const keys=Object.keys(obj).filter(k=>obj[k]!==0).sort((a,b)=>obj[b]-obj[a]);if(!keys.length)return"";const max=Math.max(1,...keys.map(k=>Math.abs(obj[k])));
  return`<h3>${label}</h3>`+keys.map(k=>`<div class="bar"><span style="text-align:start;color:var(--fg)">${name(k)}</span><i><b class="${obj[k]<0?"neg":""}" style="width:${Math.abs(obj[k])/max*100}%"></b></i><span>${obj[k]>0?"+":""}${(+obj[k]).toFixed(1)}</span></div>`).join("")}
