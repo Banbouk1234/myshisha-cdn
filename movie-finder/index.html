@@ -31,9 +31,9 @@ main{flex:1;min-height:0;display:flex;flex-direction:column}
 .plogo{width:22px;height:22px;border-radius:5px;vertical-align:middle}
 .stamp{position:absolute;top:22px;font-family:var(--display);font-size:40px;letter-spacing:.08em;padding:4px 12px;border:4px solid;border-radius:8px;opacity:0;z-index:2}
 .stamp.like{left:20px;color:var(--yes);border-color:var(--yes);transform:rotate(-14deg)}.stamp.nope{right:20px;color:var(--no);border-color:var(--no);transform:rotate(14deg)}
-.actions{display:flex;justify-content:center;gap:28px;padding:16px 0 6px}
-.btn{width:66px;height:66px;border-radius:50%;border:2px solid;background:var(--surface);font-size:28px;display:grid;place-items:center}
-.btn.no{color:var(--no);border-color:var(--no)}.btn.yes{color:var(--yes);border-color:var(--yes)}.btn.small{width:48px;height:48px;font-size:18px;color:var(--muted);border-color:var(--line);align-self:center}
+.actions{display:flex;justify-content:center;gap:16px;padding:14px 0 6px}
+.btn{width:60px;height:60px;border-radius:50%;border:2px solid;background:var(--surface);font-size:28px;display:grid;place-items:center}
+.btn.no{color:var(--no);border-color:var(--no)}.btn.yes{color:var(--yes);border-color:var(--yes)}.btn.small{width:44px;height:44px;font-size:18px;color:var(--muted);border-color:var(--line);align-self:center}
 .screen{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:14px;padding:8px 0}
 .intro{margin:auto;max-width:420px;display:flex;flex-direction:column;gap:16px}
 .intro h1{font-family:var(--display);font-size:clamp(52px,16vw,88px);line-height:.9;margin:0}.intro h1 em{font-style:normal;color:var(--accent)}
@@ -127,7 +127,7 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
   <button class="cta2" id="a2hs">📲 <span data-i="a2hs">Add to Home Screen</span></button></div></section>
  <section class="screen" id="s-swipe" hidden style="overflow:hidden">
   <div style="display:flex;align-items:center;justify-content:center;gap:10px;padding-bottom:8px"><div class="hint" id="phaseLabel" style="padding:0"></div><button class="fbtn" id="fbtn">⚙︎ <span data-i="filters">Filters</span><i id="fcount" hidden></i></button></div><div class="stage" id="stage"></div>
-  <div class="actions"><button class="btn no" id="bNo" aria-label="No">✕</button><button class="btn small" id="bUndo" aria-label="Undo">↶</button><button class="btn small" id="bSeen" aria-label="I watched this" title="I watched this">👁</button><button class="btn yes" id="bYes" aria-label="Yes">♥</button></div>
+  <div class="actions"><button class="btn no" id="bNo" aria-label="No">✕</button><button class="btn small" id="bUndo" aria-label="Undo">↶</button><button class="btn small" id="bSkip" aria-label="Not sure" title="Not sure">🤷</button><button class="btn small" id="bSeen" aria-label="I watched this" title="I watched this">👁</button><button class="btn yes" id="bYes" aria-label="Yes">♥</button></div>
   <div class="hint" id="seenHint" data-i="legend">✕ skip · ↶ undo · 👁 watched it · ♥ want to watch</div></section>
  <section class="screen" id="s-list" hidden><div class="list" id="list"></div></section>
  <section class="screen" id="s-find" hidden><div class="list">
@@ -140,7 +140,7 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
 </main>
 <script>
 const IMG="https://image.tmdb.org/t/p/";
-const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"Right means yes, left means no. Genres first, then your streaming services, then movies that fit you.",country:'Your country (for "where to watch")',start:"Start swiping",legend:"✕ skip · ↶ undo · 👁 watched it · ♥ want to watch",search:"Type a movie name…",
+const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"Right means yes, left means no. Genres first, then your streaming services, then movies that fit you.",country:'Your country (for "where to watch")',start:"Start swiping",legend:"✕ don't like · ↶ undo · 🤷 not sure · 👁 watched it · ♥ like",search:"Type a movie name…",
  h1:"SWIPE.<br>DON'T<br><em>SCROLL.</em>",logo:"BANBOUK <b>MOVIE FINDER</b>",like:"LIKE",nope:"NOPE",trailer:"▶ TRAILER",cast:"👥 CAST",doyoulike:"Do you like",doyouhave:"Do you have",genreHint:"Swipe right if this is your kind of night.",think:'Think "{x}".',provHint:"Swipe right if you can watch {x} right now.",iptvHint:"IPTV means you have everything. We'll stop filtering by service.",
  genres:"Genres · {a} of {b}",services:"Your services · {a} of {b}",picked:"Picked for you · {a} saved",nomore:"No more movies for your services. Check your list or reset.",loading:"Loading…",
  free:"Free",ads:" (with ads)",included:"Included in your subscription",other:"Other subscriptions",alsopaid:"Also rent / buy",paidonly:"Paid only — rent or buy",notstreaming:"Not streaming in {x}",notany:"Not on any service here right now",tryiptv:" — try your IPTV",iptv:"IPTV",likelyiptv:"Likely on your IPTV box.",justwatch:"Open on JustWatch →",
@@ -159,7 +159,7 @@ const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"R
  tgGuestDone:"All done! Send your picks back so you both see the matches.",tgSendBack:"📲 Send my picks back",tgMatches:"You both liked",tgTop:"Tonight's pick",tgNoMatch:"No exact match. Here's what came closest:",tgEither:"Liked by one of you",tgNew:"Start a new session",tgDeckBad:"This session link doesn't work. Ask your friend to send it again.",
  tgShareText:"🎬 Let's pick a movie together! Swipe these and send me your picks:",tgBackText:"🎬 Here are my picks! Open this to see what we matched on:",tgMyName:"Your name (so your friend knows who's asking)",tgFriendTurn:"Friend's turn",tgSameDevice:"Pass the phone: your friend swipes the same deck now.",
  share:"Share",shareText:"Check out {t} ({y}) on Banbouk Movie Finder 🎬",addList:"♥ Add to my list",inList:"✓ In my list",shared:"Shared with you",copied:"Link copied",fTitle:"Filters",fService:"Service",fAnyMine:"Any of mine",fRating:"Minimum rating",fAny:"Any",fYear:"Year",fOlder:"Before 2000",fGenre:"Genre",fType:"Type",fLang:"Language",fRuntime:"Length",fShort:"Under 100 min",fLong:"Over 2 hours",fApply:"Apply",fClear:"Clear all",fSort:"Sort by",fBest:"Best match",fTop:"Top rated",fNew:"Newest",fPopular:"Most popular",a2hsT:"Install Banbouk Movie Finder",ios:["Tap the <strong>Share</strong> button at the bottom of Safari (the square with an arrow ↑).","Scroll down and tap <strong>Add to Home Screen</strong>.","Tap <strong>Add</strong> in the top corner. The app icon appears on your Home Screen."],android:["Tap the <strong>⋮</strong> menu at the top of Chrome.","Tap <strong>Add to Home screen</strong> or <strong>Install app</strong>.","Tap <strong>Install</strong>. The app icon appears on your Home Screen."],desktop:["In Chrome or Edge, click the install icon at the right end of the address bar.","Click <strong>Install</strong>."],installed:"Already installed — you are running it from your Home Screen.",installNow:"Install now",close:"Close",cAny:"Arabic + English",cAr:"Arabic",cEn:"English",tMovies:"Movies",tSeries:"Series",tBoth:"Both",series:"Series",movie:"Movie",seasons:"{x} seasons"},
- ar:{swipe:"اسحب",mylist:"قائمتي",find:"ابحث",taste:"ذوقي",intro:"يمين يعني نعم، يسار يعني لا. الأنواع أولاً، ثم خدمات البث عندك، ثم أفلام على ذوقك.",country:"بلدك (لمعرفة أين تشاهد)",start:"ابدأ السحب",legend:"✕ تخطّي · ↶ تراجع · 👁 شاهدته · ♥ أريد مشاهدته",search:"اكتب اسم الفيلم…",
+ ar:{swipe:"اسحب",mylist:"قائمتي",find:"ابحث",taste:"ذوقي",intro:"يمين يعني نعم، يسار يعني لا. الأنواع أولاً، ثم خدمات البث عندك، ثم أفلام على ذوقك.",country:"بلدك (لمعرفة أين تشاهد)",start:"ابدأ السحب",legend:"✕ ما بحب · ↶ تراجع · 🤷 مو متأكد · 👁 شاهدته · ♥ بحب",search:"اكتب اسم الفيلم…",
  h1:"اسحب.<br>لا <em>تتصفح.</em>",logo:"بنبوك <b>لإيجاد الأفلام</b>",like:"أعجبني",nope:"لا",trailer:"▶ الإعلان",cast:"👥 الممثلون",doyoulike:"هل تحب",doyouhave:"هل عندك",genreHint:"اسحب يميناً إذا كان هذا نوعك المفضل.",think:'مثل "{x}".',provHint:"اسحب يميناً إذا كان بإمكانك مشاهدة {x} الآن.",iptvHint:"IPTV يعني عندك كل شيء. لن نصفّي حسب الخدمة.",
  genres:"الأنواع · {a} من {b}",services:"خدماتك · {a} من {b}",picked:"مختارة لك · {a} محفوظة",nomore:"لا مزيد من الأفلام على خدماتك. راجع قائمتك أو أعد الضبط.",loading:"جارٍ التحميل…",
  free:"مجاناً",ads:" (مع إعلانات)",included:"ضمن اشتراكك",other:"اشتراكات أخرى",alsopaid:"أيضاً للإيجار / الشراء",paidonly:"مدفوع فقط — إيجار أو شراء",notstreaming:"غير متوفر للبث في {x}",notany:"غير متوفر على أي خدمة هنا حالياً",tryiptv:" — جرّب الـ IPTV",iptv:"IPTV",likelyiptv:"على الأغلب موجود على جهاز IPTV عندك.",justwatch:"افتح على JustWatch ←",
@@ -309,7 +309,7 @@ async function openTrailer(m){const o=document.createElement("div");o.className=
 
 async function render(){const stage=$("stage");stage.innerHTML=`<div class="empty">${t("loading")}</div>`;
  const c=await currentCard();cur=c;
- const T=state.tg;$("fbtn").hidden=state.phase!=="movies"||!!(T&&T.active);$("bSeen").hidden=!!(T&&T.active);
+ const T=state.tg;$("fbtn").hidden=state.phase!=="movies"||!!(T&&T.active);$("bSeen").hidden=!!(T&&T.active);$("bSkip").hidden=state.phase!=="movies";
  if(T&&T.active){$("phaseLabel").textContent=T.role==="guest"?t("tgGuest",{n:T.host||"",a:Math.min(T.i+1,T.deck.length),b:T.deck.length}):T.turn==="friend"?t("tgFriend",{a:Math.min(T.i+1,T.deck.length),b:T.deck.length}):t("tgMe",{a:Math.min(T.i+1,T.deck.length),b:T.deck.length});}
  else $("phaseLabel").textContent=state.phase==="genres"?t("genres",{a:state.idx+1,b:GENRES.length}):state.phase==="providers"?t("services",{a:state.idx+1,b:PROVIDERS.length}):t("picked",{a:state.liked.length});
  if(!c){if(state.tg&&state.tg.active){state.tg.active=false;save();show("together");return}stage.innerHTML=`<div class="empty">${t("nomore")}</div>`;return}
@@ -342,6 +342,8 @@ function markWatched(m,r,prov){state.history.push(snapshot());if(state.history.l
  m.genre_ids.forEach(g=>state.genre[g]=Math.max(-6,Math.min(8,(state.genre[g]||0)+w*0.8)));const dec=decadeOf(+String(m.release_date).slice(0,4));state.decade[dec]=(state.decade[dec]||0)+w*0.5;if(m.original_language)state.langW[m.original_language]=(state.langW[m.original_language]||0)+w*0.3;
  (state.watched=state.watched||[]).unshift({id:m.id,type:mt(m),title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,r});
  save();if(!$("s-swipe").hidden)render()}
+$("bSkip").onclick=()=>{if(!cur||cur.kind!=="movie")return;const el=$("stage").querySelector(".card:not(.under)");if(el){el.classList.add("leave");el.style.transform="translateY(-120%) scale(.9)";el.style.opacity="0"}
+ setTimeout(()=>{const c=cur;if(c.tg){state.tg.i++;save();render();return}state.history.push(snapshot());if(state.history.length>30)state.history.shift();state.seen[mt(c.m)+c.m.id]=0;save();render()},220)};
 $("bYes").onclick=()=>fling(true);$("bNo").onclick=()=>fling(false);$("bUndo").onclick=undo;
 document.addEventListener("keydown",e=>{if($("s-swipe").hidden)return;if(e.key==="ArrowRight")fling(true);if(e.key==="ArrowLeft")fling(false)});
 function fling(yes){const el=$("stage").querySelector(".card:not(.under)");if(!el){decide(yes);return}
