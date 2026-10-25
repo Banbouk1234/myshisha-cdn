@@ -48,9 +48,10 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 .empty{color:var(--muted);text-align:center;margin:auto;max-width:300px;line-height:1.5}
 .taste{max-width:420px;margin:0 auto;width:100%;display:flex;flex-direction:column;gap:8px}
 .taste h3{margin:8px 0 2px;font-family:var(--display);font-size:22px;font-weight:400;letter-spacing:.04em}
-.bar{display:grid;grid-template-columns:110px 1fr 36px;align-items:center;gap:8px;font-size:13px}
-.bar i{display:block;height:8px;border-radius:4px;background:var(--line);overflow:hidden}.bar i b{display:block;height:100%;background:var(--accent)}.bar i b.neg{background:var(--no)}
-.bar span{color:var(--muted);text-align:right}
+.bar{display:grid;grid-template-columns:104px 1fr 64px;align-items:center;gap:8px;font-size:13px}
+.bar i{display:block;height:10px;border-radius:5px;background:var(--line);overflow:hidden;position:relative}.bar i b{display:block;height:100%;border-radius:5px;background:var(--accent)}.bar i b.neg{background:var(--no)}.bar i b.mid{background:var(--muted)}
+.lvl{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;text-align:end}.lvl.l3{color:var(--yes)}.lvl.l2{color:var(--accent)}.lvl.l1{color:var(--muted)}.lvl.l0{color:var(--no)}
+.bar span{color:var(--muted);text-align:end}
 .link{background:none;border:none;color:var(--muted);text-decoration:underline;font:500 13px var(--body);padding:8px}
 .err{color:var(--no);font-size:13px}
 .fbtn{background:var(--surface);border:1px solid var(--line);color:var(--fg);border-radius:999px;padding:6px 12px;font:700 12px var(--body);display:inline-flex;align-items:center;gap:6px}
@@ -150,7 +151,7 @@ const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"R
  nocast:"No cast listed.",castfail:"Could not load cast.",directed:"Directed by {x}",loadcast:"Loading cast…",notrailer:"No trailer available for this one.",trailerfail:"Could not load trailer.",
  searching:"Searching…",nomovie:'No movie called "{x}".',searchfail:"Search failed",where:"Where?",watchtrailer:"▶ Watch trailer",castlink:"👥 Cast",
  empty:"Nothing saved yet. Swipe right on a movie and it lands here.",wanttowatch:"Want to watch",watched:"Watched",notrated:"not rated",
- whatTaste:"What is my taste?",tLove:"You love",tAvoid:"You skip",tEra:"Your era",tLangs:"Language",tRated:"You rate what you like around ★ {x}",tNone:"Swipe a few more and I will tell you.",tDeep:"and you clearly know what you want — {n} swipes in.",tNew:"still getting to know you — {n} swipes so far.",tLangAr:"Arabic",tLangEn:"English",tLangOther:"other languages",
+ lvLove:"Love",lvLike:"Like",lvMeh:"Meh",lvAvoid:"Avoid",whatTaste:"What is my taste?",tLove:"You love",tAvoid:"You skip",tEra:"Your era",tLangs:"Language",tRated:"You rate what you like around ★ {x}",tNone:"Swipe a few more and I will tell you.",tDeep:"and you clearly know what you want — {n} swipes in.",tNew:"still getting to know you — {n} swipes so far.",tLangAr:"Arabic",tLangEn:"English",tLangOther:"other languages",
  persona:{35:"The Comedy Fan",18:"The Drama Lover",28:"The Action Junkie",27:"The Horror Addict",53:"The Thriller Seeker",878:"The Sci-Fi Explorer",14:"The Fantasy Dreamer",10749:"The Romantic",80:"The Crime Buff",16:"The Animation Fan",99:"The Documentary Mind",9648:"The Mystery Solver",12:"The Adventurer",36:"The History Buff",10751:"The Family Night Host",10759:"The Action Binger",10765:"The Sci-Fi Binger"},
  tasteIntro:"{a} movies swiped, {b} watched. Every swipe shifts these weights; the next card is the best unseen match on a service you have.",tGenres:"Genres",tEra:"Era",tServices:"Services",reset:"Reset taste and start over",mood:"Mood",play:"Play",moodTitle:"In the mood for <em>something like…</em>",moodIntro:"Type a movie or series you love. We'll find the ones that feel the same, and show where to watch them.",moodPh:"A movie you love, e.g. Interstellar",moodBecause:"Because you like {x}",moodNone:"Nothing similar found. Try another title.",
  playTitle:"Play &amp; <em>watch.</em>",playIntro:"Answer 8 quick questions. We'll turn your answers into 10 picks for tonight.",playStart:"Let's play",playNext:"Next",playResult:"Your 10 picks",playAgain:"Play again",playQ:"Question {a} of {b}",add:"♥ Add",added:"✓ Added",
@@ -169,7 +170,7 @@ const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"R
  nocast:"لا يوجد ممثلون مدرجون.",castfail:"تعذّر تحميل الممثلين.",directed:"إخراج {x}",loadcast:"جارٍ تحميل الممثلين…",notrailer:"لا يوجد إعلان لهذا الفيلم.",trailerfail:"تعذّر تحميل الإعلان.",
  searching:"جارٍ البحث…",nomovie:'لا يوجد فيلم باسم "{x}".',searchfail:"فشل البحث",where:"أين؟",watchtrailer:"▶ شاهد الإعلان",castlink:"👥 الممثلون",
  empty:"لا شيء محفوظ بعد. اسحب يميناً على فيلم ليظهر هنا.",wanttowatch:"أريد مشاهدته",watched:"شاهدته",notrated:"بدون تقييم",
- whatTaste:"شو ذوقي؟",tLove:"بتحب",tAvoid:"بتتجنب",tEra:"حقبتك",tLangs:"اللغة",tRated:"بتقيّم اللي بتحبه حوالي ★ {x}",tNone:"اسحب كم فيلم كمان وبقلك.",tDeep:"وواضح إنك عارف شو بدك — بعد {n} سحبة.",tNew:"لسا عم أتعرف عليك — {n} سحبة لهلق.",tLangAr:"عربي",tLangEn:"أجنبي",tLangOther:"لغات تانية",
+ lvLove:"بحب",lvLike:"منيح",lvMeh:"عادي",lvAvoid:"بتجنب",whatTaste:"شو ذوقي؟",tLove:"بتحب",tAvoid:"بتتجنب",tEra:"حقبتك",tLangs:"اللغة",tRated:"بتقيّم اللي بتحبه حوالي ★ {x}",tNone:"اسحب كم فيلم كمان وبقلك.",tDeep:"وواضح إنك عارف شو بدك — بعد {n} سحبة.",tNew:"لسا عم أتعرف عليك — {n} سحبة لهلق.",tLangAr:"عربي",tLangEn:"أجنبي",tLangOther:"لغات تانية",
  persona:{35:"عاشق الكوميديا",18:"محب الدراما",28:"مدمن الأكشن",27:"مدمن الرعب",53:"صيّاد الإثارة",878:"مستكشف الخيال العلمي",14:"حالم الفانتازيا",10749:"الرومانسي",80:"خبير الجريمة",16:"محب الأنيميشن",99:"عقل وثائقي",9648:"حلّال الألغاز",12:"المغامر",36:"محب التاريخ",10751:"مضيف ليلة العيلة",10759:"مدمن الأكشن",10765:"مدمن الخيال العلمي"},
  tasteIntro:"{a} فيلم سحبته، {b} شاهدته. كل سحبة تغيّر هذه الأوزان؛ البطاقة التالية هي أفضل فيلم لم تره على خدمة عندك.",tGenres:"الأنواع",tEra:"الحقبة",tServices:"الخدمات",reset:"إعادة ضبط الذوق والبدء من جديد",mood:"مزاجي",play:"العب",moodTitle:"بمزاج <em>شيء يشبه…</em>",moodIntro:"اكتب فيلماً أو مسلسلاً تحبه. سنجد لك ما يشبهه بالإحساس، ونعرض أين تشاهده.",moodPh:"فيلم تحبه، مثلاً Interstellar",moodBecause:"لأنك تحب {x}",moodNone:"لم نجد شيئاً مشابهاً. جرّب اسماً آخر.",
  playTitle:"العب &amp; <em>شاهد.</em>",playIntro:"أجب عن 8 أسئلة سريعة. سنحوّل إجاباتك إلى 10 ترشيحات لهذه الليلة.",playStart:"يلا نلعب",playNext:"التالي",playResult:"ترشيحاتك العشرة",playAgain:"العب مجدداً",playQ:"سؤال {a} من {b}",add:"♥ أضف",added:"✓ أُضيف",
@@ -212,7 +213,7 @@ function show(name){["intro","swipe","list","find","mood","play","together","tas
  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.tab===name));$("tabs").hidden=name==="intro";
  if(name==="list")renderList();if(name==="taste")renderTaste();if(name==="together")renderTogether();if(name==="play")renderPlay();}
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.tab));
-state.langW=state.langW||{};state.f=Object.assign({svc:"",rating:0,year:"",genre:"",type:"",lang:"",rt:"",sort:"best"},state.f||{});
+state.langW=state.langW||{};Object.keys(state.genre).forEach(k=>{state.genre[k]=Math.max(-6,Math.min(8,state.genre[k]))});state.f=Object.assign({svc:"",rating:0,year:"",genre:"",type:"",lang:"",rt:"",sort:"best"},state.f||{});
 $("key").value=state.key;$("region").value=state.region;
 function segs(){document.querySelectorAll("#segLang button").forEach(b=>{b.classList.toggle("on",b.dataset.v===state.clang);b.onclick=()=>{state.clang=b.dataset.v;segs()}});
  document.querySelectorAll("#segType button").forEach(b=>{b.classList.toggle("on",b.dataset.v===state.ctype);b.onclick=()=>{state.ctype=b.dataset.v;segs()}})}segs();
@@ -384,8 +385,9 @@ function renderList(){const l=$("list");const wd=state.watched||[];if(!state.lik
   rateDialog(m,document.body,r=>{state.liked=state.liked.filter(x=>x.id!==id);markWatched(m,r,[]);$("count").textContent=state.liked.length;renderList()})});
  l.querySelectorAll("[data-rw]").forEach(b=>b.onclick=()=>{state.watched=state.watched.filter(x=>x.id!=+b.dataset.rw);delete state.seen[(b.dataset.rwt||"movie")+b.dataset.rw];save();renderList()});
  l.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{state.liked=state.liked.filter(x=>x.id!=+b.dataset.rm);$("count").textContent=state.liked.length;save();renderList()});}
-function bars(obj,label,name){const keys=Object.keys(obj).filter(k=>obj[k]!==0).sort((a,b)=>obj[b]-obj[a]);if(!keys.length)return"";const max=Math.max(1,...keys.map(k=>Math.abs(obj[k])));
- return`<h3>${label}</h3>`+keys.map(k=>`<div class="bar"><span style="text-align:start;color:var(--fg)">${name(k)}</span><i><b class="${obj[k]<0?"neg":""}" style="width:${Math.abs(obj[k])/max*100}%"></b></i><span>${obj[k]>0?"+":""}${(+obj[k]).toFixed(1)}</span></div>`).join("")}
+function bars(obj,label,name){const keys=Object.keys(obj).filter(k=>obj[k]!==0).sort((a,b)=>obj[b]-obj[a]);if(!keys.length)return"";
+ const pct=v=>Math.round(50+50*Math.tanh(v/4));const lvl=p=>p>=75?[3,t("lvLove")]:p>=58?[2,t("lvLike")]:p>=42?[1,t("lvMeh")]:[0,t("lvAvoid")];
+ return`<h3>${label}</h3><div class="bar" style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em"><span></span><span style="display:flex;justify-content:space-between"><span>${t("lvAvoid")}</span><span>${t("lvLove")}</span></span><span></span></div>`+keys.map(k=>{const p=pct(obj[k]);const [l,lab]=lvl(p);return`<div class="bar"><span style="text-align:start;color:var(--fg)">${name(k)}</span><i><b class="${l===0?"neg":l===1?"mid":""}" style="width:${p}%"></b></i><span class="lvl l${l}">${lab} ${p}%</span></div>`}).join("")}
 function renderTaste(){const tb=$("taste");
  const gname=k=>(GENRES.find(g=>g.id==k)||{name:"#"+k}).name;const n=Object.keys(state.seen).length;
  const love=Object.keys(state.genre).filter(k=>state.genre[k]>0.9).sort((a,b)=>state.genre[b]-state.genre[a]).slice(0,3);const avoid=Object.keys(state.genre).filter(k=>state.genre[k]<-0.9).sort((a,b)=>state.genre[a]-state.genre[b]).slice(0,3);
