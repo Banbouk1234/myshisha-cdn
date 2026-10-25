@@ -11,7 +11,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);displ
  padding:max(8px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
 header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:6px 0 10px}
 .logo{font-family:var(--display);font-size:22px;letter-spacing:.04em;white-space:nowrap;line-height:1}.logo b{color:var(--accent);font-weight:400}
-.tabs{display:flex;gap:5px;width:100%;justify-content:space-between}.tab{white-space:nowrap;flex:1;text-align:center;background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:8px 4px;font:600 13px var(--body)}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;width:100%}.tab{white-space:nowrap;flex:1;text-align:center;background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:8px 4px;font:600 13px var(--body)}
 .tab[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 main{flex:1;min-height:0;display:flex;flex-direction:column}
 .hint{text-align:center;color:var(--muted);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding-bottom:8px}
@@ -67,6 +67,8 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 .detail .cover h3{position:relative;z-index:1;font-family:var(--display);font-size:34px;font-weight:400;margin:0;color:#fff;letter-spacing:.03em;line-height:.95}
 .detail .body{padding:14px 16px 18px;display:flex;flex-direction:column;gap:10px}.detail .body p{margin:0;font-size:14px;line-height:1.5}
 .detail .acts{display:flex;gap:8px;flex-wrap:wrap}.detail .acts button{flex:1;min-width:110px}
+.q{display:flex;flex-direction:column;gap:10px}.q .opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}.q .opts button{background:var(--surface);border:1px solid var(--line);color:var(--fg);border-radius:14px;padding:16px 10px;font:700 14px var(--body);text-align:center;line-height:1.3}.q .opts button .e{display:block;font-size:26px;margin-bottom:4px}
+.q .opts button.on{border-color:var(--accent);background:var(--accent);color:#000}.rnum{font-family:var(--display);font-size:22px;letter-spacing:.04em;color:var(--accent);width:34px;flex:none}
 .tg{display:flex;flex-direction:column;gap:14px;text-align:start}.tg h2{font-family:var(--display);font-size:40px;font-weight:400;margin:0;letter-spacing:.03em;line-height:.95;text-wrap:balance}.tg h2 em{font-style:normal;color:var(--accent)}
 .tg p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}.tg .big{display:flex;flex-direction:column;gap:8px}
 .top{border:2px solid var(--accent);border-radius:18px;overflow:hidden;background:var(--surface)}.top .cover{aspect-ratio:16/9;background-size:cover;background-position:center;position:relative;display:flex;align-items:flex-end;padding:14px}
@@ -110,7 +112,7 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
  <button class="lang" id="lang" aria-label="Language" style="margin-inline-start:auto">عربي</button><div class="tabs" id="tabs" hidden>
   <button class="tab" aria-selected="true" data-tab="swipe" data-i="swipe">Swipe</button>
   <button class="tab" aria-selected="false" data-tab="list"><span data-i="mylist">My list</span> <span id="count">0</span></button>
-  <button class="tab" aria-selected="false" data-tab="find" data-i="find">Find</button><button class="tab" aria-selected="false" data-tab="together" data-i="together">Together</button><button class="tab" aria-selected="false" data-tab="taste" data-i="taste">Taste</button></div></header>
+  <button class="tab" aria-selected="false" data-tab="find" data-i="find">Find</button><button class="tab" aria-selected="false" data-tab="mood" data-i="mood">Mood</button><button class="tab" aria-selected="false" data-tab="play" data-i="play">Play</button><button class="tab" aria-selected="false" data-tab="together" data-i="together">Together</button><button class="tab" aria-selected="false" data-tab="taste" data-i="taste">Taste</button></div></header>
 <main>
  <section class="screen" id="s-intro"><div class="intro">
   <h1 id="h1">SWIPE.<br>DON'T<br><em>SCROLL.</em></h1>
@@ -131,6 +133,8 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
  <section class="screen" id="s-find" hidden><div class="list">
   <input id="q" placeholder="Type a movie name…" data-ph="search" autocomplete="off">
   <div id="found"></div></div></section>
+ <section class="screen" id="s-mood" hidden><div class="list"><div class="tg"><h2 data-i-html="moodTitle"></h2><p data-i="moodIntro"></p></div><input id="mq" data-ph="moodPh" autocomplete="off"><div id="mpick"></div><div id="mres"></div></div></section>
+ <section class="screen" id="s-play" hidden><div class="list" id="playbox"></div></section>
  <section class="screen" id="s-together" hidden><div class="list" id="tgbox"></div></section>
  <section class="screen" id="s-taste" hidden><div class="taste" id="taste"></div></section>
 </main>
@@ -144,7 +148,11 @@ const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"R
  nocast:"No cast listed.",castfail:"Could not load cast.",directed:"Directed by {x}",loadcast:"Loading cast…",notrailer:"No trailer available for this one.",trailerfail:"Could not load trailer.",
  searching:"Searching…",nomovie:'No movie called "{x}".',searchfail:"Search failed",where:"Where?",watchtrailer:"▶ Watch trailer",castlink:"👥 Cast",
  empty:"Nothing saved yet. Swipe right on a movie and it lands here.",wanttowatch:"Want to watch",watched:"Watched",notrated:"not rated",
- tasteIntro:"{a} movies swiped, {b} watched. Every swipe shifts these weights; the next card is the best unseen match on a service you have.",tGenres:"Genres",tEra:"Era",tServices:"Services",reset:"Reset taste and start over",together:"Together",tgTitle:"Pick a movie <em>with a friend.</em>",tgIntro:"You both swipe the same 16 picks, built from your taste and your services. Then we show what you both liked and the one to watch tonight.",tgStart:"Start a session",tgMe:"Your turn · {a} of {b}",tgFriend:"Friend's turn · {a} of {b}",tgGuest:"{n} wants to pick a movie with you · {a} of {b}",
+ tasteIntro:"{a} movies swiped, {b} watched. Every swipe shifts these weights; the next card is the best unseen match on a service you have.",tGenres:"Genres",tEra:"Era",tServices:"Services",reset:"Reset taste and start over",mood:"Mood",play:"Play",moodTitle:"In the mood for <em>something like…</em>",moodIntro:"Type a movie or series you love. We'll find the ones that feel the same, and show where to watch them.",moodPh:"A movie you love, e.g. Interstellar",moodBecause:"Because you like {x}",moodNone:"Nothing similar found. Try another title.",
+ playTitle:"Play &amp; <em>watch.</em>",playIntro:"Answer 8 quick questions. We'll turn your answers into 10 picks for tonight.",playStart:"Let's play",playNext:"Next",playResult:"Your 10 picks",playAgain:"Play again",playQ:"Question {a} of {b}",add:"♥ Add",added:"✓ Added",
+ q1:"What do you want to feel tonight?",q1o:["😂 Laugh","😭 Feel something","💥 Adrenaline","😱 Be scared","🧠 Think","✨ Escape"],q2:"Who's watching?",q2o:["🧍 Just me","💑 Date night","👯 Friends","👨‍👩‍👧 Family"],q3:"How much energy do you have?",q3o:["🛋️ Easy & light","🔥 Something intense","🏔️ An epic journey"],
+ q4:"Old or new?",q4o:["🆕 Fresh (last 3 years)","🎞️ Classics","🤷 Don't care"],q5:"Where should it take you?",q5o:["🌍 The real world","🪐 Another world","⏳ The past","🎲 Surprise me"],q6:"Pace?",q6o:["⚡ Fast","🕯️ Slow burn"],q7:"How should it end?",q7o:["😊 Happy","🌀 With a twist","😶 Doesn't matter"],q8:"Language?",q8o:["🇸🇦 Arabic","🇬🇧 English","🌐 Both"],
+ together:"Together",tgTitle:"Pick a movie <em>with a friend.</em>",tgIntro:"You both swipe the same 16 picks, built from your taste and your services. Then we show what you both liked and the one to watch tonight.",tgStart:"Start a session",tgMe:"Your turn · {a} of {b}",tgFriend:"Friend's turn · {a} of {b}",tgGuest:"{n} wants to pick a movie with you · {a} of {b}",
  tgDoneMe:"You're done. Now your friend swipes the same deck.",tgHand:"🤝 Hand the phone to my friend",tgSend:"📲 Send to my friend on WhatsApp",tgWait:"Waiting for your friend. When they finish, they'll send you a link back — open it and the matches appear here.",tgResend:"Send the link again",
  tgGuestDone:"All done! Send your picks back so you both see the matches.",tgSendBack:"📲 Send my picks back",tgMatches:"You both liked",tgTop:"Tonight's pick",tgNoMatch:"No exact match. Here's what came closest:",tgEither:"Liked by one of you",tgNew:"Start a new session",tgDeckBad:"This session link doesn't work. Ask your friend to send it again.",
  tgShareText:"🎬 Let's pick a movie together! Swipe these and send me your picks:",tgBackText:"🎬 Here are my picks! Open this to see what we matched on:",tgMyName:"Your name (so your friend knows who's asking)",tgFriendTurn:"Friend's turn",tgSameDevice:"Pass the phone: your friend swipes the same deck now.",
@@ -157,14 +165,18 @@ const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"R
  nocast:"لا يوجد ممثلون مدرجون.",castfail:"تعذّر تحميل الممثلين.",directed:"إخراج {x}",loadcast:"جارٍ تحميل الممثلين…",notrailer:"لا يوجد إعلان لهذا الفيلم.",trailerfail:"تعذّر تحميل الإعلان.",
  searching:"جارٍ البحث…",nomovie:'لا يوجد فيلم باسم "{x}".',searchfail:"فشل البحث",where:"أين؟",watchtrailer:"▶ شاهد الإعلان",castlink:"👥 الممثلون",
  empty:"لا شيء محفوظ بعد. اسحب يميناً على فيلم ليظهر هنا.",wanttowatch:"أريد مشاهدته",watched:"شاهدته",notrated:"بدون تقييم",
- tasteIntro:"{a} فيلم سحبته، {b} شاهدته. كل سحبة تغيّر هذه الأوزان؛ البطاقة التالية هي أفضل فيلم لم تره على خدمة عندك.",tGenres:"الأنواع",tEra:"الحقبة",tServices:"الخدمات",reset:"إعادة ضبط الذوق والبدء من جديد",together:"مع صديق",tgTitle:"اختر فيلماً <em>مع صديق.</em>",tgIntro:"كلاكما يسحب نفس الـ16 ترشيحاً، المبنية على ذوقك وخدماتك. ثم نعرض ما أعجبكما معاً والفيلم المناسب لهذه الليلة.",tgStart:"ابدأ جلسة",tgMe:"دورك · {a} من {b}",tgFriend:"دور صديقك · {a} من {b}",tgGuest:"{n} يريد اختيار فيلم معك · {a} من {b}",
+ tasteIntro:"{a} فيلم سحبته، {b} شاهدته. كل سحبة تغيّر هذه الأوزان؛ البطاقة التالية هي أفضل فيلم لم تره على خدمة عندك.",tGenres:"الأنواع",tEra:"الحقبة",tServices:"الخدمات",reset:"إعادة ضبط الذوق والبدء من جديد",mood:"مزاجي",play:"العب",moodTitle:"بمزاج <em>شيء يشبه…</em>",moodIntro:"اكتب فيلماً أو مسلسلاً تحبه. سنجد لك ما يشبهه بالإحساس، ونعرض أين تشاهده.",moodPh:"فيلم تحبه، مثلاً Interstellar",moodBecause:"لأنك تحب {x}",moodNone:"لم نجد شيئاً مشابهاً. جرّب اسماً آخر.",
+ playTitle:"العب &amp; <em>شاهد.</em>",playIntro:"أجب عن 8 أسئلة سريعة. سنحوّل إجاباتك إلى 10 ترشيحات لهذه الليلة.",playStart:"يلا نلعب",playNext:"التالي",playResult:"ترشيحاتك العشرة",playAgain:"العب مجدداً",playQ:"سؤال {a} من {b}",add:"♥ أضف",added:"✓ أُضيف",
+ q1:"شو بدك تحس الليلة؟",q1o:["😂 أضحك","😭 أتأثر","💥 أدرينالين","😱 أنخاف","🧠 أفكّر","✨ أهرب من الواقع"],q2:"مين عم يتفرج؟",q2o:["🧍 لحالي","💑 مع شريكي","👯 مع أصحابي","👨‍👩‍👧 مع العيلة"],q3:"قديش عندك طاقة؟",q3o:["🛋️ شي خفيف","🔥 شي قوي","🏔️ رحلة ملحمية"],
+ q4:"قديم ولا جديد؟",q4o:["🆕 جديد (آخر 3 سنين)","🎞️ كلاسيكي","🤷 ما يفرق"],q5:"لوين بدو ياخدك؟",q5o:["🌍 العالم الحقيقي","🪐 عالم تاني","⏳ الماضي","🎲 فاجئني"],q6:"الإيقاع؟",q6o:["⚡ سريع","🕯️ بطيء ومتدرّج"],q7:"كيف بدك تخلص؟",q7o:["😊 نهاية سعيدة","🌀 بمفاجأة","😶 ما يفرق"],q8:"اللغة؟",q8o:["🇸🇦 عربي","🇬🇧 أجنبي","🌐 الاثنين"],
+ together:"مع صديق",tgTitle:"اختر فيلماً <em>مع صديق.</em>",tgIntro:"كلاكما يسحب نفس الـ16 ترشيحاً، المبنية على ذوقك وخدماتك. ثم نعرض ما أعجبكما معاً والفيلم المناسب لهذه الليلة.",tgStart:"ابدأ جلسة",tgMe:"دورك · {a} من {b}",tgFriend:"دور صديقك · {a} من {b}",tgGuest:"{n} يريد اختيار فيلم معك · {a} من {b}",
  tgDoneMe:"انتهيت. الآن صديقك يسحب نفس المجموعة.",tgHand:"🤝 أعط الهاتف لصديقي",tgSend:"📲 أرسل لصديقي على واتساب",tgWait:"بانتظار صديقك. عندما ينتهي سيرسل لك رابطاً — افتحه وستظهر النتائج هنا.",tgResend:"أرسل الرابط مجدداً",
  tgGuestDone:"انتهيت! أرسل اختياراتك ليرى كلاكما النتائج.",tgSendBack:"📲 أرسل اختياراتي",tgMatches:"أعجبكما معاً",tgTop:"فيلم الليلة",tgNoMatch:"لا يوجد تطابق كامل. هذا الأقرب:",tgEither:"أعجب أحدكما",tgNew:"ابدأ جلسة جديدة",tgDeckBad:"رابط الجلسة لا يعمل. اطلب من صديقك إرساله مجدداً.",
  tgShareText:"🎬 خلينا نختار فيلم مع بعض! اسحب هذه وأرسل لي اختياراتك:",tgBackText:"🎬 هذه اختياراتي! افتح الرابط لترى ما تطابقنا عليه:",tgMyName:"اسمك (ليعرف صديقك من يسأل)",tgFriendTurn:"دور صديقك",tgSameDevice:"أعط الهاتف: صديقك يسحب نفس المجموعة الآن.",
  share:"مشاركة",shareText:"شوف {t} ({y}) على بنبوك لإيجاد الأفلام 🎬",addList:"♥ أضف إلى قائمتي",inList:"✓ في قائمتي",shared:"تمت مشاركته معك",copied:"تم نسخ الرابط",fTitle:"الفلاتر",fService:"الخدمة",fAnyMine:"أي خدمة عندي",fRating:"أقل تقييم",fAny:"الكل",fYear:"السنة",fOlder:"قبل 2000",fGenre:"النوع",fType:"النوع",fLang:"اللغة",fRuntime:"المدة",fShort:"أقل من 100 دقيقة",fLong:"أكثر من ساعتين",fApply:"تطبيق",fClear:"مسح الكل",fSort:"ترتيب حسب",fBest:"الأنسب لي",fTop:"الأعلى تقييماً",fNew:"الأحدث",fPopular:"الأكثر شعبية",a2hsT:"ثبّت تطبيق بنبوك لإيجاد الأفلام",ios:["اضغط زر <strong>المشاركة</strong> أسفل سفاري (المربع مع السهم ↑).","انزل للأسفل واضغط <strong>إضافة إلى الشاشة الرئيسية</strong>.","اضغط <strong>إضافة</strong> في الزاوية العلوية. ستظهر أيقونة التطبيق على شاشتك الرئيسية."],android:["اضغط قائمة <strong>⋮</strong> أعلى كروم.","اضغط <strong>إضافة إلى الشاشة الرئيسية</strong> أو <strong>تثبيت التطبيق</strong>.","اضغط <strong>تثبيت</strong>. ستظهر أيقونة التطبيق على شاشتك الرئيسية."],desktop:["في كروم أو إيدج، اضغط أيقونة التثبيت في طرف شريط العنوان.","اضغط <strong>تثبيت</strong>."],installed:"مثبّت بالفعل — أنت تشغّله من الشاشة الرئيسية.",installNow:"ثبّت الآن",close:"إغلاق",cAny:"عربي + أجنبي",cAr:"عربي",cEn:"أجنبي",tMovies:"أفلام",tSeries:"مسلسلات",tBoth:"الاثنين",series:"مسلسل",movie:"فيلم",seasons:"{x} مواسم"}};
 function t(k,v){let x=STR[state.lang||"en"][k];if(x==null)x=STR.en[k];if(typeof x==="string"&&v)Object.entries(v).forEach(([a,b])=>x=x.split("{"+a+"}").join(b));return x}
 function applyLang(){const L=state.lang||"en";document.documentElement.lang=L;document.documentElement.dir=L==="ar"?"rtl":"ltr";
- document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));document.querySelectorAll("[data-ph]").forEach(e=>e.placeholder=t(e.dataset.ph));
+ document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));document.querySelectorAll("[data-i-html]").forEach(e=>e.innerHTML=t(e.dataset.iHtml));document.querySelectorAll("[data-ph]").forEach(e=>e.placeholder=t(e.dataset.ph));
  $("h1").innerHTML=t("h1");$("logoTxt").innerHTML=t("logo");$("lang").textContent=L==="ar"?"EN":"عربي";}
 const PREFERRED=["Netflix","Amazon Prime Video","Apple TV+","Apple TV Plus","Shahid VIP","Shahid"];
 let state={lang:"en",clang:"any",ctype:"movie",name:"",tg:null,f:{svc:"",rating:0,year:"",genre:"",type:"",lang:"",rt:"",sort:"best"},phase:"genres",idx:0,genre:{},prov:{},decade:{},seen:{},liked:[],watched:[],history:[],key:"4b978fa1cf7f0d286ab2bfa47f92027a",region:"AE"};
@@ -190,9 +202,9 @@ async function boot(){
  PROVIDERS.push({provider_id:0,provider_name:"IPTV",logo_path:""});
 }
 
-function show(name){["intro","swipe","list","find","together","taste"].forEach(s=>$("s-"+s).hidden=s!==name);
+function show(name){["intro","swipe","list","find","mood","play","together","taste"].forEach(s=>$("s-"+s).hidden=s!==name);
  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.tab===name));$("tabs").hidden=name==="intro";
- if(name==="list")renderList();if(name==="taste")renderTaste();if(name==="together")renderTogether();}
+ if(name==="list")renderList();if(name==="taste")renderTaste();if(name==="together")renderTogether();if(name==="play")renderPlay();}
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.tab));
 state.f=Object.assign({svc:"",rating:0,year:"",genre:"",type:"",lang:"",rt:"",sort:"best"},state.f||{});
 $("key").value=state.key;$("region").value=state.region;
@@ -410,6 +422,48 @@ async function renderTogether(){const b=$("tgbox");const T=state.tg;b.innerHTML=
  b.querySelectorAll("[data-tsh]").forEach(x=>x.onclick=e=>{e.stopPropagation();shareItem(find(x.dataset.tsh,x.dataset.tsht))});
  b.querySelectorAll("[data-ttr]").forEach(x=>x.onclick=()=>openTrailer(find(x.dataset.ttr,x.dataset.ty)));b.querySelectorAll("[data-tcast]").forEach(x=>x.onclick=()=>openCast(find(x.dataset.tcast,x.dataset.ty)));
  $("tgNew").onclick=()=>{state.tg=null;save();renderTogether()}}
+function resItem(m,why){const inL=state.liked.some(x=>x.id===m.id);return`<div class="item open" data-rid="${m.id}" data-rty="${mt(m)}"><div class="head"><img src="${m.poster_path?IMG+"w185"+m.poster_path:""}" alt=""><div class="t"><b>${m.title}</b><span>${String(m.release_date||"").slice(0,4)} · ★ ${(m.vote_average||0).toFixed(1)}${mt(m)==="tv"?" · "+t("series"):""}${why?"<br>"+why:""}</span></div><button class="sharebtn" data-radd="${m.id}" style="margin:0">${inL?t("added"):t("add")}</button><button aria-label="Share" data-rsh="${m.id}">↗</button></div>
+ <div class="row" style="gap:12px"><button class="link" style="padding:4px 0" data-rtr="${m.id}">${t("watchtrailer")}</button><button class="link" style="padding:4px 0" data-rcast="${m.id}">${t("castlink")}</button></div><div class="where" data-lw="${m.id}" data-lt="${mt(m)}"></div></div>`}
+function wireResults(box,items){const find=id=>items.find(m=>m.id==id);
+ box.querySelectorAll("[data-lw]").forEach(async w=>{try{const d=await api(`/${w.dataset.lt}/${w.dataset.lw}/watch/providers`);w.innerHTML=whereHtml(d.results[state.region]||{})}catch(e){}});
+ box.querySelectorAll("[data-radd]").forEach(b=>b.onclick=()=>{const m=find(b.dataset.radd);if(!m||state.liked.some(x=>x.id===m.id))return;state.liked.push({id:m.id,type:mt(m),title:m.title,year:String(m.release_date||"").slice(0,4),rating:m.vote_average,poster:m.poster_path,prov:[]});state.seen[mt(m)+m.id]=1;m.genre_ids.forEach(g=>state.genre[g]=(state.genre[g]||0)+0.5);$("count").textContent=state.liked.length;save();b.textContent=t("added")});
+ box.querySelectorAll("[data-rsh]").forEach(b=>b.onclick=()=>shareItem(find(b.dataset.rsh)));box.querySelectorAll("[data-rtr]").forEach(b=>b.onclick=()=>openTrailer(find(b.dataset.rtr)));box.querySelectorAll("[data-rcast]").forEach(b=>b.onclick=()=>openCast(find(b.dataset.rcast)));}
+// ---------- mood ----------
+let mqt;$("mq").oninput=()=>{clearTimeout(mqt);mqt=setTimeout(moodSearch,350)};
+async function moodSearch(){const q=$("mq").value.trim();const pk=$("mpick");$("mres").innerHTML="";if(q.length<2){pk.innerHTML="";return}
+ try{const d=await api("/search/multi",{query:q,include_adult:"false"});const res=d.results.filter(x=>x.media_type==="movie"||x.media_type==="tv").map(x=>norm(x)).slice(0,5);
+  pk.innerHTML=res.map(m=>`<div class="item" data-mid="${m.id}" data-mty="${mt(m)}"><img src="${m.poster_path?IMG+"w185"+m.poster_path:""}" alt=""><div class="t"><b>${m.title}</b><span>${String(m.release_date||"").slice(0,4)}${mt(m)==="tv"?" · "+t("series"):""}</span></div><span class="chip on">→</span></div>`).join("");
+  pk.querySelectorAll(".item").forEach(it=>it.onclick=()=>moodPick(it.dataset.mty,+it.dataset.mid,it.querySelector("b").textContent));}catch(e){pk.innerHTML=""}}
+async function moodPick(ty,id,title){const box=$("mres");$("mpick").innerHTML="";$("mq").value=title;box.innerHTML=`<div class="empty">${t("loading")}</div>`;
+ try{const [a,b]=await Promise.all([api(`/${ty}/${id}/recommendations`),api(`/${ty}/${id}/similar`)]);const seen=new Set([id]);const items=[];
+  [...a.results,...b.results].forEach(m=>{if(seen.has(m.id)||!m.poster_path)return;seen.add(m.id);norm(m,ty);items.push(m)});items.sort((x,y)=>(y.vote_count>200?y.vote_average:0)-(x.vote_count>200?x.vote_average:0)).splice(12);
+  if(!items.length){box.innerHTML=`<div class="empty">${t("moodNone")}</div>`;return}
+  box.innerHTML=`<h3 style="font-family:var(--display);font-weight:400;letter-spacing:.04em;font-size:22px;margin:6px 0 0">${t("moodBecause",{x:title})}</h3>`+items.map(m=>resItem(m)).join("");wireResults(box,items);}catch(e){box.innerHTML=`<div class="empty">${t("moodNone")}</div>`}}
+// ---------- play ----------
+const PLAY=[{k:"q1",n:6},{k:"q2",n:4},{k:"q3",n:3},{k:"q4",n:3},{k:"q5",n:4},{k:"q6",n:2},{k:"q7",n:3},{k:"q8",n:3}];let playA=[];
+function renderPlay(){const b=$("playbox");playA=[];b.innerHTML=`<div class="tg"><h2>${t("playTitle")}</h2><p>${t("playIntro")}</p><button class="cta" id="pStart">${t("playStart")}</button></div>`;$("pStart").onclick=()=>playQ(0)}
+function playQ(i){const b=$("playbox");if(i>=PLAY.length)return playResults();const q=PLAY[i];const opts=t(q.k+"o");
+ b.innerHTML=`<div class="q"><div class="hint" style="text-align:start;padding:0">${t("playQ",{a:i+1,b:PLAY.length})}</div><h2 style="font-family:var(--display);font-weight:400;font-size:34px;letter-spacing:.03em;margin:0;line-height:1">${t(q.k)}</h2><div class="opts">${opts.map((o,j)=>{const sp=o.indexOf(" ");return`<button data-j="${j}"><span class="e">${o.slice(0,sp)}</span>${o.slice(sp+1)}</button>`}).join("")}</div>${i>0?`<button class="link" id="pBack" style="text-align:start">← ${t("undo")||"Back"}</button>`:""}</div>`;
+ b.querySelectorAll(".opts button").forEach(x=>x.onclick=()=>{x.classList.add("on");playA[i]=+x.dataset.j;setTimeout(()=>playQ(i+1),180)});const pb=$("pBack");if(pb)pb.onclick=()=>playQ(i-1)}
+async function playResults(){const b=$("playbox");b.innerHTML=`<div class="empty">${t("loading")}</div>`;const [q1,q2,q3,q4,q5,q6,q7,q8]=playA;const tv=state.ctype==="tv";
+ const G=tv?{com:35,drama:18,action:10759,horror:9648,think:9648,fant:10765,rom:18,fam:10751,scifi:10765,hist:10768,myst:9648,adv:10759,anim:16,doc:99}:{com:35,drama:18,action:28,horror:27,think:9648,fant:14,rom:10749,fam:10751,scifi:878,hist:36,myst:9648,adv:12,anim:16,doc:99,war:10752,thr:53};
+ let genres=[[G.com],[G.drama],[G.action,G.adv],[G.horror,G.thr||G.myst],[G.think,G.thr||G.drama],[G.fant,G.scifi]][q1];const without=[];
+ if(q2===1)genres.push(G.rom);if(q2===3){genres=[G.fam,G.anim,G.adv];without.push(G.horror)}if(q2===2&&q1!==3)without.push(G.horror);
+ if(q5===1)genres.push(G.scifi,G.fant);if(q5===2)genres.push(G.hist,G.war||G.drama);if(q5===0)without.push(G.fant,G.scifi,G.anim);
+ if(q7===1)genres.push(G.myst);
+ const P={sort_by:q6===0?"popularity.desc":"vote_average.desc",include_adult:"false","vote_count.gte":q8===0?20:300,with_genres:[...new Set(genres)].slice(0,3).join("|")};
+ if(without.length)P.without_genres=[...new Set(without)].join(",");
+ const now=new Date().getFullYear();if(q4===0)P[tv?"first_air_date.gte":"primary_release_date.gte"]=(now-3)+"-01-01";if(q4===1)P[tv?"first_air_date.lte":"primary_release_date.lte"]="2008-12-31";
+ if(!tv){if(q3===0)P["with_runtime.lte"]=105;if(q3===2)P["with_runtime.gte"]=130}
+ if(q8===0)P.with_original_language="ar";if(q8===1)P.with_original_language="en";
+ const have=PROVIDERS.filter(p=>state.prov[p.provider_id]>0);if(!(state.prov[0]>0)&&have.length){P.watch_region=state.region;P.with_watch_providers=have.map(p=>p.provider_id).join("|")}
+ const kind=tv?"tv":"movie";let items=[];try{for(const pg of [1,2]){const d=await api(`/discover/${kind}`,{...P,page:pg});d.results.forEach(m=>{norm(m,kind);if(m.poster_path&&!state.seen[kind+m.id]&&(state.seen[kind+m.id]!=="w"))items.push(m)})}}catch(e){}
+ if(items.length<10&&P.with_watch_providers){delete P.with_watch_providers;delete P.watch_region;try{const d=await api(`/discover/${kind}`,P);d.results.forEach(m=>{norm(m,kind);if(m.poster_path&&!items.some(x=>x.id===m.id))items.push(m)})}catch(e){}}
+ items=items.filter(m=>q7===0?!(m.genre_ids||[]).includes(G.horror):true);
+ if(q6===1)items.sort((a,b)=>b.vote_average-a.vote_average);else items.sort((a,b)=>(b.popularity*0.3+b.vote_average*10)-(a.popularity*0.3+a.vote_average*10));
+ items=items.slice(0,10);
+ b.innerHTML=`<div class="tg"><h2>${t("playResult")}</h2></div>`+items.map((m,i)=>`<div style="display:flex;gap:8px;align-items:stretch"><div class="rnum" style="padding-top:12px">${i+1}</div><div style="flex:1;min-width:0">${resItem(m)}</div></div>`).join("")+`<button class="cta2" id="pAgain">${t("playAgain")}</button>`;
+ wireResults(b,items);$("pAgain").onclick=renderPlay}
 function shareUrl(m){const u=new URL(location.href);u.search="";u.hash="";u.searchParams.set("m",mt(m)+"-"+m.id);return u.toString()}
 async function shareItem(m){const url=shareUrl(m);const text=t("shareText",{t:m.title,y:String(m.release_date||"").slice(0,4)});
  if(navigator.share){try{await navigator.share({title:m.title,text,url});return}catch(e){if(e.name==="AbortError")return}}
