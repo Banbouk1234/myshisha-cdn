@@ -152,7 +152,7 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script>
-const APP_VER="1.26";const IMG="https://image.tmdb.org/t/p/";
+const APP_VER="1.27";const IMG="https://image.tmdb.org/t/p/";
 const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"Right means yes, left means no. Genres first, then your streaming services, then movies that fit you.",country:'Your country (for "where to watch")',start:"Start swiping",legend:"✕ don't like · ↶ undo · 🤷 not sure · 👁 watched it · ♥ like",search:"Type a movie name…",
  h1:"SWIPE.<br>DON'T<br><em>SCROLL.</em>",logo:"BANBOUK <b>MOVIE FINDER</b>",like:"LIKE",nope:"NOPE",trailer:"▶ TRAILER",cast:"👥 CAST",doyoulike:"Do you like",doyouhave:"Do you have",genreHint:"Swipe right if this is your kind of night.",think:'Think "{x}".',provHint:"Swipe right if you can watch {x} right now.",iptvHint:"IPTV means you have everything. We'll stop filtering by service.",
  genres:"Genres · {a} of {b}",services:"Your services · {a} of {b}",picked:"Picked for you · {a} saved",nomore:"No more movies for your services. Check your list or reset.",loading:"Loading…",
@@ -226,6 +226,7 @@ function show(name){["intro","swipe","list","find","mood","play","together","fri
  if(name==="list")renderList();if(name==="taste")renderTaste();if(name==="together")renderTogether();if(name==="play")renderPlay();if(name==="friends")renderFriends();}
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.tab));
 state.langW=state.langW||{};Object.keys(state.seen).forEach(k=>{if(state.seen[k]===0)state.seen[k]="s"});
+if(state.phase!=="movies"&&((state.liked||[]).length>2||Object.keys(state.seen||{}).length>5)&&Object.keys(state.prov||{}).length){state.phase="movies";state.idx=0}
 if(!state.tasteV2){const g={};const neg=Object.keys(state.genre).filter(k=>state.genre[k]<0);const passes=Object.values(state.seen).filter(v=>v===-1).length;
  // keep a gentle negative from passes, scaled so 100 passes ≈ -2 on the most-rejected genres
  neg.forEach(k=>g[k]=Math.max(-2.5,state.genre[k]/Math.max(1,passes/15)));
@@ -446,7 +447,7 @@ function avatarHtml(u,cls){return u&&u.photo?`<img class="${cls||""}" src="${u.p
 function renderMe(){const b=$("me");if(USER){$("meAv").innerHTML=USER.photoURL?`<img src="${USER.photoURL}" style="width:100%;height:100%;object-fit:cover" referrerpolicy="no-referrer">`:`<span style="font-size:11px;font-weight:700;display:grid;place-items:center;height:100%">${initials(USER.displayName)}</span>`;$("meTxt").textContent=(state.handle?"@"+state.handle:(USER.displayName||"").split(" ")[0])}else{$("meAv").innerHTML="";$("meTxt").textContent=t("login")}}
 async function login(){try{const prov=new firebase.auth.GoogleAuthProvider();prov.setCustomParameters({prompt:"select_account"});await fauth().signInWithPopup(prov)}catch(e){if(e.code==="auth/popup-blocked"||e.code==="auth/operation-not-supported-in-this-environment"){const p2=new firebase.auth.GoogleAuthProvider();p2.setCustomParameters({prompt:"select_account"});await fauth().signInWithRedirect(p2)}}}
 async function logout(){await fauth().signOut();state.handle="";state.syncedOnce=false;save();frUnsubs.forEach(f=>f());frUnsubs=[];FRIENDS={};FRPROF={};REQS={};USER=null;renderMe();if(!$("s-friends").hidden)renderFriends()}
-const SYNC_KEYS=["liked","watched","genre","decade","langW","seen","prov","clang","ctype","name","handle","tasteV2"];
+const SYNC_KEYS=["liked","watched","genre","decade","langW","seen","prov","clang","ctype","name","handle","tasteV2","phase","idx","f"];
 let syncT=null;function syncUp(){if(!USER)return;clearTimeout(syncT);syncT=setTimeout(()=>{const d={};SYNC_KEYS.forEach(k=>{if(state[k]!==undefined)d[k]=state[k]});d.updated=Date.now();d.name=USER.displayName||state.name||"";d.photo=USER.photoURL||"";d.handle=state.handle||"";
  d.liked=(state.liked||[]).slice(0,300);d.watched=(state.watched||[]).slice(0,300);fdb().ref("users/"+USER.uid).update(d).catch(()=>{})},800)}
 async function syncDown(){if(!USER)return;const sn=await fdb().ref("users/"+USER.uid).get();const d=sn.val();if(!d){syncUp();return}
@@ -456,7 +457,10 @@ async function syncDown(){if(!USER)return;const sn=await fdb().ref("users/"+USER
   state.liked=Object.values(L);state.watched=Object.values(W);state.seen={...(state.seen||{}),...(d.seen||{})};
   if(Object.keys(d.genre||{}).length>=Object.keys(state.genre||{}).length){state.genre=d.genre||{};state.decade=d.decade||{};state.langW=d.langW||{}}
   if(!Object.keys(state.prov||{}).length&&d.prov)state.prov=d.prov;}
- state.handle=d.handle||state.handle||"";state.name=USER.displayName||state.name;state.syncedOnce=true;save();syncUp();$("count").textContent=state.liked.length;renderMe()}
+ state.handle=d.handle||state.handle||"";state.name=USER.displayName||state.name;if(d.f)state.f=Object.assign(state.f||{},d.f);
+ const hasData=(state.liked||[]).length||(state.watched||[]).length||Object.keys(state.seen||{}).length>3;if(hasData){state.phase="movies";state.idx=0;if(!Object.keys(state.prov||{}).length&&d.prov)state.prov=d.prov}
+ state.syncedOnce=true;save();syncUp();$("count").textContent=state.liked.length;renderMe();
+ if(hasData&&(!$("s-intro").hidden||(!$("s-swipe").hidden&&cur&&cur.kind!=="movie"))){show("swipe");render()}}
 const _save0=save;
 async function buildDeck(n=20){pool=[];MOVIES={};refill.page=0;await refill();if(pool.length<n)await refill();
  let cand=pool.filter(m=>passF(m)&&m.poster_path).sort((a,b)=>score(b)-score(a));const top=cand.slice(0,Math.ceil(n*0.6)),rest=cand.slice(Math.ceil(n*0.6)).sort(()=>Math.random()-.5).slice(0,n-top.length);return [...top,...rest].sort(()=>Math.random()-.5).map(slim)}
