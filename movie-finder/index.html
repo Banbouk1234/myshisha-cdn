@@ -11,7 +11,7 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);displ
  padding:max(8px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
 header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:6px 0 10px}
 .logo{font-family:var(--display);font-size:22px;letter-spacing:.04em;white-space:nowrap;line-height:1}.logo b{color:var(--accent);font-weight:400}
-.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;width:100%}.tab{white-space:nowrap;flex:1;text-align:center;background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:8px 4px;font:600 13px var(--body)}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;width:100%}.tabs .tab:nth-child(9){grid-column:span 1}.tab{white-space:nowrap;flex:1;text-align:center;background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:8px 4px;font:600 13px var(--body)}
 .tab[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 main{flex:1;min-height:0;display:flex;flex-direction:column}
 .hint{text-align:center;color:var(--muted);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding-bottom:8px}
@@ -80,6 +80,10 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 .top .cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.8))}.top .cover h3{position:relative;z-index:1;font-family:var(--display);font-size:32px;font-weight:400;margin:0;color:#fff;letter-spacing:.03em;line-height:.95}
 .top .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px}.badge{display:inline-block;background:var(--accent);color:#000;border-radius:999px;padding:3px 10px;font:700 11px var(--body);letter-spacing:.08em;text-transform:uppercase}
 .tgbar{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted)}.tgbar i{flex:1;height:6px;border-radius:3px;background:var(--line);overflow:hidden}.tgbar i b{display:block;height:100%;background:var(--accent)}
+.fr{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px}.fr img,.fr .av{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--line);flex:none;display:grid;place-items:center;font-weight:700}
+.fr .t{flex:1;min-width:0}.fr .t b{display:block;font-size:14px}.fr .t span{font-size:12px;color:var(--muted)}.fr button{background:var(--surface);border:1px solid var(--line);color:var(--fg);border-radius:999px;padding:6px 10px;font:700 12px var(--body)}
+.feed{display:flex;flex-direction:column;gap:8px}.fitem{display:flex;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px;cursor:pointer}.fitem img{width:46px;height:68px;border-radius:8px;object-fit:cover;background:#333;flex:none}.fitem .t{flex:1;min-width:0;font-size:13px}.fitem .t b{display:block}.fitem .t span{color:var(--muted);font-size:12px}
+.stars-s{color:var(--accent);font-size:12px;letter-spacing:1px}.pfx{display:flex;gap:12px;align-items:center}.pfx img,.pfx .av{width:64px;height:64px;border-radius:50%;background:var(--line);object-fit:cover;display:grid;place-items:center;font-size:24px;font-weight:700}.handle{color:var(--muted);font-size:13px}
 .cta2{background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:14px;padding:14px;font:700 15px var(--body)}
 .steps{display:flex;flex-direction:column;gap:10px;max-width:420px;width:100%;text-align:start;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px}
 .steps b{display:block;font-family:var(--display);font-size:22px;letter-spacing:.04em;font-weight:400}.steps p{margin:0;font-size:15px;line-height:1.5;color:var(--fg)}.steps p strong{color:var(--accent)}.steps p span{display:inline-block;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#000;text-align:center;line-height:24px;font-weight:700;margin-inline-end:8px;font-size:13px}
@@ -94,7 +98,7 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 .tbtn{position:absolute;top:26px;left:14px;z-index:3;background:rgba(0,0,0,.6);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:8px 14px;font:700 12px var(--body);letter-spacing:.06em;backdrop-filter:blur(6px)}
 .trailer{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px}
 .trailer .frame{width:100%;max-width:720px;aspect-ratio:16/9;background:#000;border-radius:14px;overflow:hidden}.trailer iframe{width:100%;height:100%;border:0}
-.trailer .x{position:absolute;top:max(16px,env(safe-area-inset-top));right:16px;width:44px;height:44px;border-radius:50%;background:var(--surface);color:var(--fg);border:1px solid var(--line);font-size:20px}
+.trailer .x{position:fixed;z-index:60;top:max(16px,env(safe-area-inset-top));right:16px;width:44px;height:44px;border-radius:50%;background:var(--surface);color:var(--fg);border:1px solid var(--line);font-size:20px}
 .trailer p{color:var(--muted);margin:0;font-size:14px}
 .tbtn.cast{left:auto;right:14px}
 .castbox{width:100%;max-width:520px;max-height:80vh;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:12px;padding:4px}
@@ -114,10 +118,10 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
 .item.open{flex-direction:column;align-items:stretch}.item .head{display:flex;gap:12px;align-items:center}
 </style></head><body>
 <header><div style="display:flex;align-items:center;gap:8px"><div class="logo" id="logoTxt">BANBOUK <b>MOVIE FINDER</b></div></div>
- <button class="lang" id="lang" aria-label="Language" style="margin-inline-start:auto">عربي</button><div class="tabs" id="tabs" hidden>
+ <button class="lang" id="me" aria-label="Account" style="margin-inline-start:auto;padding:4px 8px;display:flex;align-items:center;gap:6px"><span id="meAv" style="width:24px;height:24px;border-radius:50%;background:var(--line);display:inline-block;overflow:hidden"></span><span id="meTxt" data-i="login">Login</span></button><button class="lang" id="lang" aria-label="Language">عربي</button><div class="tabs" id="tabs" hidden>
   <button class="tab" aria-selected="true" data-tab="swipe" data-i="swipe">Swipe</button>
   <button class="tab" aria-selected="false" data-tab="list"><span data-i="mylist">My list</span> <span id="count">0</span></button>
-  <button class="tab" aria-selected="false" data-tab="find" data-i="find">Find</button><button class="tab" aria-selected="false" data-tab="mood" data-i="mood">Mood</button><button class="tab" aria-selected="false" data-tab="play" data-i="play">Play</button><button class="tab" aria-selected="false" data-tab="together" data-i="together">Together</button><button class="tab" aria-selected="false" data-tab="taste" data-i="taste">Taste</button></div></header>
+  <button class="tab" aria-selected="false" data-tab="find" data-i="find">Find</button><button class="tab" aria-selected="false" data-tab="mood" data-i="mood">Mood</button><button class="tab" aria-selected="false" data-tab="play" data-i="play">Play</button><button class="tab" aria-selected="false" data-tab="together" data-i="together">Together</button><button class="tab" aria-selected="false" data-tab="friends" data-i="friends">Friends</button><button class="tab" aria-selected="false" data-tab="taste" data-i="taste">Taste</button></div></header>
 <main>
  <section class="screen" id="s-intro"><div class="intro">
   <h1 id="h1">SWIPE.<br>DON'T<br><em>SCROLL.</em></h1>
@@ -140,11 +144,13 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
   <div id="found"></div></div></section>
  <section class="screen" id="s-mood" hidden><div class="list"><div class="tg"><h2 data-i-html="moodTitle"></h2><p data-i="moodIntro"></p></div><input id="mq" data-ph="moodPh" autocomplete="off"><div id="mpick"></div><div id="mres"></div></div></section>
  <section class="screen" id="s-play" hidden><div class="list" id="playbox"></div></section>
+ <section class="screen" id="s-friends" hidden><div class="list" id="frbox"></div></section>
  <section class="screen" id="s-together" hidden><div class="list" id="tgbox"></div></section>
  <section class="screen" id="s-taste" hidden><div class="taste" id="taste"></div></section>
 </main>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script>
 const IMG="https://image.tmdb.org/t/p/";
 const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"Right means yes, left means no. Genres first, then your streaming services, then movies that fit you.",country:'Your country (for "where to watch")',start:"Start swiping",legend:"✕ don't like · ↶ undo · 🤷 not sure · 👁 watched it · ♥ like",search:"Type a movie name…",
@@ -165,6 +171,7 @@ const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"R
  tgDoneMe:"You're done. Now your friend swipes the same deck.",tgHand:"🤝 Hand the phone to my friend",tgSend:"📲 Send to my friend on WhatsApp",tgWait:"Waiting for your friend. When they finish, they'll send you a link back — open it and the matches appear here.",tgResend:"Send the link again",
  tgGuestDone:"All done! Send your picks back so you both see the matches.",tgSendBack:"📲 Send my picks back",tgMatches:"You both liked",tgTop:"Tonight's pick",tgNoMatch:"No exact match. Here's what came closest:",tgEither:"Liked by one of you",tgNew:"Start a new session",tgDeckBad:"This session link doesn't work. Ask your friend to send it again.",
  tgShareText:"🎬 Let's pick a movie together! Swipe these and send me your picks:",tgBackText:"🎬 Here are my picks! Open this to see what we matched on:",tgMyName:"Your name (so your friend knows who's asking)",tgFriendTurn:"Friend's turn",tgSameDevice:"Pass the phone: your friend swipes the same deck now.",
+ login:"Login",logout:"Log out",friends:"Friends",frTitle:"Movie <em>friends.</em>",frIntro:"Log in with Google to save your lists on every device, follow friends, and see what they love.",frLogin:"Continue with Google",frHandle:"Your username",frHandleHint:"Friends find you with this. Letters and numbers only.",frSave:"Save",frTaken:"That username is taken.",frAdd:"Add a friend",frAddPh:"friend's username",frSend:"Send request",frNotFound:"No one with that username.",frReq:"Friend requests",frAccept:"Accept",frDecline:"Decline",frPending:"Request sent",frRemove:"Remove",frNone:"No friends yet. Share your username or add theirs.",frFeed:"What friends are watching",frFeedNone:"When friends save or rate titles, they show up here.",frSaved:"saved",frWatched:"watched",frRated:"rated",frCommon:"In common with you",frTheirs:"{n}'s list",frTaste:"{n}'s taste",frAlso:"{n} also saved this",frFriendsLiked:"Friends who liked this",frMe:"You",frYou:"you",frSync:"Synced to your account",frShare:"Invite friends",frShareText:"🎬 Add me on Banbouk Movie Finder — my username is {h}:",frMutual:"{n} friends",
  more:"More",mTitle:"Match with your taste",mGreat:"Great match",mGood:"Good match",mMaybe:"Maybe",mNot:"Probably not for you",photos:"Photos",comments:"Comments",cPh:"Write a comment…",cPost:"Post",cNone:"No comments yet. Be the first.",cName:"Add your name so people know who wrote it:",share:"Share",shareText:"Check out {t} ({y}) on Banbouk Movie Finder 🎬",addList:"♥ Add to my list",inList:"✓ In my list",shared:"Shared with you",copied:"Link copied",fTitle:"Filters",fService:"Service",fAnyMine:"Any of mine",fRating:"Minimum rating",fAny:"Any",fYear:"Year",fOlder:"Before 2000",fGenre:"Genre",fType:"Type",fLang:"Language",fRuntime:"Length",fShort:"Under 100 min",fLong:"Over 2 hours",fApply:"Apply",fClear:"Clear all",fSort:"Sort by",fBest:"Best match",fTop:"Top rated",fNew:"Newest",fPopular:"Most popular",a2hsT:"Install Banbouk Movie Finder",ios:["Tap the <strong>Share</strong> button at the bottom of Safari (the square with an arrow ↑).","Scroll down and tap <strong>Add to Home Screen</strong>.","Tap <strong>Add</strong> in the top corner. The app icon appears on your Home Screen."],android:["Tap the <strong>⋮</strong> menu at the top of Chrome.","Tap <strong>Add to Home screen</strong> or <strong>Install app</strong>.","Tap <strong>Install</strong>. The app icon appears on your Home Screen."],desktop:["In Chrome or Edge, click the install icon at the right end of the address bar.","Click <strong>Install</strong>."],installed:"Already installed — you are running it from your Home Screen.",installNow:"Install now",close:"Close",cAny:"Arabic + English",cAr:"Arabic",cEn:"English",tMovies:"Movies",tSeries:"Series",tBoth:"Both",series:"Series",movie:"Movie",seasons:"{x} seasons"},
  ar:{swipe:"اسحب",mylist:"قائمتي",find:"ابحث",taste:"ذوقي",intro:"يمين يعني نعم، يسار يعني لا. الأنواع أولاً، ثم خدمات البث عندك، ثم أفلام على ذوقك.",country:"بلدك (لمعرفة أين تشاهد)",start:"ابدأ السحب",legend:"✕ ما بحب · ↶ تراجع · 🤷 مو متأكد · 👁 شاهدته · ♥ بحب",search:"اكتب اسم الفيلم…",
  h1:"اسحب.<br>لا <em>تتصفح.</em>",logo:"بنبوك <b>لإيجاد الأفلام</b>",like:"أعجبني",nope:"لا",trailer:"▶ الإعلان",cast:"👥 الممثلون",doyoulike:"هل تحب",doyouhave:"هل عندك",genreHint:"اسحب يميناً إذا كان هذا نوعك المفضل.",think:'مثل "{x}".',provHint:"اسحب يميناً إذا كان بإمكانك مشاهدة {x} الآن.",iptvHint:"IPTV يعني عندك كل شيء. لن نصفّي حسب الخدمة.",
@@ -184,6 +191,7 @@ const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"R
  tgDoneMe:"انتهيت. الآن صديقك يسحب نفس المجموعة.",tgHand:"🤝 أعط الهاتف لصديقي",tgSend:"📲 أرسل لصديقي على واتساب",tgWait:"بانتظار صديقك. عندما ينتهي سيرسل لك رابطاً — افتحه وستظهر النتائج هنا.",tgResend:"أرسل الرابط مجدداً",
  tgGuestDone:"انتهيت! أرسل اختياراتك ليرى كلاكما النتائج.",tgSendBack:"📲 أرسل اختياراتي",tgMatches:"أعجبكما معاً",tgTop:"فيلم الليلة",tgNoMatch:"لا يوجد تطابق كامل. هذا الأقرب:",tgEither:"أعجب أحدكما",tgNew:"ابدأ جلسة جديدة",tgDeckBad:"رابط الجلسة لا يعمل. اطلب من صديقك إرساله مجدداً.",
  tgShareText:"🎬 خلينا نختار فيلم مع بعض! اسحب هذه وأرسل لي اختياراتك:",tgBackText:"🎬 هذه اختياراتي! افتح الرابط لترى ما تطابقنا عليه:",tgMyName:"اسمك (ليعرف صديقك من يسأل)",tgFriendTurn:"دور صديقك",tgSameDevice:"أعط الهاتف: صديقك يسحب نفس المجموعة الآن.",
+ login:"دخول",logout:"خروج",friends:"الأصدقاء",frTitle:"أصدقاء <em>الأفلام.</em>",frIntro:"سجّل الدخول بغوغل لتحفظ قوائمك على كل الأجهزة، وتتابع أصدقاءك، وتشوف شو بيحبوا.",frLogin:"المتابعة بغوغل",frHandle:"اسم المستخدم",frHandleHint:"أصدقاؤك بيلاقوك فيه. أحرف وأرقام فقط.",frSave:"حفظ",frTaken:"هذا الاسم محجوز.",frAdd:"أضف صديق",frAddPh:"اسم مستخدم صديقك",frSend:"أرسل طلب",frNotFound:"ما في حدا بهالاسم.",frReq:"طلبات الصداقة",frAccept:"قبول",frDecline:"رفض",frPending:"تم إرسال الطلب",frRemove:"إزالة",frNone:"ما عندك أصدقاء بعد. شارك اسمك أو أضف اسمهم.",frFeed:"شو عم يتفرجوا أصدقاؤك",frFeedNone:"لما أصدقاؤك يحفظوا أو يقيّموا، بتظهر هون.",frSaved:"حفظ",frWatched:"شاهد",frRated:"قيّم",frCommon:"مشترك معك",frTheirs:"قائمة {n}",frTaste:"ذوق {n}",frAlso:"{n} كمان حفظه",frFriendsLiked:"أصدقاء حبّوه",frMe:"أنت",frYou:"أنت",frSync:"متزامن مع حسابك",frShare:"ادعُ أصدقاء",frShareText:"🎬 أضفني على بنبوك لإيجاد الأفلام — اسمي {h}:",frMutual:"{n} أصدقاء",
  more:"المزيد",mTitle:"تطابق مع ذوقك",mGreat:"تطابق ممتاز",mGood:"تطابق جيد",mMaybe:"يمكن",mNot:"غالباً مو إلك",photos:"صور",comments:"تعليقات",cPh:"اكتب تعليقاً…",cPost:"انشر",cNone:"لا تعليقات بعد. كن الأول.",cName:"أضف اسمك ليعرف الناس من كتب:",share:"مشاركة",shareText:"شوف {t} ({y}) على بنبوك لإيجاد الأفلام 🎬",addList:"♥ أضف إلى قائمتي",inList:"✓ في قائمتي",shared:"تمت مشاركته معك",copied:"تم نسخ الرابط",fTitle:"الفلاتر",fService:"الخدمة",fAnyMine:"أي خدمة عندي",fRating:"أقل تقييم",fAny:"الكل",fYear:"السنة",fOlder:"قبل 2000",fGenre:"النوع",fType:"النوع",fLang:"اللغة",fRuntime:"المدة",fShort:"أقل من 100 دقيقة",fLong:"أكثر من ساعتين",fApply:"تطبيق",fClear:"مسح الكل",fSort:"ترتيب حسب",fBest:"الأنسب لي",fTop:"الأعلى تقييماً",fNew:"الأحدث",fPopular:"الأكثر شعبية",a2hsT:"ثبّت تطبيق بنبوك لإيجاد الأفلام",ios:["اضغط زر <strong>المشاركة</strong> أسفل سفاري (المربع مع السهم ↑).","انزل للأسفل واضغط <strong>إضافة إلى الشاشة الرئيسية</strong>.","اضغط <strong>إضافة</strong> في الزاوية العلوية. ستظهر أيقونة التطبيق على شاشتك الرئيسية."],android:["اضغط قائمة <strong>⋮</strong> أعلى كروم.","اضغط <strong>إضافة إلى الشاشة الرئيسية</strong> أو <strong>تثبيت التطبيق</strong>.","اضغط <strong>تثبيت</strong>. ستظهر أيقونة التطبيق على شاشتك الرئيسية."],desktop:["في كروم أو إيدج، اضغط أيقونة التثبيت في طرف شريط العنوان.","اضغط <strong>تثبيت</strong>."],installed:"مثبّت بالفعل — أنت تشغّله من الشاشة الرئيسية.",installNow:"ثبّت الآن",close:"إغلاق",cAny:"عربي + أجنبي",cAr:"عربي",cEn:"أجنبي",tMovies:"أفلام",tSeries:"مسلسلات",tBoth:"الاثنين",series:"مسلسل",movie:"فيلم",seasons:"{x} مواسم"}};
 function t(k,v){let x=STR[state.lang||"en"][k];if(x==null)x=STR.en[k];if(typeof x==="string"&&v)Object.entries(v).forEach(([a,b])=>x=x.split("{"+a+"}").join(b));return x}
 function applyLang(){const L=state.lang||"en";document.documentElement.lang=L;document.documentElement.dir=L==="ar"?"rtl":"ltr";
@@ -192,7 +200,7 @@ function applyLang(){const L=state.lang||"en";document.documentElement.lang=L;do
 const PREFERRED=["Netflix","Amazon Prime Video","Apple TV+","Apple TV Plus","Shahid VIP","Shahid"];
 let state={lang:"en",clang:"any",ctype:"movie",name:"",tg:null,langW:{},f:{svc:"",rating:0,year:"",genre:"",type:"",lang:"",rt:"",sort:"best"},phase:"genres",idx:0,genre:{},prov:{},decade:{},seen:{},liked:[],watched:[],history:[],key:"4b978fa1cf7f0d286ab2bfa47f92027a",region:"AE"};
 try{Object.assign(state,JSON.parse(localStorage.getItem("banbouk-movie-finder")||"{}"))}catch(e){}
-const save=()=>{try{localStorage.setItem("banbouk-movie-finder",JSON.stringify(state))}catch(e){}};
+const save=()=>{try{localStorage.setItem("banbouk-movie-finder",JSON.stringify(state))}catch(e){};if(typeof syncUp==="function")syncUp()};
 const $=id=>document.getElementById(id);
 let GENRES=[],PROVIDERS=[],MOVIES={},pool=[],cur=null;
 
@@ -213,9 +221,9 @@ async function boot(){
  PROVIDERS.push({provider_id:0,provider_name:"IPTV",logo_path:""});
 }
 
-function show(name){["intro","swipe","list","find","mood","play","together","taste"].forEach(s=>$("s-"+s).hidden=s!==name);
+function show(name){["intro","swipe","list","find","mood","play","together","friends","taste"].forEach(s=>$("s-"+s).hidden=s!==name);
  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.tab===name));$("tabs").hidden=name==="intro";
- if(name==="list")renderList();if(name==="taste")renderTaste();if(name==="together")renderTogether();if(name==="play")renderPlay();}
+ if(name==="list")renderList();if(name==="taste")renderTaste();if(name==="together")renderTogether();if(name==="play")renderPlay();if(name==="friends")renderFriends();}
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.tab));
 state.langW=state.langW||{};Object.keys(state.seen).forEach(k=>{if(state.seen[k]===0)state.seen[k]="s"});
 if(!state.tasteV2){const g={};const neg=Object.keys(state.genre).filter(k=>state.genre[k]<0);const passes=Object.values(state.seen).filter(v=>v===-1).length;
@@ -335,7 +343,7 @@ function decide(yes){if(!cur)return;const c=cur;
  if(c.kind==="genre"){state.genre[c.key]=d;state.idx++}else if(c.kind==="prov"){state.prov[c.key]=d;state.idx++}
  else{const m=c.m;state.seen[mt(m)+m.id]=d;const w=yes?1.0:-0.25;m.genre_ids.forEach(g=>state.genre[g]=Math.max(-6,Math.min(8,(state.genre[g]||0)+w)));
   const dec=decadeOf(+String(m.release_date).slice(0,4));state.decade[dec]=(state.decade[dec]||0)+d*0.5;if(m.original_language)state.langW[m.original_language]=(state.langW[m.original_language]||0)+d*0.4;
-  if(yes)state.liked.push({id:m.id,type:mt(m),title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,prov:(c.prov||[]).map(p=>p.provider_name)});}
+  if(yes)state.liked.push({at:Date.now(),id:m.id,type:mt(m),title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,prov:(c.prov||[]).map(p=>p.provider_name)});}
  $("count").textContent=state.liked.length;save();render()}
 function undo(){if(state.tg&&state.tg.active)return;const h=state.history.pop();if(!h)return;Object.assign(state,JSON.parse(h));$("count").textContent=state.liked.length;save();render()}
 const RATE_LABELS=()=>t("rates");
@@ -351,7 +359,7 @@ function rateDialog(m,st,done){
 function markWatched(m,r,prov){state.history.push(snapshot());if(state.history.length>30)state.history.shift();
  state.seen[mt(m)+m.id]="w";const w=RATE_WEIGHT[r]||0;
  m.genre_ids.forEach(g=>state.genre[g]=Math.max(-6,Math.min(8,(state.genre[g]||0)+w*0.8)));const dec=decadeOf(+String(m.release_date).slice(0,4));state.decade[dec]=(state.decade[dec]||0)+w*0.5;if(m.original_language)state.langW[m.original_language]=(state.langW[m.original_language]||0)+w*0.3;
- (state.watched=state.watched||[]).unshift({id:m.id,type:mt(m),title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,r});
+ (state.watched=state.watched||[]).unshift({at:Date.now(),id:m.id,type:mt(m),title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,r});
  save();if(!$("s-swipe").hidden)render()}
 $("bSkip").onclick=()=>{if(!cur||cur.kind!=="movie")return;const el=$("stage").querySelector(".card:not(.under)");if(el){el.classList.add("leave");el.style.transform="translateY(-120%) scale(.9)";el.style.opacity="0"}
  setTimeout(()=>{const c=cur;if(c.tg){roomSwipe(c.m,false);return}state.history.push(snapshot());if(state.history.length>30)state.history.shift();state.seen[mt(c.m)+c.m.id]="s";save();render()},220)};
@@ -425,12 +433,31 @@ const FB={apiKey:"AIzaSyArHnFRiu0ThyWeJS0K25J4DIfVCvUc2pY",authDomain:"banbouk-m
 let db=null;function fdb(){if(!db){firebase.initializeApp(FB);db=firebase.database()}return db}
 const myId=(()=>{try{let v=localStorage.getItem("bmf-uid");if(!v){v=Math.random().toString(36).slice(2,10);localStorage.setItem("bmf-uid",v)}return v}catch(e){return Math.random().toString(36).slice(2,10)}})();
 let roomRef=null,roomUnsub=null,ROOM=null;
+let USER=null,FRIENDS={},FRPROF={},REQS={},frUnsubs=[];
+function fauth(){fdb();return firebase.auth()}
+function initials(n){return (n||"?").split(" ").map(x=>x[0]).join("").slice(0,2).toUpperCase()}
+function avatarHtml(u,cls){return u&&u.photo?`<img class="${cls||""}" src="${u.photo}" alt="" referrerpolicy="no-referrer">`:`<div class="av ${cls||""}">${initials(u&&u.name)}</div>`}
+function renderMe(){const b=$("me");if(USER){$("meAv").innerHTML=USER.photoURL?`<img src="${USER.photoURL}" style="width:100%;height:100%;object-fit:cover" referrerpolicy="no-referrer">`:`<span style="font-size:11px;font-weight:700;display:grid;place-items:center;height:100%">${initials(USER.displayName)}</span>`;$("meTxt").textContent=(state.handle?"@"+state.handle:(USER.displayName||"").split(" ")[0])}else{$("meAv").innerHTML="";$("meTxt").textContent=t("login")}}
+async function login(){try{const prov=new firebase.auth.GoogleAuthProvider();await fauth().signInWithPopup(prov)}catch(e){if(e.code==="auth/popup-blocked"||e.code==="auth/operation-not-supported-in-this-environment"){await fauth().signInWithRedirect(new firebase.auth.GoogleAuthProvider())}}}
+async function logout(){await fauth().signOut();frUnsubs.forEach(f=>f());frUnsubs=[];FRIENDS={};FRPROF={};REQS={};USER=null;renderMe();if(!$("s-friends").hidden)renderFriends()}
+const SYNC_KEYS=["liked","watched","genre","decade","langW","seen","prov","clang","ctype","name","handle","tasteV2"];
+let syncT=null;function syncUp(){if(!USER)return;clearTimeout(syncT);syncT=setTimeout(()=>{const d={};SYNC_KEYS.forEach(k=>{if(state[k]!==undefined)d[k]=state[k]});d.updated=Date.now();d.name=USER.displayName||state.name||"";d.photo=USER.photoURL||"";d.handle=state.handle||"";
+ d.liked=(state.liked||[]).slice(0,300);d.watched=(state.watched||[]).slice(0,300);fdb().ref("users/"+USER.uid).update(d).catch(()=>{})},800)}
+async function syncDown(){if(!USER)return;const sn=await fdb().ref("users/"+USER.uid).get();const d=sn.val();if(!d){syncUp();return}
+ const local=(state.liked||[]).length+(state.watched||[]).length;const remote=(d.liked||[]).length+(d.watched||[]).length;
+ if(remote>0&&(remote>=local||!state.syncedOnce)){ // merge: union lists, prefer remote taste if bigger
+  const byId=a=>Object.fromEntries((a||[]).map(x=>[(x.type||"movie")+x.id,x]));const L={...byId(state.liked),...byId(d.liked)};const W={...byId(state.watched),...byId(d.watched)};
+  state.liked=Object.values(L);state.watched=Object.values(W);state.seen={...(state.seen||{}),...(d.seen||{})};
+  if(Object.keys(d.genre||{}).length>=Object.keys(state.genre||{}).length){state.genre=d.genre||{};state.decade=d.decade||{};state.langW=d.langW||{}}
+  if(!Object.keys(state.prov||{}).length&&d.prov)state.prov=d.prov;}
+ state.handle=d.handle||state.handle||"";state.name=USER.displayName||state.name;state.syncedOnce=true;save();syncUp();$("count").textContent=state.liked.length;renderMe()}
+const _save0=save;
 async function buildDeck(n=20){pool=[];MOVIES={};refill.page=0;await refill();if(pool.length<n)await refill();
  let cand=pool.filter(m=>passF(m)&&m.poster_path).sort((a,b)=>score(b)-score(a));const top=cand.slice(0,Math.ceil(n*0.6)),rest=cand.slice(Math.ceil(n*0.6)).sort(()=>Math.random()-.5).slice(0,n-top.length);return [...top,...rest].sort(()=>Math.random()-.5).map(slim)}
 function roomCode(){const A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let c="";for(let i=0;i<4;i++)c+=A[Math.floor(Math.random()*A.length)];return c}
 function roomLink(code){const u=new URL(location.href);u.search="";u.hash="";u.searchParams.set("room",code);return u.toString()}
 async function createRoom(){const b=$("tgbox");b.innerHTML=`<div class="empty">${t("loading")}</div>`;const deck=await buildDeck(20);if(!deck.length){b.innerHTML=`<div class="empty">${t("nomore")}</div>`;return}
- const code=roomCode();await fdb().ref("rooms/"+code).set({created:Date.now(),host:myId,deck,status:"lobby",players:{[myId]:{name:state.name||"Host",done:false,n:0}}});joinRoom(code)}
+ const code=roomCode();await fdb().ref("rooms/"+code).set({created:Date.now(),host:myId,deck,status:"lobby",players:{[myId]:{name:(USER&&USER.displayName)||state.name||"Host",done:false,n:0}}});joinRoom(code)}
 async function joinRoom(code){code=code.toUpperCase();const ref=fdb().ref("rooms/"+code);const snap=await ref.get();if(!snap.exists()){$("tgbox").innerHTML=`<div class="tg"><p>${t("rmBad")}</p><button class="cta2" id="tgNew">${t("tgNew")}</button></div>`;$("tgNew").onclick=leaveRoom;return}
  state.tg={code,i:0,likes:[],active:false};save();await ref.child("players/"+myId).update({name:state.name||t("rmFriend"),done:false,n:0});
  if(roomUnsub)roomUnsub();roomRef=ref;const h=sn=>{ROOM=sn.val();if(!ROOM){leaveRoom();return}onRoom()};ref.on("value",h);roomUnsub=()=>ref.off("value",h)}
@@ -516,10 +543,10 @@ async function shareItem(m){const url=shareUrl(m);const text=t("shareText",{t:m.
 function matchScore(m){const gs=m.genre_ids||[];if(!gs.length)return{p:50,why:[]};const n=Object.keys(state.seen).length;if(n<5)return{p:50,why:[]};
  const gname=k=>(GENRES.find(g=>g.id==k)||{name:""}).name;const w=gs.map(g=>state.genre[g]||0);const avg=w.reduce((a,b)=>a+b,0)/w.length;const best=Math.max(...w),worst=Math.min(...w);
  let v=avg*0.6+best*0.25+worst*0.15;v+=(state.langW[m.original_language]||0)*0.5;v+=(state.decade[decadeOf(+String(m.release_date).slice(0,4))]||0)*0.3;v+=((m.vote_average||6.5)-6.5)*0.4;
- const p=Math.round(50+45*Math.tanh(v/3));const why=[];gs.forEach(g=>{const x=state.genre[g]||0;if(x>=1)why.push(["+",gname(g)]);else if(x<=-1)why.push(["-",gname(g)])});
+ const p=Math.round(50+45*Math.tanh(v/3));const why=[];gs.forEach(g=>{const x=state.genre[g]||0;if(x>=1.5)why.push(["+",gname(g)]);else if(x<=-0.8)why.push(["-",gname(g)])});
  const lw=state.langW[m.original_language]||0;if(lw>=0.8)why.push(["+",m.original_language==="ar"?t("tLangAr"):m.original_language==="en"?t("tLangEn"):m.original_language]);
  return{p,why}}
-async function postComment(type,id,text){await fdb().ref(`rooms/c-${type}${id}/created`).set(Date.now());await fdb().ref(`rooms/c-${type}${id}/list`).push({u:myId,n:state.name||t("rmFriend"),t:text.slice(0,300),at:Date.now()})}
+async function postComment(type,id,text){await fdb().ref(`rooms/c-${type}${id}/created`).set(Date.now());await fdb().ref(`rooms/c-${type}${id}/list`).push({u:USER?USER.uid:myId,n:(USER&&USER.displayName)||state.name||t("rmFriend"),t:text.slice(0,300),at:Date.now()})}
 async function showDetail(type,id){const o=document.createElement("div");o.className="trailer";o.innerHTML=`<button class="x" aria-label="${t("close")}">✕</button><div class="detail"><div class="body"><p>${t("loading")}</p></div></div>`;
  document.body.appendChild(o);o.querySelector(".x").onclick=()=>{o.remove();if(o._off)o._off()};o.onclick=e=>{if(e.target===o){o.remove();if(o._off)o._off()}};
  try{const [m,wp,cr,im]=await Promise.all([api(`/${type}/${id}`),api(`/${type}/${id}/watch/providers`),api(`/${type}/${id}/${type==="tv"?"aggregate_credits":"credits"}`).catch(()=>({cast:[],crew:[]})),api(`/${type}/${id}/images`,{include_image_language:"null,en"}).catch(()=>({backdrops:[]}))]);
@@ -534,6 +561,7 @@ async function showDetail(type,id){const o=document.createElement("div");o.class
    <div class="row"><b>${String(m.release_date).slice(0,4)}</b><span>★ ${(m.vote_average||0).toFixed(1)}</span>${rt?`<span>${rt}</span>`:""}${type==="tv"?`<span class="chip on">${t("series")}</span>`:""}</div>
    <div class="row" style="font-size:12px">${gn}</div>
    <div class="mbox"><div class="row" style="justify-content:space-between"><b class="lvl ${lv[0]}" style="font-size:13px">${t("mTitle")}</b><b class="lvl ${lv[0]}" style="font-size:22px;font-family:var(--display);letter-spacing:.04em">${ms.p}%</b></div><i><b class="${lv[0]==="l0"?"neg":lv[0]==="l1"?"mid":""}" style="width:${ms.p}%"></b></i><div class="row" style="font-size:12px;gap:6px"><span>${lv[1]}</span>${ms.why.map(([s,g])=>`<span class="chip ${s==="+"?"on":""}" style="${s==="-"?"color:var(--no);border-color:var(--no)":""}">${s} ${g}</span>`).join("")}</div></div>
+   ${(()=>{const f=friendsWhoLiked(type,id);return f.length?`<div class="row" style="gap:6px"><span style="font-size:12px;color:var(--muted)">${t("frFriendsLiked")}:</span>${f.map(x=>`<span class="chip on">${(x.name||"").split(" ")[0]}${x.r?" ★"+x.r:""}</span>`).join("")}</div>`:""})()}
    ${tag}<p>${m.overview||""}</p>${dir?`<p style="color:var(--muted);font-size:13px">${t("directed",{x:dir.name})}</p>`:""}
    <div class="where">${whereHtml(wp.results[state.region]||{})}</div>
    <div class="acts"><button class="cta" id="dAdd">${inList()?t("inList"):t("addList")}</button><button class="cta2" id="dTr">${t("trailer")}</button><button class="cta2" id="dShare">↗ ${t("share")}</button></div>
@@ -552,6 +580,51 @@ async function showDetail(type,id){const o=document.createElement("div");o.class
   cref.on("value",h);o._off=()=>cref.off("value",h);
   o.querySelector("#cpost").onclick=async()=>{const inp=o.querySelector("#cin");const nm=o.querySelector("#cname");if(nm&&nm.value.trim()){state.name=nm.value.trim();save();nm.remove()}const txt=inp.value.trim();if(!txt)return;inp.value="";try{await postComment(type,id,txt)}catch(e){inp.value=txt}};
  }catch(e){o.querySelector(".detail").innerHTML=`<div class="body"><p>${t("searchfail")}</p></div>`}}
+// ---------- friends ----------
+function watchFriends(){frUnsubs.forEach(f=>f());frUnsubs=[];if(!USER)return;const me=USER.uid;
+ const fr=fdb().ref("friends/"+me);const h1=sn=>{FRIENDS=sn.val()||{};Object.keys(FRIENDS).forEach(uid=>{if(FRPROF[uid])return;const r=fdb().ref("users/"+uid);const h=s2=>{FRPROF[uid]=s2.val()||{};if(!$("s-friends").hidden)renderFriends()};r.on("value",h);frUnsubs.push(()=>r.off("value",h))});if(!$("s-friends").hidden)renderFriends()};fr.on("value",h1);frUnsubs.push(()=>fr.off("value",h1));
+ const rq=fdb().ref("requests/"+me);const h2=sn=>{REQS=sn.val()||{};if(!$("s-friends").hidden)renderFriends()};rq.on("value",h2);frUnsubs.push(()=>rq.off("value",h2));}
+async function setHandle(h){h=h.toLowerCase().replace(/[^a-z0-9_]/g,"").slice(0,20);if(h.length<3)return false;const r=fdb().ref("handles/"+h);const sn=await r.get();if(sn.exists()&&sn.val()!==USER.uid)return false;
+ if(state.handle&&state.handle!==h)await fdb().ref("handles/"+state.handle).remove().catch(()=>{});await r.set(USER.uid);state.handle=h;save();renderMe();return true}
+async function sendRequest(h){h=h.toLowerCase().replace(/[^a-z0-9_]/g,"");const sn=await fdb().ref("handles/"+h).get();const uid=sn.val();if(!uid)return false;if(uid===USER.uid)return false;
+ if(FRIENDS[uid])return true;await fdb().ref("requests/"+uid+"/"+USER.uid).set({name:USER.displayName||"",photo:USER.photoURL||"",handle:state.handle||"",at:Date.now()});return true}
+async function acceptRequest(uid){await fdb().ref("friends/"+USER.uid+"/"+uid).set(true);await fdb().ref("friends/"+uid+"/"+USER.uid).set(true);await fdb().ref("requests/"+USER.uid+"/"+uid).remove()}
+async function declineRequest(uid){await fdb().ref("requests/"+USER.uid+"/"+uid).remove()}
+async function removeFriend(uid){await fdb().ref("friends/"+USER.uid+"/"+uid).remove();await fdb().ref("friends/"+uid+"/"+USER.uid).remove().catch(()=>{});delete FRPROF[uid]}
+function friendsWhoLiked(type,id){return Object.entries(FRPROF).filter(([,p])=>(p.liked||[]).some(x=>x.id==id)||(p.watched||[]).some(x=>x.id==id&&(x.r||0)>=4)).map(([uid,p])=>({uid,name:p.name,photo:p.photo,r:((p.watched||[]).find(x=>x.id==id)||{}).r}))}
+function renderFriends(){const b=$("frbox");
+ if(!USER){b.innerHTML=`<div class="tg"><h2>${t("frTitle")}</h2><p>${t("frIntro")}</p><button class="cta" id="frLogin">${t("frLogin")}</button></div>`;$("frLogin").onclick=login;return}
+ let h=`<div class="tg" style="gap:10px"><div class="pfx">${avatarHtml({name:USER.displayName,photo:USER.photoURL})}<div><b style="font-size:17px">${USER.displayName||""}</b><div class="handle">${state.handle?"@"+state.handle:""}</div><div class="handle" style="color:var(--yes)">✓ ${t("frSync")}</div></div><button class="link" id="frLogout" style="margin-inline-start:auto">${t("logout")}</button></div>`;
+ if(!state.handle)h+=`<label style="font-size:13px;color:var(--muted)">${t("frHandle")}</label><div class="row" style="gap:8px"><input id="frH" placeholder="${(USER.displayName||"name").toLowerCase().replace(/[^a-z0-9]/g,"")}" style="flex:1"><button class="cta" id="frHSave" style="padding:10px 14px">${t("frSave")}</button></div><p style="font-size:12px;color:var(--muted);margin:0">${t("frHandleHint")}</p><p class="err" id="frHErr"></p>`;
+ else h+=`<div class="row" style="gap:8px"><input id="frAdd" placeholder="${t("frAddPh")}" style="flex:1"><button class="cta" id="frAddBtn" style="padding:10px 14px">${t("frSend")}</button></div><p class="err" id="frAddErr" style="margin:0"></p><button class="cta2" id="frInvite">📲 ${t("frShare")}</button>`;
+ h+=`</div>`;
+ const reqs=Object.entries(REQS);if(reqs.length)h+=`<h3 class="sh" style="font-size:12px">${t("frReq")}</h3>`+reqs.map(([uid,r])=>`<div class="fr">${avatarHtml(r)}<div class="t"><b>${r.name||""}</b><span>${r.handle?"@"+r.handle:""}</span></div><button data-acc="${uid}" style="background:var(--yes);color:#000;border-color:var(--yes)">${t("frAccept")}</button><button data-dec="${uid}">${t("frDecline")}</button></div>`).join("");
+ const fl=Object.keys(FRIENDS);h+=`<h3 class="sh" style="font-size:12px">${t("friends")} (${fl.length})</h3>`;
+ if(!fl.length)h+=`<p style="color:var(--muted);font-size:13px;margin:0">${t("frNone")}</p>`;
+ else h+=fl.map(uid=>{const p=FRPROF[uid]||{};const common=(p.liked||[]).filter(x=>state.liked.some(y=>y.id==x.id)).length+(p.watched||[]).filter(x=>(state.watched||[]).some(y=>y.id==x.id)).length;return`<div class="fr" data-fp="${uid}" style="cursor:pointer">${avatarHtml(p)}<div class="t"><b>${p.name||"…"}</b><span>${p.handle?"@"+p.handle+" · ":""}${(p.liked||[]).length} ${t("frSaved")} · ${(p.watched||[]).length} ${t("frWatched")}${common?" · "+common+" "+t("frCommon").toLowerCase():""}</span></div><button data-rm="${uid}">✕</button></div>`}).join("");
+ // feed
+ const feed=[];fl.forEach(uid=>{const p=FRPROF[uid]||{};(p.watched||[]).slice(0,10).forEach(x=>feed.push({...x,kind:"w",who:p,at:x.at||0}));(p.liked||[]).slice(-10).forEach(x=>feed.push({...x,kind:"l",who:p,at:x.at||0}))});feed.sort((a,b)=>(b.at||0)-(a.at||0));
+ h+=`<h3 class="sh" style="font-size:12px">${t("frFeed")}</h3>`;if(!feed.length)h+=`<p style="color:var(--muted);font-size:13px;margin:0">${t("frFeedNone")}</p>`;
+ else h+=`<div class="feed">${feed.slice(0,30).map(x=>`<div class="fitem" data-open="${x.type||"movie"}-${x.id}"><img src="${x.poster?IMG+"w185"+x.poster:""}" alt=""><div class="t"><span>${(x.who.name||"").split(" ")[0]} ${x.kind==="w"?(x.r?t("frRated"):t("frWatched")):t("frSaved")}</span><b>${x.title}</b>${x.kind==="w"&&x.r?`<span class="stars-s">${"★".repeat(x.r)}${"☆".repeat(5-x.r)}</span>`:""}${state.liked.some(y=>y.id==x.id)||(state.watched||[]).some(y=>y.id==x.id)?`<span class="chip on" style="margin-top:4px;display:inline-block">${t("frCommon")}</span>`:""}</div></div>`).join("")}</div>`;
+ b.innerHTML=h;
+ const lo=$("frLogout");if(lo)lo.onclick=logout;const hs=$("frHSave");if(hs)hs.onclick=async()=>{const ok=await setHandle($("frH").value.trim()||$("frH").placeholder);if(!ok)$("frHErr").textContent=t("frTaken");else renderFriends()};
+ const ab=$("frAddBtn");if(ab)ab.onclick=async()=>{const v=$("frAdd").value.trim().replace(/^@/,"");if(!v)return;const ok=await sendRequest(v);$("frAddErr").textContent=ok?t("frPending"):t("frNotFound");$("frAddErr").style.color=ok?"var(--yes)":"var(--no)";if(ok)$("frAdd").value=""};
+ const inv=$("frInvite");if(inv)inv.onclick=async()=>{const u=new URL(location.href);u.search="";u.hash="";u.searchParams.set("add",state.handle);const text=t("frShareText",{h:"@"+state.handle});if(navigator.share){try{await navigator.share({text,url:u.toString()});return}catch(e){if(e.name==="AbortError")return}}window.open("https://wa.me/?text="+encodeURIComponent(text+"\n"+u.toString()),"_blank")};
+ b.querySelectorAll("[data-acc]").forEach(x=>x.onclick=()=>acceptRequest(x.dataset.acc));b.querySelectorAll("[data-dec]").forEach(x=>x.onclick=()=>declineRequest(x.dataset.dec));
+ b.querySelectorAll("[data-rm]").forEach(x=>x.onclick=e=>{e.stopPropagation();removeFriend(x.dataset.rm)});b.querySelectorAll("[data-fp]").forEach(x=>x.onclick=()=>showFriend(x.dataset.fp));
+ b.querySelectorAll("[data-open]").forEach(x=>x.onclick=()=>{const [ty,id]=x.dataset.open.split("-");showDetail(ty,+id)});}
+function showFriend(uid){const p=FRPROF[uid]||{};const o=document.createElement("div");o.className="trailer";const nm=(p.name||"").split(" ")[0];
+ const common=[...(p.liked||[]),...(p.watched||[])].filter(x=>state.liked.some(y=>y.id==x.id)||(state.watched||[]).some(y=>y.id==x.id));const seenIds=new Set();const uniq=a=>a.filter(x=>!seenIds.has(x.id)&&seenIds.add(x.id));
+ const gname=k=>(GENRES.find(g=>g.id==k)||{name:"#"+k}).name;const love=Object.keys(p.genre||{}).filter(k=>p.genre[k]>0.9).sort((a,b)=>p.genre[b]-p.genre[a]).slice(0,4).map(gname);
+ const item=x=>`<div class="fitem" data-open="${x.type||"movie"}-${x.id}"><img src="${x.poster?IMG+"w185"+x.poster:""}" alt=""><div class="t"><b>${x.title}</b><span>${x.year||""}${x.r?` · <span class="stars-s">${"★".repeat(x.r)}</span>`:""}</span></div></div>`;
+ o.innerHTML=`<button class="x">✕</button><div class="detail"><div class="body"><div class="pfx">${avatarHtml(p)}<div><b style="font-size:18px">${p.name||""}</b><div class="handle">${p.handle?"@"+p.handle:""}</div></div></div>
+  ${love.length?`<p style="margin:0"><b>${t("frTaste",{n:nm})}:</b> ${love.join(", ")}</p>`:""}
+  ${common.length?`<h4 class="sh">${t("frCommon")} (${uniq(common).length})</h4><div class="feed">${uniq(common).map(item).join("")}</div>`:""}
+  <h4 class="sh">${t("frWatched")} (${(p.watched||[]).length})</h4><div class="feed">${(p.watched||[]).slice(0,20).map(item).join("")||`<span style="color:var(--muted);font-size:13px">—</span>`}</div>
+  <h4 class="sh">${t("frTheirs",{n:nm})} (${(p.liked||[]).length})</h4><div class="feed">${(p.liked||[]).slice(-20).reverse().map(item).join("")||`<span style="color:var(--muted);font-size:13px">—</span>`}</div></div></div>`;
+ document.body.appendChild(o);o.querySelector(".x").onclick=()=>o.remove();o.onclick=e=>{if(e.target===o)o.remove()};o.querySelectorAll("[data-open]").forEach(x=>x.onclick=()=>{const [ty,id]=x.dataset.open.split("-");showDetail(ty,+id)})}
+$("me").onclick=()=>{if(USER)show("friends");else login()};
+fauth().onAuthStateChanged(async u=>{USER=u;renderMe();if(u){await syncDown();watchFriends();const sp=new URLSearchParams(location.search);const add=sp.get("add");if(add){history.replaceState(null,"",location.pathname);if(!state.handle){show("friends")}else{await sendRequest(add);show("friends")}}}else if(!$("s-friends").hidden)renderFriends()});
 (function(){const sp=new URLSearchParams(location.search);const rm=sp.get("room");
  if(rm){history.replaceState(null,"",location.pathname);(async()=>{try{if(!GENRES.length)await boot()}catch(e){}state.tg=null;show("together");$("tgbox").innerHTML=`<div class="empty">${t("loading")}</div>`;joinRoom(rm)})();return}
  const tq=sp.get("t"),rq=sp.get("r");
