@@ -111,7 +111,7 @@ function show(name){["intro","swipe","list","find","taste"].forEach(s=>$("s-"+s)
  if(name==="list")renderList();if(name==="taste")renderTaste();}
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.tab));
 $("key").value=state.key;$("region").value=state.region;
-$("start").onclick=async()=>{state.key=$("key").value.trim();state.region=$("region").value.trim().toUpperCase()||"AE";$("err").textContent="";
+$("start").onclick=async()=>{if($("key").value.trim())state.key=$("key").value.trim();state.region=$("region").value.trim().toUpperCase()||"AE";$("err").textContent="";
  if(!state.key){$("err").textContent="Paste a TMDB key first.";return}
  $("start").textContent="Loading…";try{await boot();save();show("swipe");render()}catch(e){$("err").textContent="Could not reach TMDB: "+e.message;$("start").textContent="Start swiping"}};
 
