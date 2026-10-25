@@ -57,7 +57,7 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 .stars{display:flex;gap:10px}.stars button{background:none;border:none;font-size:40px;color:var(--line);padding:4px;cursor:pointer;line-height:1}.stars button.lit{color:var(--accent)}
 .rate .lbl{font-size:13px;color:var(--accent);min-height:18px}
 .item .t .r{color:var(--accent)}
-.tbtn{position:absolute;top:14px;left:14px;z-index:3;background:rgba(0,0,0,.6);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:8px 14px;font:700 12px var(--body);letter-spacing:.06em;backdrop-filter:blur(6px)}
+.tbtn{position:absolute;top:26px;left:14px;z-index:3;background:rgba(0,0,0,.6);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:8px 14px;font:700 12px var(--body);letter-spacing:.06em;backdrop-filter:blur(6px)}
 .trailer{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px}
 .trailer .frame{width:100%;max-width:720px;aspect-ratio:16/9;background:#000;border-radius:14px;overflow:hidden}.trailer iframe{width:100%;height:100%;border:0}
 .trailer .x{position:absolute;top:max(16px,env(safe-area-inset-top));right:16px;width:44px;height:44px;border-radius:50%;background:var(--surface);color:var(--fg);border:1px solid var(--line);font-size:20px}
@@ -67,6 +67,9 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 .actor{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:12px}
 .actor img,.actor .noimg{width:84px;height:84px;border-radius:50%;object-fit:cover;background:var(--surface);display:grid;place-items:center;font-size:28px}
 .actor b{display:block;font-size:12px;color:var(--fg)}.actor span{color:var(--muted);font-size:11px}
+.dots{position:absolute;top:12px;left:0;right:0;display:flex;justify-content:center;gap:5px;z-index:3;pointer-events:none}
+.dots i{width:18px;height:3px;border-radius:2px;background:rgba(255,255,255,.35)}.dots i.on{background:#fff}
+.art{transition:background-image .2s}
 .trailer h3{font-family:var(--display);font-size:28px;font-weight:400;margin:0;letter-spacing:.04em;color:var(--fg)}
 .where{display:flex;flex-direction:column;gap:6px;margin-top:4px}.where h4{margin:6px 0 0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .where .free h4{color:var(--yes)}.where .paid h4{color:var(--no)}.where .row{gap:6px}
@@ -175,7 +178,16 @@ function cardEl(c){const el=document.createElement("div");el.className="card";le
   <p>${c.p||""}</p><div class="where">${whereHtml(m._all)}</div>`}
  else meta=`<div class="row" style="font-size:12px;letter-spacing:.08em;text-transform:uppercase">${c.sub} ${c.kind==="prov"?c.big:""}</div><p>${c.p}</p>`;
  el.innerHTML=`<div class="stamp like">LIKE</div><div class="stamp nope">NOPE</div>${art}<div class="meta">${meta}</div>`;
- el.querySelectorAll(".tbtn").forEach(tb=>{tb.addEventListener("pointerdown",e=>e.stopPropagation());tb.onclick=e=>{e.stopPropagation();tb.classList.contains("cast")?openCast(c.m):openTrailer(c.m)}});return el}
+ el.querySelectorAll(".tbtn").forEach(tb=>{tb.addEventListener("pointerdown",e=>e.stopPropagation());tb.onclick=e=>{e.stopPropagation();tb.classList.contains("cast")?openCast(c.m):openTrailer(c.m)}});
+ if(c.kind==="movie")setupGallery(el,c.m,c.img);return el}
+async function setupGallery(el,m,first){const art=el.querySelector(".art");let imgs=[first];let i=0;
+ const dots=document.createElement("div");dots.className="dots";art.appendChild(dots);
+ const draw=()=>{dots.innerHTML=imgs.map((_,k)=>`<i class="${k===i?"on":""}"></i>`).join("");art.style.backgroundImage=`url('${imgs[i]}')`};
+ try{if(!m._imgs){const d=await api(`/movie/${m.id}/images`,{include_image_language:"null,en"});
+  m._imgs=[...d.backdrops.slice(0,5).map(b=>IMG+"w780"+b.file_path)];}
+  imgs=[first,...m._imgs.filter(u=>u!==first)].slice(0,6);imgs.slice(1).forEach(u=>{const im=new Image();im.src=u});draw();}catch(e){draw()}
+ let sx=0,sy=0;art.addEventListener("pointerdown",e=>{sx=e.clientX;sy=e.clientY});
+ art.addEventListener("pointerup",e=>{if(Math.abs(e.clientX-sx)<8&&Math.abs(e.clientY-sy)<8&&imgs.length>1){i=(i+1)%imgs.length;draw()}});}
 async function openCast(m){const o=document.createElement("div");o.className="trailer";o.innerHTML=`<button class="x" aria-label="Close">✕</button><h3>${m.title}</h3><div class="castbox"><p>Loading cast…</p></div>`;document.body.appendChild(o);
  o.querySelector(".x").onclick=()=>o.remove();o.onclick=e=>{if(e.target===o)o.remove()};
  try{const d=await api(`/movie/${m.id}/credits`);const cast=d.cast.slice(0,12);const dir=(d.crew||[]).find(c=>c.job==="Director");
