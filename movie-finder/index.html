@@ -52,12 +52,16 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 .bar span{color:var(--muted);text-align:right}
 .link{background:none;border:none;color:var(--muted);text-decoration:underline;font:500 13px var(--body);padding:8px}
 .err{color:var(--no);font-size:13px}
+.where{display:flex;flex-direction:column;gap:6px;margin-top:8px}.where h4{margin:6px 0 0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.where .free h4{color:var(--yes)}.where .paid h4{color:var(--no)}.where .row{gap:6px}
+.pv{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 4px;font-size:12px}
+.item.open{flex-direction:column;align-items:stretch}.item .head{display:flex;gap:12px;align-items:center}
 </style></head><body>
 <header><div class="logo">BANBOUK <b>MOVIE FINDER</b></div>
  <div class="tabs" id="tabs" hidden>
   <button class="tab" aria-selected="true" data-tab="swipe">Swipe</button>
   <button class="tab" aria-selected="false" data-tab="list">My list <span id="count">0</span></button>
-  <button class="tab" aria-selected="false" data-tab="taste">Taste</button></div></header>
+  <button class="tab" aria-selected="false" data-tab="find">Find</button><button class="tab" aria-selected="false" data-tab="taste">Taste</button></div></header>
 <main>
  <section class="screen" id="s-intro"><div class="intro">
   <h1>SWIPE.<br>DON'T<br><em>SCROLL.</em></h1>
@@ -72,6 +76,9 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
   <div class="hint" id="phaseLabel"></div><div class="stage" id="stage"></div>
   <div class="actions"><button class="btn no" id="bNo" aria-label="No">✕</button><button class="btn small" id="bUndo" aria-label="Undo">↶</button><button class="btn yes" id="bYes" aria-label="Yes">♥</button></div></section>
  <section class="screen" id="s-list" hidden><div class="list" id="list"></div></section>
+ <section class="screen" id="s-find" hidden><div class="list">
+  <input id="q" placeholder="Type a movie name…" autocomplete="off">
+  <div id="found"></div></div></section>
  <section class="screen" id="s-taste" hidden><div class="taste" id="taste"></div></section>
 </main>
 <script>
@@ -100,7 +107,7 @@ async function boot(){
  PROVIDERS.push({provider_id:0,provider_name:"IPTV",logo_path:""});
 }
 
-function show(name){["intro","swipe","list","taste"].forEach(s=>$("s-"+s).hidden=s!==name);
+function show(name){["intro","swipe","list","find","taste"].forEach(s=>$("s-"+s).hidden=s!==name);
  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.tab===name));$("tabs").hidden=name==="intro";
  if(name==="list")renderList();if(name==="taste")renderTaste();}
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.tab));
@@ -169,6 +176,29 @@ function attachDrag(el){let sx=0,sy=0,dx=0,down=false;
   el.querySelector(".stamp.like").style.opacity=Math.min(1,Math.max(0,dx/90));el.querySelector(".stamp.nope").style.opacity=Math.min(1,Math.max(0,-dx/90))});
  const end=()=>{if(!down)return;down=false;if(Math.abs(dx)>100)fling(dx>0);else{el.classList.add("leave");el.style.transform="";el.querySelectorAll(".stamp").forEach(s=>s.style.opacity=0)}dx=0};
  el.addEventListener("pointerup",end);el.addEventListener("pointercancel",end);}
+
+// ---------- find ----------
+let qt;$("q").oninput=()=>{clearTimeout(qt);qt=setTimeout(searchMovies,350)};
+async function searchMovies(){const q=$("q").value.trim();const box=$("found");if(q.length<2){box.innerHTML="";return}
+ box.innerHTML=`<div class="empty">Searching…</div>`;try{const d=await api("/search/movie",{query:q,include_adult:"false"});
+ const res=d.results.slice(0,8);if(!res.length){box.innerHTML=`<div class="empty">No movie called "${q}".</div>`;return}
+ box.innerHTML=res.map(m=>`<div class="item" data-id="${m.id}"><div class="head"><img src="${m.poster_path?IMG+"w185"+m.poster_path:""}" alt=""><div class="t"><b>${m.title}</b><span>${String(m.release_date||"").slice(0,4)} · ★ ${(m.vote_average||0).toFixed(1)}</span></div><span class="chip">Where?</span></div><div class="where"></div></div>`).join("");
+ box.querySelectorAll(".item").forEach(it=>it.onclick=()=>whereToWatch(it));}catch(e){box.innerHTML=`<div class="empty">Search failed: ${e.message}</div>`}}
+async function whereToWatch(it){if(it.classList.contains("open"))return;it.classList.add("open");const w=it.querySelector(".where");w.innerHTML="Checking…";
+ const d=await api(`/movie/${it.dataset.id}/watch/providers`);const r=d.results[state.region]||{};
+ const have=new Set(PROVIDERS.filter(p=>state.prov[p.provider_id]>0).map(p=>p.provider_name));
+ const pv=l=>(l||[]).map(p=>`<span class="pv ${have.has(p.provider_name)?"on":""}"><img class="plogo" src="${IMG}w92${p.logo_path}" alt="">${p.provider_name}${have.has(p.provider_name)?" ✓":""}</span>`).join("");
+ const free=[...(r.free||[]),...(r.ads||[])];const sub=(r.flatrate||[]);const mine=sub.filter(p=>have.has(p.provider_name));const other=sub.filter(p=>!have.has(p.provider_name));
+ const paid=[...new Map([...(r.rent||[]),...(r.buy||[])].map(p=>[p.provider_id,p])).values()];
+ let h="";
+ if(free.length)h+=`<div class="free"><h4>Free${free.some(p=>(r.ads||[]).includes(p))?" (with ads)":""}</h4><div class="row">${pv(free)}</div></div>`;
+ if(mine.length)h+=`<div class="free"><h4>Included in your subscription</h4><div class="row">${pv(mine)}</div></div>`;
+ if(other.length)h+=`<div><h4>Other subscriptions</h4><div class="row">${pv(other)}</div></div>`;
+ if(paid.length)h+=`<div class="paid"><h4>${free.length||sub.length?"Also rent / buy":"Paid only — rent or buy"}</h4><div class="row">${pv(paid)}</div></div>`;
+ if(!h)h=`<div class="paid"><h4>Not streaming in ${state.region}</h4><span style="font-size:13px;color:var(--muted)">Not on any service here right now${state.prov[0]>0?" — try your IPTV":""}.</span></div>`;
+ else if(state.prov[0]>0&&!free.length&&!mine.length)h+=`<div class="free"><h4>IPTV</h4><span style="font-size:13px;color:var(--muted)">Likely on your IPTV box.</span></div>`;
+ if(r.link)h+=`<a href="${r.link}" target="_blank" rel="noopener" class="link" style="text-align:left;padding:4px 0">Open on TMDB / JustWatch →</a>`;
+ w.innerHTML=h;}
 
 // ---------- list & taste ----------
 function renderList(){const l=$("list");if(!state.liked.length){l.innerHTML=`<div class="empty">Nothing saved yet. Swipe right on a movie and it lands here.</div>`;return}
