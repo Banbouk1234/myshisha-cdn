@@ -66,9 +66,8 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
  <section class="screen" id="s-intro"><div class="intro">
   <h1>SWIPE.<br>DON'T<br><em>SCROLL.</em></h1>
   <p>Right means yes, left means no. Genres first, then your streaming services, then movies that fit you.</p>
-  <label for="key">TMDB API key (free at themoviedb.org → Settings → API)</label>
-  <input id="key" placeholder="Paste your API key (v3) or Read Access Token (v4)">
-  <label for="region">Country code for "where to watch"</label>
+  <input id="key" type="hidden">
+  <label for="region">Your country (for "where to watch")</label>
   <input id="region" value="AE" maxlength="2">
   <div class="err" id="err"></div>
   <button class="cta" id="start">Start swiping</button></div></section>
@@ -84,7 +83,7 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 <script>
 const IMG="https://image.tmdb.org/t/p/";
 const PREFERRED=["Netflix","Amazon Prime Video","Disney Plus","Apple TV+","Max","OSN+","Shahid VIP","Starzplay","HBO Max","Apple TV Plus"];
-let state={phase:"genres",idx:0,genre:{},prov:{},decade:{},seen:{},liked:[],history:[],key:"",region:"AE"};
+let state={phase:"genres",idx:0,genre:{},prov:{},decade:{},seen:{},liked:[],history:[],key:"4b978fa1cf7f0d286ab2bfa47f92027a",region:"AE"};
 try{Object.assign(state,JSON.parse(localStorage.getItem("banbouk-movie-finder")||"{}"))}catch(e){}
 const save=()=>{try{localStorage.setItem("banbouk-movie-finder",JSON.stringify(state))}catch(e){}};
 const $=id=>document.getElementById(id);
