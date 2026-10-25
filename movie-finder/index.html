@@ -53,6 +53,13 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 .bar span{color:var(--muted);text-align:right}
 .link{background:none;border:none;color:var(--muted);text-decoration:underline;font:500 13px var(--body);padding:8px}
 .err{color:var(--no);font-size:13px}
+.fbtn{background:var(--surface);border:1px solid var(--line);color:var(--fg);border-radius:999px;padding:6px 12px;font:700 12px var(--body);display:inline-flex;align-items:center;gap:6px}
+.fbtn i{font-style:normal;background:var(--accent);color:#000;border-radius:999px;padding:0 7px;font-size:11px}
+.sheet{width:100%;max-width:460px;max-height:85vh;overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px;text-align:start}
+.sheet h3{font-family:var(--display);font-size:26px;font-weight:400;margin:0;letter-spacing:.04em}
+.sheet h4{margin:0 0 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}.chips button{background:none;border:1px solid var(--line);color:var(--fg);border-radius:999px;padding:7px 12px;font:600 13px var(--body)}.chips button.on{background:var(--accent);color:#000;border-color:var(--accent)}
+.sheet .acts{display:flex;gap:10px}.sheet .acts .cta{flex:1}
 .cta2{background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:14px;padding:14px;font:700 15px var(--body)}
 .steps{display:flex;flex-direction:column;gap:10px;max-width:420px;width:100%;text-align:start;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px}
 .steps b{display:block;font-family:var(--display);font-size:22px;letter-spacing:.04em;font-weight:400}.steps p{margin:0;font-size:15px;line-height:1.5;color:var(--fg)}.steps p strong{color:var(--accent)}.steps p span{display:inline-block;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#000;text-align:center;line-height:24px;font-weight:700;margin-inline-end:8px;font-size:13px}
@@ -104,7 +111,7 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
   <button class="cta" id="start" data-i="start">Start swiping</button>
   <button class="cta2" id="a2hs">📲 <span data-i="a2hs">Add to Home Screen</span></button></div></section>
  <section class="screen" id="s-swipe" hidden style="overflow:hidden">
-  <div class="hint" id="phaseLabel"></div><div class="stage" id="stage"></div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:10px;padding-bottom:8px"><div class="hint" id="phaseLabel" style="padding:0"></div><button class="fbtn" id="fbtn">⚙︎ <span data-i="filters">Filters</span><i id="fcount" hidden></i></button></div><div class="stage" id="stage"></div>
   <div class="actions"><button class="btn no" id="bNo" aria-label="No">✕</button><button class="btn small" id="bUndo" aria-label="Undo">↶</button><button class="btn small" id="bSeen" aria-label="I watched this" title="I watched this">👁</button><button class="btn yes" id="bYes" aria-label="Yes">♥</button></div>
   <div class="hint" id="seenHint" data-i="legend">✕ skip · ↶ undo · 👁 watched it · ♥ want to watch</div></section>
  <section class="screen" id="s-list" hidden><div class="list" id="list"></div></section>
@@ -123,7 +130,7 @@ const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"R
  nocast:"No cast listed.",castfail:"Could not load cast.",directed:"Directed by {x}",loadcast:"Loading cast…",notrailer:"No trailer available for this one.",trailerfail:"Could not load trailer.",
  searching:"Searching…",nomovie:'No movie called "{x}".',searchfail:"Search failed",where:"Where?",watchtrailer:"▶ Watch trailer",castlink:"👥 Cast",
  empty:"Nothing saved yet. Swipe right on a movie and it lands here.",wanttowatch:"Want to watch",watched:"Watched",notrated:"not rated",
- tasteIntro:"{a} movies swiped, {b} watched. Every swipe shifts these weights; the next card is the best unseen match on a service you have.",tGenres:"Genres",tEra:"Era",tServices:"Services",reset:"Reset taste and start over",a2hs:"Add to Home Screen",a2hsT:"Install Banbouk Movie Finder",ios:["Tap the <strong>Share</strong> button at the bottom of Safari (the square with an arrow ↑).","Scroll down and tap <strong>Add to Home Screen</strong>.","Tap <strong>Add</strong> in the top corner. The app icon appears on your Home Screen."],android:["Tap the <strong>⋮</strong> menu at the top of Chrome.","Tap <strong>Add to Home screen</strong> or <strong>Install app</strong>.","Tap <strong>Install</strong>. The app icon appears on your Home Screen."],desktop:["In Chrome or Edge, click the install icon at the right end of the address bar.","Click <strong>Install</strong>."],installed:"Already installed — you are running it from your Home Screen.",installNow:"Install now",close:"Close",cAny:"Arabic + English",cAr:"Arabic",cEn:"English",tMovies:"Movies",tSeries:"Series",tBoth:"Both",series:"Series",movie:"Movie",seasons:"{x} seasons"},
+ tasteIntro:"{a} movies swiped, {b} watched. Every swipe shifts these weights; the next card is the best unseen match on a service you have.",tGenres:"Genres",tEra:"Era",tServices:"Services",reset:"Reset taste and start over",filters:"Filters",fTitle:"Filters",fService:"Service",fAnyMine:"Any of mine",fRating:"Minimum rating",fAny:"Any",fYear:"Year",fOlder:"Before 2000",fGenre:"Genre",fType:"Type",fLang:"Language",fRuntime:"Length",fShort:"Under 100 min",fLong:"Over 2 hours",fApply:"Apply",fClear:"Clear all",fSort:"Sort by",fBest:"Best match",fTop:"Top rated",fNew:"Newest",fPopular:"Most popular",a2hsT:"Install Banbouk Movie Finder",ios:["Tap the <strong>Share</strong> button at the bottom of Safari (the square with an arrow ↑).","Scroll down and tap <strong>Add to Home Screen</strong>.","Tap <strong>Add</strong> in the top corner. The app icon appears on your Home Screen."],android:["Tap the <strong>⋮</strong> menu at the top of Chrome.","Tap <strong>Add to Home screen</strong> or <strong>Install app</strong>.","Tap <strong>Install</strong>. The app icon appears on your Home Screen."],desktop:["In Chrome or Edge, click the install icon at the right end of the address bar.","Click <strong>Install</strong>."],installed:"Already installed — you are running it from your Home Screen.",installNow:"Install now",close:"Close",cAny:"Arabic + English",cAr:"Arabic",cEn:"English",tMovies:"Movies",tSeries:"Series",tBoth:"Both",series:"Series",movie:"Movie",seasons:"{x} seasons"},
  ar:{swipe:"اسحب",mylist:"قائمتي",find:"ابحث",taste:"ذوقي",intro:"يمين يعني نعم، يسار يعني لا. الأنواع أولاً، ثم خدمات البث عندك، ثم أفلام على ذوقك.",country:"بلدك (لمعرفة أين تشاهد)",start:"ابدأ السحب",legend:"✕ تخطّي · ↶ تراجع · 👁 شاهدته · ♥ أريد مشاهدته",search:"اكتب اسم الفيلم…",
  h1:"اسحب.<br>لا <em>تتصفح.</em>",logo:"بنبوك <b>لإيجاد الأفلام</b>",like:"أعجبني",nope:"لا",trailer:"▶ الإعلان",cast:"👥 الممثلون",doyoulike:"هل تحب",doyouhave:"هل عندك",genreHint:"اسحب يميناً إذا كان هذا نوعك المفضل.",think:'مثل "{x}".',provHint:"اسحب يميناً إذا كان بإمكانك مشاهدة {x} الآن.",iptvHint:"IPTV يعني عندك كل شيء. لن نصفّي حسب الخدمة.",
  genres:"الأنواع · {a} من {b}",services:"خدماتك · {a} من {b}",picked:"مختارة لك · {a} محفوظة",nomore:"لا مزيد من الأفلام على خدماتك. راجع قائمتك أو أعد الضبط.",loading:"جارٍ التحميل…",
@@ -132,13 +139,13 @@ const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"R
  nocast:"لا يوجد ممثلون مدرجون.",castfail:"تعذّر تحميل الممثلين.",directed:"إخراج {x}",loadcast:"جارٍ تحميل الممثلين…",notrailer:"لا يوجد إعلان لهذا الفيلم.",trailerfail:"تعذّر تحميل الإعلان.",
  searching:"جارٍ البحث…",nomovie:'لا يوجد فيلم باسم "{x}".',searchfail:"فشل البحث",where:"أين؟",watchtrailer:"▶ شاهد الإعلان",castlink:"👥 الممثلون",
  empty:"لا شيء محفوظ بعد. اسحب يميناً على فيلم ليظهر هنا.",wanttowatch:"أريد مشاهدته",watched:"شاهدته",notrated:"بدون تقييم",
- tasteIntro:"{a} فيلم سحبته، {b} شاهدته. كل سحبة تغيّر هذه الأوزان؛ البطاقة التالية هي أفضل فيلم لم تره على خدمة عندك.",tGenres:"الأنواع",tEra:"الحقبة",tServices:"الخدمات",reset:"إعادة ضبط الذوق والبدء من جديد",a2hs:"أضف إلى الشاشة الرئيسية",a2hsT:"ثبّت تطبيق بنبوك لإيجاد الأفلام",ios:["اضغط زر <strong>المشاركة</strong> أسفل سفاري (المربع مع السهم ↑).","انزل للأسفل واضغط <strong>إضافة إلى الشاشة الرئيسية</strong>.","اضغط <strong>إضافة</strong> في الزاوية العلوية. ستظهر أيقونة التطبيق على شاشتك الرئيسية."],android:["اضغط قائمة <strong>⋮</strong> أعلى كروم.","اضغط <strong>إضافة إلى الشاشة الرئيسية</strong> أو <strong>تثبيت التطبيق</strong>.","اضغط <strong>تثبيت</strong>. ستظهر أيقونة التطبيق على شاشتك الرئيسية."],desktop:["في كروم أو إيدج، اضغط أيقونة التثبيت في طرف شريط العنوان.","اضغط <strong>تثبيت</strong>."],installed:"مثبّت بالفعل — أنت تشغّله من الشاشة الرئيسية.",installNow:"ثبّت الآن",close:"إغلاق",cAny:"عربي + أجنبي",cAr:"عربي",cEn:"أجنبي",tMovies:"أفلام",tSeries:"مسلسلات",tBoth:"الاثنين",series:"مسلسل",movie:"فيلم",seasons:"{x} مواسم"}};
+ tasteIntro:"{a} فيلم سحبته، {b} شاهدته. كل سحبة تغيّر هذه الأوزان؛ البطاقة التالية هي أفضل فيلم لم تره على خدمة عندك.",tGenres:"الأنواع",tEra:"الحقبة",tServices:"الخدمات",reset:"إعادة ضبط الذوق والبدء من جديد",filters:"فلاتر",fTitle:"الفلاتر",fService:"الخدمة",fAnyMine:"أي خدمة عندي",fRating:"أقل تقييم",fAny:"الكل",fYear:"السنة",fOlder:"قبل 2000",fGenre:"النوع",fType:"النوع",fLang:"اللغة",fRuntime:"المدة",fShort:"أقل من 100 دقيقة",fLong:"أكثر من ساعتين",fApply:"تطبيق",fClear:"مسح الكل",fSort:"ترتيب حسب",fBest:"الأنسب لي",fTop:"الأعلى تقييماً",fNew:"الأحدث",fPopular:"الأكثر شعبية",a2hsT:"ثبّت تطبيق بنبوك لإيجاد الأفلام",ios:["اضغط زر <strong>المشاركة</strong> أسفل سفاري (المربع مع السهم ↑).","انزل للأسفل واضغط <strong>إضافة إلى الشاشة الرئيسية</strong>.","اضغط <strong>إضافة</strong> في الزاوية العلوية. ستظهر أيقونة التطبيق على شاشتك الرئيسية."],android:["اضغط قائمة <strong>⋮</strong> أعلى كروم.","اضغط <strong>إضافة إلى الشاشة الرئيسية</strong> أو <strong>تثبيت التطبيق</strong>.","اضغط <strong>تثبيت</strong>. ستظهر أيقونة التطبيق على شاشتك الرئيسية."],desktop:["في كروم أو إيدج، اضغط أيقونة التثبيت في طرف شريط العنوان.","اضغط <strong>تثبيت</strong>."],installed:"مثبّت بالفعل — أنت تشغّله من الشاشة الرئيسية.",installNow:"ثبّت الآن",close:"إغلاق",cAny:"عربي + أجنبي",cAr:"عربي",cEn:"أجنبي",tMovies:"أفلام",tSeries:"مسلسلات",tBoth:"الاثنين",series:"مسلسل",movie:"فيلم",seasons:"{x} مواسم"}};
 function t(k,v){let x=STR[state.lang||"en"][k];if(x==null)x=STR.en[k];if(typeof x==="string"&&v)Object.entries(v).forEach(([a,b])=>x=x.split("{"+a+"}").join(b));return x}
 function applyLang(){const L=state.lang||"en";document.documentElement.lang=L;document.documentElement.dir=L==="ar"?"rtl":"ltr";
  document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));document.querySelectorAll("[data-ph]").forEach(e=>e.placeholder=t(e.dataset.ph));
  $("h1").innerHTML=t("h1");$("logoTxt").innerHTML=t("logo");$("lang").textContent=L==="ar"?"EN":"عربي";}
 const PREFERRED=["Netflix","Amazon Prime Video","Apple TV+","Apple TV Plus","Shahid VIP","Shahid"];
-let state={lang:"en",clang:"any",ctype:"movie",phase:"genres",idx:0,genre:{},prov:{},decade:{},seen:{},liked:[],watched:[],history:[],key:"4b978fa1cf7f0d286ab2bfa47f92027a",region:"AE"};
+let state={lang:"en",clang:"any",ctype:"movie",f:{svc:"",rating:0,year:"",genre:"",type:"",lang:"",rt:"",sort:"best"},phase:"genres",idx:0,genre:{},prov:{},decade:{},seen:{},liked:[],watched:[],history:[],key:"4b978fa1cf7f0d286ab2bfa47f92027a",region:"AE"};
 try{Object.assign(state,JSON.parse(localStorage.getItem("banbouk-movie-finder")||"{}"))}catch(e){}
 const save=()=>{try{localStorage.setItem("banbouk-movie-finder",JSON.stringify(state))}catch(e){}};
 const $=id=>document.getElementById(id);
@@ -165,6 +172,7 @@ function show(name){["intro","swipe","list","find","taste"].forEach(s=>$("s-"+s)
  document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.tab===name));$("tabs").hidden=name==="intro";
  if(name==="list")renderList();if(name==="taste")renderTaste();}
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.tab));
+state.f=Object.assign({svc:"",rating:0,year:"",genre:"",type:"",lang:"",rt:"",sort:"best"},state.f||{});
 $("key").value=state.key;$("region").value=state.region;
 function segs(){document.querySelectorAll("#segLang button").forEach(b=>{b.classList.toggle("on",b.dataset.v===state.clang);b.onclick=()=>{state.clang=b.dataset.v;segs()}});
  document.querySelectorAll("#segType button").forEach(b=>{b.classList.toggle("on",b.dataset.v===state.ctype);b.onclick=()=>{state.ctype=b.dataset.v;segs()}})}segs();
@@ -180,15 +188,24 @@ function langParams(p){if(state.clang==="ar")p.with_original_language="ar";else 
 function score(m){let s=0;m.genre_ids.forEach(g=>s+=(state.genre[g]||0)*2);s+=(state.decade[decadeOf(+String(m.release_date).slice(0,4))]||0)*0.8;
  s+=(m.vote_average-6.8)*1.2+Math.log10(m.popularity+1)*0.3;return s;}
 async function refill(){const have=PROVIDERS.filter(p=>state.prov[p.provider_id]>0);const iptv=state.prov[0]>0;
- const likedG=Object.keys(state.genre).filter(g=>state.genre[g]>0);
- const params={sort_by:"popularity.desc",include_adult:"false","vote_count.gte":300,page:1+Math.floor(Object.keys(state.seen).length/15)};
- if(likedG.length)params.with_genres=likedG.join("|");
- if(!iptv&&have.length){params.watch_region=state.region;params.with_watch_providers=have.map(p=>p.provider_id).join("|");}
- langParams(params);if(state.clang==="ar")params["vote_count.gte"]=20;
- const kinds=state.ctype==="both"?["movie","tv"]:[state.ctype];
- for(const k of kinds){const d=await api(`/discover/${k}`,params);d.results.forEach(m=>{norm(m,k);const key=k+m.id;if(!MOVIES[key]&&!state.seen[key]){MOVIES[key]=m;pool.push(m)}})}}
-async function nextMovie(){pool=pool.filter(m=>!state.seen[mt(m)+m.id]);if(pool.length<6)await refill();if(!pool.length)return null;
- pool.sort((a,b)=>score(b)-score(a));const n=Math.min(pool.length,4);return pool[Math.random()<0.78?0:Math.floor(Math.random()*n)];}
+ const F=state.f||{};const likedG=Object.keys(state.genre).filter(g=>state.genre[g]>0);
+ const sort={best:"popularity.desc",popular:"popularity.desc",top:"vote_average.desc",new:"primary_release_date.desc"}[F.sort||"best"];
+ const params={sort_by:sort,include_adult:"false","vote_count.gte":F.sort==="top"?1000:300,page:1+(refill.page=(refill.page||0)+1)%8};
+ if(F.genre)params.with_genres=F.genre;else if(likedG.length)params.with_genres=likedG.join("|");
+ if(F.svc&&F.svc!=="iptv"){params.watch_region=state.region;params.with_watch_providers=F.svc}
+ else if(!iptv&&have.length&&F.svc!=="iptv"){params.watch_region=state.region;params.with_watch_providers=have.map(p=>p.provider_id).join("|");}
+ if(F.rating)params["vote_average.gte"]=F.rating;
+ if(F.year){const [a,b]=F.year.split("-");if(a)params["primary_release_date.gte"]=a+"-01-01";if(b)params["primary_release_date.lte"]=b+"-12-31"}
+ if(F.rt==="short")params["with_runtime.lte"]=99;if(F.rt==="long")params["with_runtime.gte"]=121;
+ const cl=state.clang;if(F.lang)state.clang=F.lang;langParams(params);state.clang=cl;if((F.lang||state.clang)==="ar")params["vote_count.gte"]=20;
+ const kinds=(F.type||state.ctype)==="both"?["movie","tv"]:[F.type||state.ctype];
+ for(const k of kinds){const pk={...params};if(k==="tv"){for(const key of ["primary_release_date.gte","primary_release_date.lte"])if(pk[key]){pk[key.replace("primary_release_date","first_air_date")]=pk[key];delete pk[key]}if(pk.sort_by==="primary_release_date.desc")pk.sort_by="first_air_date.desc";delete pk["with_runtime.lte"];delete pk["with_runtime.gte"]}
+  const d=await api(`/discover/${k}`,pk);d.results.forEach(m=>{norm(m,k);const key=k+m.id;if(!MOVIES[key]&&!state.seen[key]){MOVIES[key]=m;pool.push(m)}})}}
+function passF(m){const F=state.f||{};if(F.rating&&(m.vote_average||0)<F.rating)return false;const y=+String(m.release_date).slice(0,4)||0;
+ if(F.year){const [a,b]=F.year.split("-");if(a&&y<+a)return false;if(b&&y>+b)return false}if(F.genre&&!m.genre_ids.includes(+F.genre))return false;
+ if(F.type&&F.type!=="both"&&mt(m)!==F.type)return false;if(F.lang&&m.original_language&&m.original_language!==F.lang)return false;return true}
+async function nextMovie(){pool=pool.filter(m=>!state.seen[mt(m)+m.id]&&passF(m));if(pool.length<6)await refill();pool=pool.filter(m=>passF(m));if(pool.length<3)await refill();pool=pool.filter(m=>passF(m));if(!pool.length)return null;
+ const F=state.f||{};pool.sort((a,b)=>F.sort==="top"?(b.vote_average-a.vote_average):F.sort==="new"?String(b.release_date).localeCompare(String(a.release_date)):F.sort==="popular"?(b.popularity-a.popularity):(score(b)-score(a)));const n=Math.min(pool.length,4);return pool[Math.random()<0.78?0:Math.floor(Math.random()*n)];}
 async function providersFor(m){if(m._prov)return m._prov;try{const d=await api(`/${mt(m)}/${m.id}/watch/providers`);const r=d.results[state.region]||{};
  m._prov=[...(r.flatrate||[]),...(r.ads||[])].slice(0,5);m._all=r}catch(e){m._prov=[];m._all={}}return m._prov;}
 function whereHtml(r){r=r||{};const have=new Set(PROVIDERS.filter(p=>state.prov[p.provider_id]>0).map(p=>p.provider_name));
@@ -246,7 +263,7 @@ async function openTrailer(m){const o=document.createElement("div");o.className=
 
 async function render(){const stage=$("stage");stage.innerHTML=`<div class="empty">${t("loading")}</div>`;
  const c=await currentCard();cur=c;
- $("phaseLabel").textContent=state.phase==="genres"?t("genres",{a:state.idx+1,b:GENRES.length}):state.phase==="providers"?t("services",{a:state.idx+1,b:PROVIDERS.length}):t("picked",{a:state.liked.length});
+ $("fbtn").hidden=state.phase!=="movies";$("phaseLabel").textContent=state.phase==="genres"?t("genres",{a:state.idx+1,b:GENRES.length}):state.phase==="providers"?t("services",{a:state.idx+1,b:PROVIDERS.length}):t("picked",{a:state.liked.length});
  if(!c){stage.innerHTML=`<div class="empty">${t("nomore")}</div>`;return}
  stage.innerHTML="";const under=document.createElement("div");under.className="card under";stage.appendChild(under);
  const el=cardEl(c);stage.appendChild(el);attachDrag(el);
@@ -330,6 +347,25 @@ function showA2HS(){const o=document.createElement("div");o.className="trailer";
  document.body.appendChild(o);o.querySelector(".x").onclick=()=>o.remove();o.onclick=e=>{if(e.target===o)o.remove()};
  const di=o.querySelector("#doInstall");if(di)di.onclick=async()=>{deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;o.remove()}}
 $("a2hs").onclick=showA2HS;
+function fcount(){const F=state.f;const n=["svc","rating","year","genre","type","lang","rt"].filter(k=>F[k]).length+(F.sort&&F.sort!=="best"?1:0);$("fcount").hidden=!n;$("fcount").textContent=n}
+function showFilters(){const F={...state.f};const o=document.createElement("div");o.className="trailer";
+ const chips=(key,opts)=>`<div><h4>${opts.label}</h4><div class="chips" data-k="${key}">${opts.items.map(([v,l])=>`<button data-v="${v}" class="${String(F[key])===String(v)?"on":""}">${l}</button>`).join("")}</div></div>`;
+ const svc=[["",t("fAnyMine")],...PROVIDERS.filter(p=>p.provider_id).map(p=>[p.provider_id,p.provider_name]),["iptv","IPTV"]];
+ o.innerHTML=`<div class="sheet"><h3>${t("fTitle")}</h3>
+  ${chips("svc",{label:t("fService"),items:svc})}
+  ${chips("rating",{label:t("fRating")+" (TMDB)",items:[[0,t("fAny")],[5,"5+"],[6,"6+"],[7,"7+"],[8,"8+"]]})}
+  ${chips("year",{label:t("fYear"),items:[["",t("fAny")],["2024-","2024+"],["2020-2023","2020–23"],["2010-2019","2010s"],["2000-2009","2000s"],["-1999",t("fOlder")]]})}
+  ${chips("genre",{label:t("fGenre"),items:[["",t("fAny")],...GENRES.map(g=>[g.id,g.name])]})}
+  ${chips("type",{label:t("fType"),items:[["",t("fAny")],["movie",t("tMovies")],["tv",t("tSeries")]]})}
+  ${chips("lang",{label:t("fLang"),items:[["",t("fAny")],["ar",t("cAr")],["en",t("cEn")]]})}
+  ${chips("rt",{label:t("fRuntime"),items:[["",t("fAny")],["short",t("fShort")],["long",t("fLong")]]})}
+  ${chips("sort",{label:t("fSort"),items:[["best",t("fBest")],["top",t("fTop")],["new",t("fNew")],["popular",t("fPopular")]]})}
+  <div class="acts"><button class="link" id="fClear">${t("fClear")}</button><button class="cta" id="fApply">${t("fApply")}</button></div></div>`;
+ document.body.appendChild(o);o.onclick=e=>{if(e.target===o)o.remove()};
+ o.querySelectorAll(".chips").forEach(c=>c.querySelectorAll("button").forEach(b=>b.onclick=()=>{F[c.dataset.k]=c.dataset.k==="rating"?+b.dataset.v:b.dataset.v;c.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b))}));
+ const apply=()=>{state.f=F;save();fcount();o.remove();pool=[];MOVIES={};refill.page=0;if(state.phase==="movies"&&!$("s-swipe").hidden)render()};
+ o.querySelector("#fApply").onclick=apply;o.querySelector("#fClear").onclick=()=>{Object.assign(F,{svc:"",rating:0,year:"",genre:"",type:"",lang:"",rt:"",sort:"best"});apply()}}
+$("fbtn").onclick=showFilters;fcount();
 applyLang();
 $("count").textContent=state.liked.length;
 if(state.key&&(state.phase!=="genres"||state.idx>0)){boot().then(()=>{show("swipe");render()}).catch(()=>show("intro"))}else show("intro");
