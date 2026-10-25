@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Banbouk Movie Finder</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#0b0a0f;--surface:#17151f;--fg:#f3efe6;--muted:#9a95a8;--line:#2a2735;--accent:#ffb627;--yes:#3ddc84;--no:#ff4d6d;
+ --display:"Bebas Neue",Impact,sans-serif;--body:"Manrope",system-ui,sans-serif;color-scheme:dark}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);display:flex;flex-direction:column;overflow:hidden;
+ padding:max(8px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+header{display:flex;align-items:center;justify-content:space-between;padding:6px 0 10px}
+.logo{font-family:var(--display);font-size:30px;letter-spacing:.04em}.logo b{color:var(--accent);font-weight:400}
+.tabs{display:flex;gap:6px}.tab{background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:6px 12px;font:600 12px var(--body)}
+.tab[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+main{flex:1;min-height:0;display:flex;flex-direction:column}
+.hint{text-align:center;color:var(--muted);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding-bottom:8px}
+.stage{flex:1;min-height:0;position:relative}
+.card{position:absolute;inset:0;margin:auto;max-width:420px;border-radius:22px;overflow:hidden;background:var(--surface);box-shadow:0 20px 50px rgba(0,0,0,.5);touch-action:none;user-select:none;display:flex;flex-direction:column}
+.card.under{transform:scale(.95) translateY(14px);opacity:.6}.card.leave{transition:transform .35s,opacity .35s}
+.art{flex:1;min-height:0;position:relative;background-size:cover;background-position:center top;background-color:#222;display:flex;align-items:flex-end;padding:18px}
+.art::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.85))}
+.art .big{position:relative;z-index:1;font-family:var(--display);color:#fff;font-size:clamp(34px,10vw,54px);line-height:.95;text-shadow:0 2px 12px rgba(0,0,0,.6);text-wrap:balance}
+.art img.logo{position:relative;z-index:1;width:140px;height:140px;object-fit:contain;border-radius:28px;margin:auto;background:#fff;padding:12px}
+.art.center{align-items:center;justify-content:center}
+.meta{padding:14px 18px 16px;display:flex;flex-direction:column;gap:6px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--muted)}.row b{color:var(--fg)}
+.meta p{margin:0;font-size:14px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.chip{border:1px solid var(--line);border-radius:999px;padding:3px 9px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.chip.on{color:var(--accent);border-color:var(--accent)}
+.plogo{width:22px;height:22px;border-radius:5px;vertical-align:middle}
+.stamp{position:absolute;top:22px;font-family:var(--display);font-size:40px;letter-spacing:.08em;padding:4px 12px;border:4px solid;border-radius:8px;opacity:0;z-index:2}
+.stamp.like{left:20px;color:var(--yes);border-color:var(--yes);transform:rotate(-14deg)}.stamp.nope{right:20px;color:var(--no);border-color:var(--no);transform:rotate(14deg)}
+.actions{display:flex;justify-content:center;gap:28px;padding:16px 0 6px}
+.btn{width:66px;height:66px;border-radius:50%;border:2px solid;background:var(--surface);font-size:28px;display:grid;place-items:center}
+.btn.no{color:var(--no);border-color:var(--no)}.btn.yes{color:var(--yes);border-color:var(--yes)}.btn.small{width:48px;height:48px;font-size:18px;color:var(--muted);border-color:var(--line);align-self:center}
+.screen{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:14px;padding:8px 0}
+.intro{margin:auto;max-width:420px;display:flex;flex-direction:column;gap:16px}
+.intro h1{font-family:var(--display);font-size:clamp(52px,16vw,88px);line-height:.9;margin:0}.intro h1 em{font-style:normal;color:var(--accent)}
+.intro p,.intro label{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+input{background:var(--surface);border:1px solid var(--line);color:var(--fg);border-radius:12px;padding:14px;font:500 14px var(--body);width:100%}
+.cta{background:var(--accent);color:#000;border:none;border-radius:14px;padding:16px;font:700 16px var(--body)}
+.list{display:flex;flex-direction:column;gap:10px;max-width:420px;margin:0 auto;width:100%}
+.item{display:flex;gap:12px;align-items:center;background:var(--surface);border-radius:14px;padding:10px;border:1px solid var(--line)}
+.item img{width:52px;height:78px;border-radius:8px;object-fit:cover;flex:none;background:#333}
+.item .t{flex:1;min-width:0}.item .t b{display:block;font-size:15px}.item .t span{font-size:12px;color:var(--muted)}
+.item button{background:none;border:none;color:var(--muted);font-size:20px}
+.empty{color:var(--muted);text-align:center;margin:auto;max-width:300px;line-height:1.5}
+.taste{max-width:420px;margin:0 auto;width:100%;display:flex;flex-direction:column;gap:8px}
+.taste h3{margin:8px 0 2px;font-family:var(--display);font-size:22px;font-weight:400;letter-spacing:.04em}
+.bar{display:grid;grid-template-columns:110px 1fr 36px;align-items:center;gap:8px;font-size:13px}
+.bar i{display:block;height:8px;border-radius:4px;background:var(--line);overflow:hidden}.bar i b{display:block;height:100%;background:var(--accent)}.bar i b.neg{background:var(--no)}
+.bar span{color:var(--muted);text-align:right}
+.link{background:none;border:none;color:var(--muted);text-decoration:underline;font:500 13px var(--body);padding:8px}
+.err{color:var(--no);font-size:13px}
+</style></head><body>
+<header><div class="logo">BANBOUK <b>MOVIE FINDER</b></div>
+ <div class="tabs" id="tabs" hidden>
+  <button class="tab" aria-selected="true" data-tab="swipe">Swipe</button>
+  <button class="tab" aria-selected="false" data-tab="list">My list <span id="count">0</span></button>
+  <button class="tab" aria-selected="false" data-tab="taste">Taste</button></div></header>
+<main>
+ <section class="screen" id="s-intro"><div class="intro">
+  <h1>SWIPE.<br>DON'T<br><em>SCROLL.</em></h1>
+  <p>Right means yes, left means no. Genres first, then your streaming services, then movies that fit you.</p>
+  <label for="key">TMDB API key (free at themoviedb.org → Settings → API)</label>
+  <input id="key" placeholder="Paste your API key (v3) or Read Access Token (v4)">
+  <label for="region">Country code for "where to watch"</label>
+  <input id="region" value="AE" maxlength="2">
+  <div class="err" id="err"></div>
+  <button class="cta" id="start">Start swiping</button></div></section>
+ <section class="screen" id="s-swipe" hidden style="overflow:hidden">
+  <div class="hint" id="phaseLabel"></div><div class="stage" id="stage"></div>
+  <div class="actions"><button class="btn no" id="bNo" aria-label="No">✕</button><button class="btn small" id="bUndo" aria-label="Undo">↶</button><button class="btn yes" id="bYes" aria-label="Yes">♥</button></div></section>
+ <section class="screen" id="s-list" hidden><div class="list" id="list"></div></section>
+ <section class="screen" id="s-taste" hidden><div class="taste" id="taste"></div></section>
+</main>
+<script>
+const IMG="https://image.tmdb.org/t/p/";
+const PREFERRED=["Netflix","Amazon Prime Video","Disney Plus","Apple TV+","Max","OSN+","Shahid VIP","Starzplay","HBO Max","Apple TV Plus"];
+let state={phase:"genres",idx:0,genre:{},prov:{},decade:{},seen:{},liked:[],history:[],key:"",region:"AE"};
+try{Object.assign(state,JSON.parse(localStorage.getItem("banbouk-movie-finder")||"{}"))}catch(e){}
+const save=()=>{try{localStorage.setItem("banbouk-movie-finder",JSON.stringify(state))}catch(e){}};
+const $=id=>document.getElementById(id);
+let GENRES=[],PROVIDERS=[],MOVIES={},pool=[],cur=null;
+
+async function api(path,params={}){const u=new URL("https://api.themoviedb.org/3"+path);
+ Object.entries(params).forEach(([k,v])=>u.searchParams.set(k,v));
+ const h={};if(state.key.length>60)h.Authorization="Bearer "+state.key;else u.searchParams.set("api_key",state.key);
+ const r=await fetch(u,{headers:h});if(!r.ok)throw new Error("TMDB "+r.status);return r.json();}
+
+async function boot(){
+ const [g,p]=await Promise.all([api("/genre/movie/list"),api("/watch/providers/movie",{watch_region:state.region})]);
+ GENRES=g.genres.filter(x=>x.name!=="TV Movie");
+ // picture for each genre: backdrop of its most popular movie
+ await Promise.all(GENRES.map(async gen=>{const d=await api("/discover/movie",{with_genres:gen.id,sort_by:"popularity.desc",watch_region:state.region,include_adult:"false"});
+  const m=d.results.find(x=>x.backdrop_path)||d.results[0];gen.backdrop=m?IMG+"w780"+m.backdrop_path:"";gen.example=m?m.title:"";}));
+ const all=p.results.sort((a,b)=>a.display_priority-b.display_priority);
+ PROVIDERS=PREFERRED.map(n=>all.find(x=>x.provider_name===n)).filter(Boolean);
+ all.slice(0,14).forEach(x=>{if(!PROVIDERS.includes(x)&&PROVIDERS.length<12)PROVIDERS.push(x)});
+ PROVIDERS.push({provider_id:0,provider_name:"IPTV",logo_path:""});
+}
+
+function show(name){["intro","swipe","list","taste"].forEach(s=>$("s-"+s).hidden=s!==name);
+ document.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected",t.dataset.tab===name));$("tabs").hidden=name==="intro";
+ if(name==="list")renderList();if(name==="taste")renderTaste();}
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>show(t.dataset.tab));
+$("key").value=state.key;$("region").value=state.region;
+$("start").onclick=async()=>{state.key=$("key").value.trim();state.region=$("region").value.trim().toUpperCase()||"AE";$("err").textContent="";
+ if(!state.key){$("err").textContent="Paste a TMDB key first.";return}
+ $("start").textContent="Loading…";try{await boot();save();show("swipe");render()}catch(e){$("err").textContent="Could not reach TMDB: "+e.message;$("start").textContent="Start swiping"}};
+
+// ---------- movie feed ----------
+const decadeOf=y=>Math.floor((y||2000)/10)*10;
+function score(m){let s=0;m.genre_ids.forEach(g=>s+=(state.genre[g]||0)*2);s+=(state.decade[decadeOf(+String(m.release_date).slice(0,4))]||0)*0.8;
+ s+=(m.vote_average-6.8)*1.2+Math.log10(m.popularity+1)*0.3;return s;}
+async function refill(){const have=PROVIDERS.filter(p=>state.prov[p.provider_id]>0);const iptv=state.prov[0]>0;
+ const likedG=Object.keys(state.genre).filter(g=>state.genre[g]>0);
+ const params={sort_by:"popularity.desc",include_adult:"false","vote_count.gte":300,page:1+Math.floor(Object.keys(state.seen).length/15)};
+ if(likedG.length)params.with_genres=likedG.join("|");
+ if(!iptv&&have.length){params.watch_region=state.region;params.with_watch_providers=have.map(p=>p.provider_id).join("|");}
+ const d=await api("/discover/movie",params);d.results.forEach(m=>{if(!MOVIES[m.id]&&!state.seen[m.id]){MOVIES[m.id]=m;pool.push(m)}});}
+async function nextMovie(){pool=pool.filter(m=>!state.seen[m.id]);if(pool.length<6)await refill();if(!pool.length)return null;
+ pool.sort((a,b)=>score(b)-score(a));const n=Math.min(pool.length,4);return pool[Math.random()<0.78?0:Math.floor(Math.random()*n)];}
+async function providersFor(m){if(m._prov)return m._prov;try{const d=await api(`/movie/${m.id}/watch/providers`);const r=d.results[state.region]||{};
+ m._prov=[...(r.flatrate||[]),...(r.ads||[])].slice(0,5)}catch(e){m._prov=[]}return m._prov;}
+
+// ---------- cards ----------
+async function currentCard(){
+ if(state.phase==="genres"){const g=GENRES[state.idx];if(!g){state.phase="providers";state.idx=0;return currentCard()}
+  return{kind:"genre",key:g.id,big:g.name,img:g.backdrop,sub:"Do you like",p:g.example?`Think "${g.example}". Swipe right if this is your kind of night.`:"Swipe right if this is your kind of night."}}
+ if(state.phase==="providers"){const p=PROVIDERS[state.idx];if(!p){state.phase="movies";state.idx=0;return currentCard()}
+  return{kind:"prov",key:p.provider_id,big:p.provider_name,logo:p.logo_path?IMG+"w185"+p.logo_path:"",sub:"Do you have",p:p.provider_id===0?"IPTV means you have everything. We'll stop filtering by service.":`Swipe right if you can watch ${p.provider_name} right now.`}}
+ const m=await nextMovie();if(!m)return null;const prov=await providersFor(m);
+ return{kind:"movie",key:m.id,m,prov,big:m.title,img:m.poster_path?IMG+"w500"+m.poster_path:(m.backdrop_path?IMG+"w780"+m.backdrop_path:""),p:m.overview}}
+
+function cardEl(c){const el=document.createElement("div");el.className="card";let meta="",art="";
+ if(c.kind==="prov")art=`<div class="art center" style="background:linear-gradient(160deg,#2a2735,#0b0a0f)">${c.logo?`<img class="logo" src="${c.logo}" alt="">`:`<div class="big">${c.big}</div>`}</div>`;
+ else art=`<div class="art" style="background-image:url('${c.img}')"><div class="big">${c.big}</div></div>`;
+ if(c.kind==="movie"){const m=c.m;const gn=m.genre_ids.map(id=>(GENRES.find(g=>g.id===id)||{}).name).filter(Boolean).slice(0,3).join(" · ");
+  meta=`<div class="row"><b>${String(m.release_date).slice(0,4)}</b><span>★ ${m.vote_average.toFixed(1)}</span><span>${gn}</span></div>
+  <div class="row">${c.prov.map(p=>`<img class="plogo" src="${IMG}w92${p.logo_path}" title="${p.provider_name}" alt="${p.provider_name}">`).join("")||`<span class="chip">Not streaming in ${state.region}</span>`}</div><p>${c.p||""}</p>`}
+ else meta=`<div class="row" style="font-size:12px;letter-spacing:.08em;text-transform:uppercase">${c.sub} ${c.kind==="prov"?c.big:""}</div><p>${c.p}</p>`;
+ el.innerHTML=`<div class="stamp like">LIKE</div><div class="stamp nope">NOPE</div>${art}<div class="meta">${meta}</div>`;return el}
+
+async function render(){const stage=$("stage");stage.innerHTML=`<div class="empty">Loading…</div>`;
+ const c=await currentCard();cur=c;
+ $("phaseLabel").textContent=state.phase==="genres"?`Genres · ${state.idx+1} of ${GENRES.length}`:state.phase==="providers"?`Your services · ${state.idx+1} of ${PROVIDERS.length}`:`Picked for you · ${state.liked.length} saved`;
+ if(!c){stage.innerHTML=`<div class="empty">No more movies for your services. Check your list or reset.</div>`;return}
+ stage.innerHTML="";const under=document.createElement("div");under.className="card under";stage.appendChild(under);
+ const el=cardEl(c);stage.appendChild(el);attachDrag(el);
+ if(c.kind==="movie")nextMovie(); // warm the pool
+}
+function snapshot(){return JSON.stringify({genre:state.genre,prov:state.prov,decade:state.decade,seen:state.seen,liked:state.liked,phase:state.phase,idx:state.idx})}
+function decide(yes){if(!cur)return;const c=cur;state.history.push(snapshot());if(state.history.length>30)state.history.shift();const d=yes?1:-1;
+ if(c.kind==="genre"){state.genre[c.key]=d;state.idx++}else if(c.kind==="prov"){state.prov[c.key]=d;state.idx++}
+ else{const m=c.m;state.seen[m.id]=d;m.genre_ids.forEach(g=>state.genre[g]=(state.genre[g]||0)+d*0.5);
+  const dec=decadeOf(+String(m.release_date).slice(0,4));state.decade[dec]=(state.decade[dec]||0)+d*0.5;
+  if(yes)state.liked.push({id:m.id,title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,prov:(c.prov||[]).map(p=>p.provider_name)});}
+ $("count").textContent=state.liked.length;save();render()}
+function undo(){const h=state.history.pop();if(!h)return;Object.assign(state,JSON.parse(h));$("count").textContent=state.liked.length;save();render()}
+$("bYes").onclick=()=>fling(true);$("bNo").onclick=()=>fling(false);$("bUndo").onclick=undo;
+document.addEventListener("keydown",e=>{if($("s-swipe").hidden)return;if(e.key==="ArrowRight")fling(true);if(e.key==="ArrowLeft")fling(false)});
+function fling(yes){const el=$("stage").querySelector(".card:not(.under)");if(!el){decide(yes);return}
+ el.classList.add("leave");el.style.transform=`translateX(${yes?120:-120}%) rotate(${yes?18:-18}deg)`;el.style.opacity="0";
+ el.querySelector(yes?".stamp.like":".stamp.nope").style.opacity=1;setTimeout(()=>decide(yes),260)}
+function attachDrag(el){let sx=0,sy=0,dx=0,down=false;
+ el.addEventListener("pointerdown",e=>{down=true;sx=e.clientX;sy=e.clientY;el.setPointerCapture(e.pointerId);el.classList.remove("leave")});
+ el.addEventListener("pointermove",e=>{if(!down)return;dx=e.clientX-sx;const dy=e.clientY-sy;el.style.transform=`translate(${dx}px,${dy*0.3}px) rotate(${dx/18}deg)`;
+  el.querySelector(".stamp.like").style.opacity=Math.min(1,Math.max(0,dx/90));el.querySelector(".stamp.nope").style.opacity=Math.min(1,Math.max(0,-dx/90))});
+ const end=()=>{if(!down)return;down=false;if(Math.abs(dx)>100)fling(dx>0);else{el.classList.add("leave");el.style.transform="";el.querySelectorAll(".stamp").forEach(s=>s.style.opacity=0)}dx=0};
+ el.addEventListener("pointerup",end);el.addEventListener("pointercancel",end);}
+
+// ---------- list & taste ----------
+function renderList(){const l=$("list");if(!state.liked.length){l.innerHTML=`<div class="empty">Nothing saved yet. Swipe right on a movie and it lands here.</div>`;return}
+ l.innerHTML=state.liked.map(m=>`<div class="item"><img src="${m.poster?IMG+"w185"+m.poster:""}" alt=""><div class="t"><b>${m.title}</b><span>${m.year} · ★ ${(+m.rating).toFixed(1)}${m.prov.length?" · "+m.prov.join(", "):""}</span></div><button aria-label="Remove" data-rm="${m.id}">✕</button></div>`).join("");
+ l.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{state.liked=state.liked.filter(x=>x.id!=+b.dataset.rm);$("count").textContent=state.liked.length;save();renderList()});}
+function bars(obj,label,name){const keys=Object.keys(obj).filter(k=>obj[k]!==0).sort((a,b)=>obj[b]-obj[a]);if(!keys.length)return"";const max=Math.max(1,...keys.map(k=>Math.abs(obj[k])));
+ return`<h3>${label}</h3>`+keys.map(k=>`<div class="bar"><span style="text-align:left;color:var(--fg)">${name(k)}</span><i><b class="${obj[k]<0?"neg":""}" style="width:${Math.abs(obj[k])/max*100}%"></b></i><span>${obj[k]>0?"+":""}${(+obj[k]).toFixed(1)}</span></div>`).join("")}
+function renderTaste(){const t=$("taste");
+ t.innerHTML=`<p style="color:var(--muted);margin:0;font-size:14px">${Object.keys(state.seen).length} movies swiped. Every swipe shifts these weights; the next card is the best unseen match on a service you have.</p>`
+ +bars(state.genre,"Genres",k=>(GENRES.find(g=>g.id==k)||{name:k}).name)+bars(state.decade,"Era",k=>k+"s")
+ +`<h3>Services</h3><div class="row">${PROVIDERS.map(p=>`<span class="chip ${state.prov[p.provider_id]>0?"on":""}">${p.provider_name}</span>`).join("")}</div>
+ <button class="link" id="reset">Reset taste and start over</button>`;
+ $("reset").onclick=()=>{Object.assign(state,{phase:"genres",idx:0,genre:{},prov:{},decade:{},seen:{},liked:[],history:[]});pool=[];MOVIES={};save();$("count").textContent=0;show("intro")};}
+
+$("count").textContent=state.liked.length;
+if(state.key&&(state.phase!=="genres"||state.idx>0)){boot().then(()=>{show("swipe");render()}).catch(()=>show("intro"))}else show("intro");
+</script></body></html>
