@@ -52,6 +52,11 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 .bar span{color:var(--muted);text-align:right}
 .link{background:none;border:none;color:var(--muted);text-decoration:underline;font:500 13px var(--body);padding:8px}
 .err{color:var(--no);font-size:13px}
+.rate{position:absolute;inset:0;z-index:5;background:rgba(11,10,15,.92);border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;max-width:420px;margin:auto}
+.rate h3{font-family:var(--display);font-size:30px;font-weight:400;margin:0;letter-spacing:.04em}.rate p{margin:0;color:var(--muted);font-size:14px}
+.stars{display:flex;gap:10px}.stars button{background:none;border:none;font-size:40px;color:var(--line);padding:4px;cursor:pointer;line-height:1}.stars button.lit{color:var(--accent)}
+.rate .lbl{font-size:13px;color:var(--accent);min-height:18px}
+.item .t .r{color:var(--accent)}
 .where{display:flex;flex-direction:column;gap:6px;margin-top:8px}.where h4{margin:6px 0 0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .where .free h4{color:var(--yes)}.where .paid h4{color:var(--no)}.where .row{gap:6px}
 .pv{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 4px;font-size:12px}
@@ -73,7 +78,8 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
   <button class="cta" id="start">Start swiping</button></div></section>
  <section class="screen" id="s-swipe" hidden style="overflow:hidden">
   <div class="hint" id="phaseLabel"></div><div class="stage" id="stage"></div>
-  <div class="actions"><button class="btn no" id="bNo" aria-label="No">✕</button><button class="btn small" id="bUndo" aria-label="Undo">↶</button><button class="btn yes" id="bYes" aria-label="Yes">♥</button></div></section>
+  <div class="actions"><button class="btn no" id="bNo" aria-label="No">✕</button><button class="btn small" id="bUndo" aria-label="Undo">↶</button><button class="btn small" id="bSeen" aria-label="I watched this" title="I watched this">👁</button><button class="btn yes" id="bYes" aria-label="Yes">♥</button></div>
+  <div class="hint" id="seenHint">✕ skip · ↶ undo · 👁 watched it · ♥ want to watch</div></section>
  <section class="screen" id="s-list" hidden><div class="list" id="list"></div></section>
  <section class="screen" id="s-find" hidden><div class="list">
   <input id="q" placeholder="Type a movie name…" autocomplete="off">
@@ -83,7 +89,7 @@ input{background:var(--surface);border:1px solid var(--line);color:var(--fg);bor
 <script>
 const IMG="https://image.tmdb.org/t/p/";
 const PREFERRED=["Netflix","Amazon Prime Video","Disney Plus","Apple TV+","Max","OSN+","Shahid VIP","Starzplay","HBO Max","Apple TV Plus"];
-let state={phase:"genres",idx:0,genre:{},prov:{},decade:{},seen:{},liked:[],history:[],key:"4b978fa1cf7f0d286ab2bfa47f92027a",region:"AE"};
+let state={phase:"genres",idx:0,genre:{},prov:{},decade:{},seen:{},liked:[],watched:[],history:[],key:"4b978fa1cf7f0d286ab2bfa47f92027a",region:"AE"};
 try{Object.assign(state,JSON.parse(localStorage.getItem("banbouk-movie-finder")||"{}"))}catch(e){}
 const save=()=>{try{localStorage.setItem("banbouk-movie-finder",JSON.stringify(state))}catch(e){}};
 const $=id=>document.getElementById(id);
@@ -156,7 +162,7 @@ async function render(){const stage=$("stage");stage.innerHTML=`<div class="empt
  const el=cardEl(c);stage.appendChild(el);attachDrag(el);
  if(c.kind==="movie")nextMovie(); // warm the pool
 }
-function snapshot(){return JSON.stringify({genre:state.genre,prov:state.prov,decade:state.decade,seen:state.seen,liked:state.liked,phase:state.phase,idx:state.idx})}
+function snapshot(){return JSON.stringify({genre:state.genre,prov:state.prov,decade:state.decade,seen:state.seen,liked:state.liked,watched:state.watched||[],phase:state.phase,idx:state.idx})}
 function decide(yes){if(!cur)return;const c=cur;state.history.push(snapshot());if(state.history.length>30)state.history.shift();const d=yes?1:-1;
  if(c.kind==="genre"){state.genre[c.key]=d;state.idx++}else if(c.kind==="prov"){state.prov[c.key]=d;state.idx++}
  else{const m=c.m;state.seen[m.id]=d;m.genre_ids.forEach(g=>state.genre[g]=(state.genre[g]||0)+d*0.5);
@@ -164,6 +170,20 @@ function decide(yes){if(!cur)return;const c=cur;state.history.push(snapshot());i
   if(yes)state.liked.push({id:m.id,title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,prov:(c.prov||[]).map(p=>p.provider_name)});}
  $("count").textContent=state.liked.length;save();render()}
 function undo(){const h=state.history.pop();if(!h)return;Object.assign(state,JSON.parse(h));$("count").textContent=state.liked.length;save();render()}
+const RATE_LABELS=["","Hated it","Not for me","It was okay","Really liked it","Loved it"];
+const RATE_WEIGHT=[0,-1.5,-1,0,1,1.6];
+$("bSeen").onclick=()=>{if(!cur||cur.kind!=="movie")return;const m=cur.m;const st=$("stage");
+ const o=document.createElement("div");o.className="rate";o.innerHTML=`<h3>${m.title}</h3><p>How was it? Your rating shapes what we suggest next.</p>
+ <div class="stars">${[1,2,3,4,5].map(i=>`<button data-r="${i}" aria-label="${RATE_LABELS[i]}">★</button>`).join("")}</div><div class="lbl"></div><button class="link" id="rateSkip">Watched it, skip rating</button>`;
+ st.appendChild(o);const bs=[...o.querySelectorAll(".stars button")];
+ const light=n=>{bs.forEach((b,i)=>b.classList.toggle("lit",i<n));o.querySelector(".lbl").textContent=RATE_LABELS[n]||""};
+ bs.forEach(b=>{b.onmouseenter=()=>light(+b.dataset.r);b.onmouseleave=()=>light(0);b.onclick=()=>{light(+b.dataset.r);setTimeout(()=>markWatched(m,+b.dataset.r,cur.prov),250)}});
+ $("rateSkip").onclick=()=>markWatched(m,0,cur.prov);};
+function markWatched(m,r,prov){state.history.push(snapshot());if(state.history.length>30)state.history.shift();
+ state.seen[m.id]="w";const w=RATE_WEIGHT[r]||0;
+ m.genre_ids.forEach(g=>state.genre[g]=(state.genre[g]||0)+w*0.6);const dec=decadeOf(+String(m.release_date).slice(0,4));state.decade[dec]=(state.decade[dec]||0)+w*0.5;
+ (state.watched=state.watched||[]).unshift({id:m.id,title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,r});
+ save();render()}
 $("bYes").onclick=()=>fling(true);$("bNo").onclick=()=>fling(false);$("bUndo").onclick=undo;
 document.addEventListener("keydown",e=>{if($("s-swipe").hidden)return;if(e.key==="ArrowRight")fling(true);if(e.key==="ArrowLeft")fling(false)});
 function fling(yes){const el=$("stage").querySelector(".card:not(.under)");if(!el){decide(yes);return}
@@ -200,8 +220,10 @@ async function whereToWatch(it){if(it.classList.contains("open"))return;it.class
  w.innerHTML=h;}
 
 // ---------- list & taste ----------
-function renderList(){const l=$("list");if(!state.liked.length){l.innerHTML=`<div class="empty">Nothing saved yet. Swipe right on a movie and it lands here.</div>`;return}
- l.innerHTML=state.liked.map(m=>`<div class="item"><img src="${m.poster?IMG+"w185"+m.poster:""}" alt=""><div class="t"><b>${m.title}</b><span>${m.year} · ★ ${(+m.rating).toFixed(1)}${m.prov.length?" · "+m.prov.join(", "):""}</span></div><button aria-label="Remove" data-rm="${m.id}">✕</button></div>`).join("");
+function renderList(){const l=$("list");const wd=state.watched||[];if(!state.liked.length&&!wd.length){l.innerHTML=`<div class="empty">Nothing saved yet. Swipe right on a movie and it lands here.</div>`;return}
+ const watchedHtml=wd.length?`<h3 style="font-family:var(--display);font-weight:400;letter-spacing:.04em;font-size:22px;margin:14px 0 0">Watched</h3>`+wd.map(m=>`<div class="item"><img src="${m.poster?IMG+"w185"+m.poster:""}" alt=""><div class="t"><b>${m.title}</b><span>${m.year} · <span class="r">${m.r?"★".repeat(m.r)+"☆".repeat(5-m.r):"not rated"}</span></span></div><button aria-label="Remove" data-rw="${m.id}">✕</button></div>`).join(""):"";
+ l.innerHTML=(state.liked.length?`<h3 style="font-family:var(--display);font-weight:400;letter-spacing:.04em;font-size:22px;margin:0">Want to watch</h3>`:"")+state.liked.map(m=>`<div class="item"><img src="${m.poster?IMG+"w185"+m.poster:""}" alt=""><div class="t"><b>${m.title}</b><span>${m.year} · ★ ${(+m.rating).toFixed(1)}${m.prov.length?" · "+m.prov.join(", "):""}</span></div><button aria-label="Remove" data-rm="${m.id}">✕</button></div>`).join("")+watchedHtml;
+ l.querySelectorAll("[data-rw]").forEach(b=>b.onclick=()=>{state.watched=state.watched.filter(x=>x.id!=+b.dataset.rw);delete state.seen[+b.dataset.rw];save();renderList()});
  l.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{state.liked=state.liked.filter(x=>x.id!=+b.dataset.rm);$("count").textContent=state.liked.length;save();renderList()});}
 function bars(obj,label,name){const keys=Object.keys(obj).filter(k=>obj[k]!==0).sort((a,b)=>obj[b]-obj[a]);if(!keys.length)return"";const max=Math.max(1,...keys.map(k=>Math.abs(obj[k])));
  return`<h3>${label}</h3>`+keys.map(k=>`<div class="bar"><span style="text-align:left;color:var(--fg)">${name(k)}</span><i><b class="${obj[k]<0?"neg":""}" style="width:${Math.abs(obj[k])/max*100}%"></b></i><span>${obj[k]>0?"+":""}${(+obj[k]).toFixed(1)}</span></div>`).join("")}
@@ -210,7 +232,7 @@ function renderTaste(){const t=$("taste");
  +bars(state.genre,"Genres",k=>(GENRES.find(g=>g.id==k)||{name:k}).name)+bars(state.decade,"Era",k=>k+"s")
  +`<h3>Services</h3><div class="row">${PROVIDERS.map(p=>`<span class="chip ${state.prov[p.provider_id]>0?"on":""}">${p.provider_name}</span>`).join("")}</div>
  <button class="link" id="reset">Reset taste and start over</button>`;
- $("reset").onclick=()=>{Object.assign(state,{phase:"genres",idx:0,genre:{},prov:{},decade:{},seen:{},liked:[],history:[]});pool=[];MOVIES={};save();$("count").textContent=0;show("intro")};}
+ $("reset").onclick=()=>{Object.assign(state,{phase:"genres",idx:0,genre:{},prov:{},decade:{},seen:{},liked:[],watched:[],history:[]});pool=[];MOVIES={};save();$("count").textContent=0;show("intro")};}
 
 $("count").textContent=state.liked.length;
 if(state.key&&(state.phase!=="genres"||state.idx>0)){boot().then(()=>{show("swipe");render()}).catch(()=>show("intro"))}else show("intro");
