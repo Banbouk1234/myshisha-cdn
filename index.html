@@ -193,7 +193,7 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script>
-const APP_VER="1.39";
+const APP_VER="1.40";
 (async()=>{try{const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"});const j=await r.json();if(j.v&&j.v!==APP_VER&&!location.search.includes("v="+j.v)){const u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}}catch(e){}})();const IMG="https://image.tmdb.org/t/p/";
 const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"Right means yes, left means no. Genres first, then your streaming services, then movies that fit you.",country:'Your country (for "where to watch")',start:"Start swiping",legend:"✕ don't like · ↶ undo · 🤷 not sure · 👁 watched it · ♥ like",search:"Type a movie name…",
  h1:"SWIPE.<br>DON'T<br><em>SCROLL.</em>",logo:"BANBOUK <b>MOVIE FINDER</b>",like:"LIKE",nope:"NOPE",trailer:"▶ TRAILER",cast:"👥 CAST",doyoulike:"Do you like",doyouhave:"Do you have",genreHint:"Swipe right if this is your kind of night.",think:'Think "{x}".',provHint:"Swipe right if you can watch {x} right now.",iptvHint:"IPTV means you have everything. We'll stop filtering by service.",
@@ -579,7 +579,7 @@ async function moodSearch(){const q=$("mq").value.trim();const pk=$("mpick");$("
   pk.querySelectorAll(".item").forEach(it=>it.onclick=()=>moodPick(it.dataset.mty,+it.dataset.mid,it.querySelector("b").textContent));}catch(e){pk.innerHTML=""}}
 async function moodPick(ty,id,title){const box=$("mres");$("mpick").innerHTML="";$("mq").value=title;box.innerHTML=`<div class="empty">${t("loading")}</div>`;
  try{const [a,b]=await Promise.all([api(`/${ty}/${id}/recommendations`),api(`/${ty}/${id}/similar`)]);const seen=new Set([id]);const items=[];
-  [...a.results,...b.results].forEach(m=>{if(seen.has(m.id)||!m.poster_path)return;seen.add(m.id);norm(m,ty);items.push(m)});items.sort((x,y)=>(y.vote_count>200?y.vote_average:0)-(x.vote_count>200?x.vote_average:0)).splice(12);
+  [...a.results,...b.results].forEach(m=>{if(seen.has(m.id)||!m.poster_path)return;seen.add(m.id);norm(m,ty);items.push(m)});items=items.filter(m=>!(m.genre_ids||[]).some(g=>(state.genre[g]||0)<=-3));items.sort((x,y)=>(score(y)+(y.vote_count>200?y.vote_average:0))-(score(x)+(x.vote_count>200?x.vote_average:0)));items.splice(12);
   if(!items.length){box.innerHTML=`<div class="empty">${t("moodNone")}</div>`;return}
   box.innerHTML=`<h3 style="font-family:var(--display);font-weight:400;letter-spacing:.04em;font-size:22px;margin:6px 0 0">${t("moodBecause",{x:title})}</h3>`+items.map(m=>resItem(m)).join("");wireResults(box,items);}catch(e){box.innerHTML=`<div class="empty">${t("moodNone")}</div>`}}
 // ---------- play ----------
@@ -595,6 +595,7 @@ async function playResults(){const b=$("playbox");b.innerHTML=`<div class="empty
  if(q5===1)genres.push(G.scifi,G.fant);if(q5===2)genres.push(G.hist,G.war||G.drama);if(q5===0)without.push(G.fant,G.scifi,G.anim);
  if(q7===1)genres.push(G.myst);
  const P={sort_by:q6===0?"popularity.desc":"vote_average.desc",include_adult:"false","vote_count.gte":q8===0?20:300,with_genres:[...new Set(genres)].slice(0,3).join("|")};
+ avoidGenres().forEach(g=>{if(!genres.includes(+g)&&!genres.includes(g))without.push(+g)});
  if(without.length)P.without_genres=[...new Set(without)].join(",");
  const now=new Date().getFullYear();if(q4===0)P[tv?"first_air_date.gte":"primary_release_date.gte"]=(now-3)+"-01-01";if(q4===1)P[tv?"first_air_date.lte":"primary_release_date.lte"]="2008-12-31";
  if(!tv){if(q3===0)P["with_runtime.lte"]=105;if(q3===2)P["with_runtime.gte"]=130}
@@ -602,10 +603,10 @@ async function playResults(){const b=$("playbox");b.innerHTML=`<div class="empty
  const have=PROVIDERS.filter(p=>state.prov[p.provider_id]>0);if(!(state.prov[0]>0)&&have.length){P.watch_region=state.region;P.with_watch_providers=have.map(p=>p.provider_id).join("|")}
  const kind=tv?"tv":"movie";let items=[];try{for(const pg of [1,2]){const d=await api(`/discover/${kind}`,{...P,page:pg});d.results.forEach(m=>{norm(m,kind);if(m.poster_path&&!state.seen[kind+m.id]&&(state.seen[kind+m.id]!=="w"))items.push(m)})}}catch(e){}
  if(items.length<10&&P.with_watch_providers){delete P.with_watch_providers;delete P.watch_region;try{const d=await api(`/discover/${kind}`,P);d.results.forEach(m=>{norm(m,kind);if(m.poster_path&&!items.some(x=>x.id===m.id))items.push(m)})}catch(e){}}
- items=items.filter(m=>q7===0?!(m.genre_ids||[]).includes(G.horror):true);
- if(q6===1)items.sort((a,b)=>b.vote_average-a.vote_average);else items.sort((a,b)=>(b.popularity*0.3+b.vote_average*10)-(a.popularity*0.3+a.vote_average*10));
+ items=items.filter(m=>q7===0?!(m.genre_ids||[]).includes(G.horror):true).filter(m=>!(m.genre_ids||[]).some(g=>(state.genre[g]||0)<=-2));
+ const tasteW=Math.min(1,Object.keys(state.seen).length/30);items.sort((a,b)=>(score(b)*tasteW+(q6===1?b.vote_average*2:Math.log10(b.popularity+1)*2+b.vote_average))-(score(a)*tasteW+(q6===1?a.vote_average*2:Math.log10(a.popularity+1)*2+a.vote_average)));
  items=items.slice(0,10);
- b.innerHTML=`<div class="tg"><h2>${t("playResult")}</h2></div>`+items.map((m,i)=>`<div style="display:flex;gap:8px;align-items:stretch"><div class="rnum" style="padding-top:12px">${i+1}</div><div style="flex:1;min-width:0">${resItem(m)}</div></div>`).join("")+`<button class="cta2" id="pAgain">${t("playAgain")}</button>`;
+ b.innerHTML=`<div class="tg"><h2>${t("playResult")}</h2></div>`+items.map((m,i)=>{const ms=matchScore(m);return`<div style="display:flex;gap:8px;align-items:stretch"><div class="rnum" style="padding-top:12px">${i+1}</div><div style="flex:1;min-width:0">${resItem(m,`<span class="lvl ${ms.p>=75?"l3":ms.p>=58?"l2":ms.p>=42?"l1":"l0"}">${ms.p}% ${t("mTitle").toLowerCase()}</span>`)}</div></div>`}).join("")+`<button class="cta2" id="pAgain">${t("playAgain")}</button>`;
  wireResults(b,items);$("pAgain").onclick=renderPlay}
 function shareUrl(m){const u=new URL("https://movies.dubaikite.ae/");u.search="";u.hash="";u.searchParams.set("m",mt(m)+"-"+m.id);return u.toString()}
 async function shareItem(m){const url=shareUrl(m);const text=t("shareText",{t:m.title,y:String(m.release_date||"").slice(0,4)});
