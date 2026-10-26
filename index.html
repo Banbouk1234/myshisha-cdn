@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Banbouk Movie Finder</title>
 <link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Movie Finder"><meta name="theme-color" content="#0b0a0f">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;700&display=swap">
@@ -23,7 +23,7 @@ main{flex:1;min-height:0;display:flex;flex-direction:column}
 .art .big{position:relative;z-index:1;font-family:var(--display);color:#fff;font-size:clamp(34px,10vw,54px);line-height:.95;text-shadow:0 2px 12px rgba(0,0,0,.6);text-wrap:balance}
 .art img.logo{position:relative;z-index:1;width:140px;height:140px;object-fit:contain;border-radius:28px;margin:auto;background:#fff;padding:12px}
 .art.center{align-items:center;justify-content:center}
-.meta{padding:8px 14px 10px;display:flex;flex-direction:column;gap:4px;max-height:42%;overflow:auto}
+.meta{padding:8px 14px 10px;display:flex;flex-direction:column;gap:4px;max-height:42%;overflow:hidden;touch-action:none}.card,.card *{touch-action:none;-webkit-user-select:none;user-select:none}button{touch-action:manipulation}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--muted)}.row b{color:var(--fg)}
 .meta p{margin:0;font-size:14px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .chip{border:1px solid var(--line);border-radius:999px;padding:3px 9px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
@@ -193,7 +193,7 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script>
-const APP_VER="1.34";const IMG="https://image.tmdb.org/t/p/";
+const APP_VER="1.35";const IMG="https://image.tmdb.org/t/p/";
 const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"Right means yes, left means no. Genres first, then your streaming services, then movies that fit you.",country:'Your country (for "where to watch")',start:"Start swiping",legend:"✕ don't like · ↶ undo · 🤷 not sure · 👁 watched it · ♥ like",search:"Type a movie name…",
  h1:"SWIPE.<br>DON'T<br><em>SCROLL.</em>",logo:"BANBOUK <b>MOVIE FINDER</b>",like:"LIKE",nope:"NOPE",trailer:"▶ TRAILER",cast:"👥 CAST",doyoulike:"Do you like",doyouhave:"Do you have",genreHint:"Swipe right if this is your kind of night.",think:'Think "{x}".',provHint:"Swipe right if you can watch {x} right now.",iptvHint:"IPTV means you have everything. We'll stop filtering by service.",
  genres:"Genres · {a} of {b}",services:"Your services · {a} of {b}",picked:"Picked for you · {a} saved",nomore:"No more movies for your services. Check your list or reset.",loading:"Loading…",
@@ -402,7 +402,7 @@ function decide(yes){if(!cur){render();return}const c=cur;
 function undo(){if(state.tg&&state.tg.active)return;const h=state.history.pop();if(!h)return;Object.assign(state,JSON.parse(h));$("count").textContent=state.liked.length;save();render()}
 const RATE_LABELS=()=>t("rates");
 const RATE_WEIGHT=[0,-1.5,-1,0,1,1.6];
-$("bSeen").onclick=()=>{if(!cur||cur.kind!=="movie"||cur.tg)return;const el=$("stage").querySelector(".card:not(.under)");const m=cur.m,pv=cur.prov;if(el){el.classList.add("leave");el.style.transform="translateY(-130%) scale(.9)";el.style.opacity="0"}setTimeout(()=>quickRate(m,pv),200)};
+$("bSeen").onclick=()=>{DRAG.down=false;if(!cur||cur.kind!=="movie"||cur.tg)return;const el=$("stage").querySelector(".card:not(.under)");const m=cur.m,pv=cur.prov;if(el){el.classList.add("leave");el.style.transform="translateY(-130%) scale(.9)";el.style.opacity="0"}setTimeout(()=>quickRate(m,pv),200)};
 function rateDialog(m,st,done){
  const o=document.createElement("div");o.className="rate";if(st===document.body)o.classList.add("fixed");o.innerHTML=`<h3>${m.title}</h3><p>${t("howwas")}</p>
  <div class="stars">${[1,2,3,4,5].map(i=>`<button data-r="${i}" aria-label="${RATE_LABELS()[i]}">★</button>`).join("")}</div><div class="lbl"></div><button class="link" id="rateSkip">${t("skiprate")}</button>`;
@@ -419,26 +419,30 @@ function markWatched(m,r,prov){state.history.push(snapshot());if(state.history.l
  m.genre_ids.forEach(g=>state.genre[g]=Math.max(-6,Math.min(8,(state.genre[g]||0)+w*0.8)));const dec=decadeOf(+String(m.release_date).slice(0,4));state.decade[dec]=(state.decade[dec]||0)+w*0.5;if(m.original_language)state.langW[m.original_language]=(state.langW[m.original_language]||0)+w*0.3;
  (state.watched=state.watched||[]).unshift({at:Date.now(),id:m.id,type:mt(m),title:m.title,year:String(m.release_date).slice(0,4),rating:m.vote_average,poster:m.poster_path,r});
  save();if(!$("s-swipe").hidden)render()}
-$("bSkip").onclick=()=>{if(!cur||cur.kind!=="movie")return;const el=$("stage").querySelector(".card:not(.under)");if(el){el.classList.add("leave");el.style.transform="translateY(-120%) scale(.9)";el.style.opacity="0"}
+$("bSkip").onclick=()=>{DRAG.down=false;if(!cur||cur.kind!=="movie")return;const el=$("stage").querySelector(".card:not(.under)");if(el){el.classList.add("leave");el.style.transform="translateY(-120%) scale(.9)";el.style.opacity="0"}
  setTimeout(()=>{const c=cur;if(c.tg){roomSwipe(c.m,false);return}state.history.push(snapshot());if(state.history.length>30)state.history.shift();state.seen[mt(c.m)+c.m.id]="s";save();render()},220)};
 $("bYes").onclick=()=>fling(true);$("bNo").onclick=()=>fling(false);$("bUndo").onclick=undo;
 document.addEventListener("keydown",e=>{if($("s-swipe").hidden)return;if(e.key==="ArrowRight")fling(true);if(e.key==="ArrowLeft")fling(false);if(e.key==="ArrowUp")$("bSeen").click()});
-function fling(yes){const el=$("stage").querySelector(".card:not(.under)");if(!el){decide(yes);return}
+function fling(yes){DRAG.down=false;const el=$("stage").querySelector(".card:not(.under)");if(!el){decide(yes);return}el.classList.remove("leave");void el.offsetWidth;
  if(!yes&&cur&&cur.kind==="movie"&&!cur.tg&&likelySeen(cur.m)&&!document.querySelector(".seenq")){const m=cur.m;const q=document.createElement("div");q.className="seenq";q.innerHTML=`<b>${t("seenQ")}</b><button class="pri" id="sqYes">${t("seenRate")}</button><button id="sqNo">${t("seenNo")}</button><i></i>`;document.body.appendChild(q);
   let done=false;const go=f=>{if(done)return;done=true;q.remove();f()};const tm=setTimeout(()=>go(()=>{el.classList.add("leave");el.style.transform="translateX(-120%) rotate(-18deg)";el.style.opacity="0";setTimeout(()=>decide(false),260)}),2200);
   q.querySelector("#sqNo").onclick=()=>{clearTimeout(tm);go(()=>{el.classList.add("leave");el.style.transform="translateX(-120%) rotate(-18deg)";el.style.opacity="0";setTimeout(()=>decide(false),260)})};
   q.querySelector("#sqYes").onclick=()=>{clearTimeout(tm);go(()=>rateDialog(m,$("stage"),r=>markWatched(m,r,cur.prov)))};return}
  el.classList.add("leave");el.style.transform=`translateX(${yes?120:-120}%) rotate(${yes?18:-18}deg)`;el.style.opacity="0";
  el.querySelector(yes?".stamp.like":".stamp.nope").style.opacity=1;setTimeout(()=>decide(yes),260);setTimeout(()=>{if(el.isConnected)render()},900)}
-function attachDrag(el){let sx=0,sy=0,dx=0,down=false;
- el.addEventListener("pointerdown",e=>{down=true;sx=e.clientX;sy=e.clientY;el.setPointerCapture(e.pointerId);el.classList.remove("leave")});
- let dy=0;el.addEventListener("pointermove",e=>{if(!down)return;dx=e.clientX-sx;dy=e.clientY-sy;const upMode=dy<-40&&Math.abs(dy)>Math.abs(dx)*1.3;
+const DRAG={el:null,down:false,sx:0,sy:0,dx:0,dy:0,pid:null,t:0};
+function dragReset(){const el=DRAG.el;DRAG.down=false;DRAG.dx=0;DRAG.dy=0;if(el&&el.isConnected&&!el.classList.contains("leave")){el.classList.add("leave");el.style.transform="";el.querySelectorAll(".stamp").forEach(x=>x.style.opacity=0);setTimeout(()=>el.classList.remove("leave"),380)}}
+function dragEnd(e){if(!DRAG.down)return;const el=DRAG.el;DRAG.down=false;const {dx,dy}=DRAG;const upMode=dy<-110&&Math.abs(dy)>Math.abs(dx)*1.3;
+ if(upMode&&cur&&cur.kind==="movie"&&!cur.tg){el.classList.add("leave");el.style.transform="translateY(-130%) scale(.9)";el.style.opacity="0";const m=cur.m,pv=cur.prov;setTimeout(()=>quickRate(m,pv),200)}
+ else if(Math.abs(dx)>100&&!upMode)fling(dx>0);else dragReset();DRAG.dx=0;DRAG.dy=0}
+window.addEventListener("pointerup",dragEnd,true);window.addEventListener("pointercancel",dragEnd,true);window.addEventListener("touchend",()=>{if(DRAG.down)setTimeout(()=>{if(DRAG.down)dragEnd()},60)},true);
+document.addEventListener("visibilitychange",()=>{if(document.hidden)dragReset()});
+setInterval(()=>{if(DRAG.down&&Date.now()-DRAG.t>2500)dragEnd()},800);
+function attachDrag(el){DRAG.el=el;DRAG.down=false;
+ el.addEventListener("pointerdown",e=>{if(e.target.closest("button"))return;DRAG.down=true;DRAG.sx=e.clientX;DRAG.sy=e.clientY;DRAG.dx=0;DRAG.dy=0;DRAG.t=Date.now();try{el.setPointerCapture(e.pointerId)}catch(x){}el.classList.remove("leave")});
+ el.addEventListener("pointermove",e=>{if(!DRAG.down)return;DRAG.t=Date.now();const dx=DRAG.dx=e.clientX-DRAG.sx,dy=DRAG.dy=e.clientY-DRAG.sy;const upMode=dy<-40&&Math.abs(dy)>Math.abs(dx)*1.3;
   el.style.transform=upMode?`translate(${dx*0.3}px,${dy}px) scale(${1-Math.min(0.08,-dy/1500)})`:`translate(${dx}px,${dy*0.3}px) rotate(${dx/18}deg)`;
-  el.querySelector(".stamp.like").style.opacity=upMode?0:Math.min(1,Math.max(0,dx/90));el.querySelector(".stamp.nope").style.opacity=upMode?0:Math.min(1,Math.max(0,-dx/90));const ss=el.querySelector(".stamp.seen");if(ss)ss.style.opacity=upMode?Math.min(1,(-dy-40)/80):0});
- const end=()=>{if(!down)return;down=false;const upMode=dy<-110&&Math.abs(dy)>Math.abs(dx)*1.3;
-  if(upMode&&cur&&cur.kind==="movie"&&!cur.tg){el.classList.add("leave");el.style.transform="translateY(-130%) scale(.9)";el.style.opacity="0";const m=cur.m,pv=cur.prov;setTimeout(()=>quickRate(m,pv),200)}
-  else if(Math.abs(dx)>100&&!upMode)fling(dx>0);else{el.classList.add("leave");el.style.transform="";el.querySelectorAll(".stamp").forEach(s=>s.style.opacity=0)}dx=0;dy=0};
- el.addEventListener("pointerup",end);el.addEventListener("pointercancel",end);el.addEventListener("lostpointercapture",end);}
+  el.querySelector(".stamp.like").style.opacity=upMode?0:Math.min(1,Math.max(0,dx/90));el.querySelector(".stamp.nope").style.opacity=upMode?0:Math.min(1,Math.max(0,-dx/90));const ss=el.querySelector(".stamp.seen");if(ss)ss.style.opacity=upMode?Math.min(1,(-dy-40)/80):0});}
 
 // ---------- find ----------
 let qt;$("q").oninput=()=>{clearTimeout(qt);qt=setTimeout(searchMovies,350)};
