@@ -42,7 +42,7 @@ main{flex:1;min-height:0;display:flex;flex-direction:column}
 .tut .tap{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:.08em;text-transform:uppercase}
 .stamp.seen{left:50%;top:40%;transform:translate(-50%,-50%);color:var(--accent);border-color:var(--accent)}
 .rate .timer{height:4px;background:var(--line);border-radius:2px;width:70%;overflow:hidden}.rate .timer b{display:block;height:100%;background:var(--accent);animation:shrink 3s linear forwards}@keyframes shrink{from{width:100%}to{width:0}}
-.actions{display:flex;justify-content:center;gap:14px;padding:10px 0 2px}
+.actions{display:flex;justify-content:center;gap:14px;padding:10px 0 2px;position:relative;z-index:8}
 .btn{width:56px;height:56px;border-radius:50%;border:2px solid;background:var(--surface);font-size:28px;display:grid;place-items:center}
 .btn.no{color:var(--no);border-color:var(--no)}.btn.yes{color:var(--yes);border-color:var(--yes)}.btn.small{width:42px;height:42px;font-size:17px;font-weight:700;color:var(--muted);border-color:var(--line);align-self:center}
 .screen{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:14px;padding:8px 0}
@@ -193,7 +193,7 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script>
-const APP_VER="1.36";
+const APP_VER="1.37";
 (async()=>{try{const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"});const j=await r.json();if(j.v&&j.v!==APP_VER&&!location.search.includes("v="+j.v)){const u=new URL(location.href);u.searchParams.set("v",j.v);location.replace(u.toString())}}catch(e){}})();const IMG="https://image.tmdb.org/t/p/";
 const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"Right means yes, left means no. Genres first, then your streaming services, then movies that fit you.",country:'Your country (for "where to watch")',start:"Start swiping",legend:"✕ don't like · ↶ undo · 🤷 not sure · 👁 watched it · ♥ like",search:"Type a movie name…",
  h1:"SWIPE.<br>DON'T<br><em>SCROLL.</em>",logo:"BANBOUK <b>MOVIE FINDER</b>",like:"LIKE",nope:"NOPE",trailer:"▶ TRAILER",cast:"👥 CAST",doyoulike:"Do you like",doyouhave:"Do you have",genreHint:"Swipe right if this is your kind of night.",think:'Think "{x}".',provHint:"Swipe right if you can watch {x} right now.",iptvHint:"IPTV means you have everything. We'll stop filtering by service.",
@@ -440,10 +440,12 @@ window.addEventListener("pointerup",dragEnd,true);window.addEventListener("point
 document.addEventListener("visibilitychange",()=>{if(document.hidden)dragReset()});
 setInterval(()=>{if(DRAG.down&&Date.now()-DRAG.t>1200)dragEnd()},400);
 function attachDrag(el){DRAG.el=el;DRAG.down=false;
- el.addEventListener("pointerdown",e=>{if(e.target.closest("button"))return;DRAG.down=true;DRAG.sx=e.clientX;DRAG.sy=e.clientY;DRAG.dx=0;DRAG.dy=0;DRAG.t=Date.now();try{el.setPointerCapture(e.pointerId)}catch(x){}el.classList.remove("leave")});
- el.addEventListener("pointermove",e=>{if(!DRAG.down)return;DRAG.t=Date.now();const dx=DRAG.dx=e.clientX-DRAG.sx,dy=DRAG.dy=e.clientY-DRAG.sy;const upMode=dy<-40&&Math.abs(dy)>Math.abs(dx)*1.3;
-  el.style.transform=upMode?`translate(${dx*0.3}px,${dy}px) scale(${1-Math.min(0.08,-dy/1500)})`:`translate(${dx}px,${dy*0.3}px) rotate(${dx/18}deg)`;
-  el.querySelector(".stamp.like").style.opacity=upMode?0:Math.min(1,Math.max(0,dx/90));el.querySelector(".stamp.nope").style.opacity=upMode?0:Math.min(1,Math.max(0,-dx/90));const ss=el.querySelector(".stamp.seen");if(ss)ss.style.opacity=upMode?Math.min(1,(-dy-40)/80):0});}
+ el.addEventListener("pointerdown",e=>{if(e.target.closest("button"))return;DRAG.down=true;DRAG.sx=e.clientX;DRAG.sy=e.clientY;DRAG.dx=0;DRAG.dy=0;DRAG.t=Date.now();el.classList.remove("leave")});}
+function dragMove(e){if(!DRAG.down||!DRAG.el||!DRAG.el.isConnected)return;const el=DRAG.el;DRAG.t=Date.now();const dx=DRAG.dx=e.clientX-DRAG.sx,dy=DRAG.dy=e.clientY-DRAG.sy;const upMode=dy<-40&&Math.abs(dy)>Math.abs(dx)*1.3;
+ el.style.transform=upMode?`translate(${dx*0.3}px,${dy}px) scale(${1-Math.min(0.08,-dy/1500)})`:`translate(${dx}px,${dy*0.3}px) rotate(${dx/18}deg)`;
+ const L=el.querySelector(".stamp.like"),N=el.querySelector(".stamp.nope"),ss=el.querySelector(".stamp.seen");if(L)L.style.opacity=upMode?0:Math.min(1,Math.max(0,dx/90));if(N)N.style.opacity=upMode?0:Math.min(1,Math.max(0,-dx/90));if(ss)ss.style.opacity=upMode?Math.min(1,(-dy-40)/80):0}
+window.addEventListener("pointermove",dragMove,{capture:true,passive:true});
+window.addEventListener("touchmove",e=>{if(DRAG.down&&e.touches[0])dragMove({clientX:e.touches[0].clientX,clientY:e.touches[0].clientY})},{capture:true,passive:true});
 
 // ---------- find ----------
 let qt;$("q").oninput=()=>{clearTimeout(qt);qt=setTimeout(searchMovies,350)};
