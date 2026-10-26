@@ -152,7 +152,7 @@ html[dir="rtl"] .tbtn{left:auto;right:14px}html[dir="rtl"] .tbtn.cast{right:auto
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script>
-const APP_VER="1.27";const IMG="https://image.tmdb.org/t/p/";
+const APP_VER="1.28";const IMG="https://image.tmdb.org/t/p/";
 const STR={en:{swipe:"Swipe",mylist:"My list",find:"Find",taste:"Taste",intro:"Right means yes, left means no. Genres first, then your streaming services, then movies that fit you.",country:'Your country (for "where to watch")',start:"Start swiping",legend:"✕ don't like · ↶ undo · 🤷 not sure · 👁 watched it · ♥ like",search:"Type a movie name…",
  h1:"SWIPE.<br>DON'T<br><em>SCROLL.</em>",logo:"BANBOUK <b>MOVIE FINDER</b>",like:"LIKE",nope:"NOPE",trailer:"▶ TRAILER",cast:"👥 CAST",doyoulike:"Do you like",doyouhave:"Do you have",genreHint:"Swipe right if this is your kind of night.",think:'Think "{x}".',provHint:"Swipe right if you can watch {x} right now.",iptvHint:"IPTV means you have everything. We'll stop filtering by service.",
  genres:"Genres · {a} of {b}",services:"Your services · {a} of {b}",picked:"Picked for you · {a} saved",nomore:"No more movies for your services. Check your list or reset.",loading:"Loading…",
@@ -465,7 +465,7 @@ const _save0=save;
 async function buildDeck(n=20){pool=[];MOVIES={};refill.page=0;await refill();if(pool.length<n)await refill();
  let cand=pool.filter(m=>passF(m)&&m.poster_path).sort((a,b)=>score(b)-score(a));const top=cand.slice(0,Math.ceil(n*0.6)),rest=cand.slice(Math.ceil(n*0.6)).sort(()=>Math.random()-.5).slice(0,n-top.length);return [...top,...rest].sort(()=>Math.random()-.5).map(slim)}
 function roomCode(){const A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let c="";for(let i=0;i<4;i++)c+=A[Math.floor(Math.random()*A.length)];return c}
-function roomLink(code){const u=new URL(location.href);u.search="";u.hash="";u.searchParams.set("room",code);return u.toString()}
+function roomLink(code){const u=new URL("https://movies.dubaikite.ae/");u.search="";u.hash="";u.searchParams.set("room",code);return u.toString()}
 async function createRoom(){const b=$("tgbox");b.innerHTML=`<div class="empty">${t("loading")}</div>`;const deck=await buildDeck(20);if(!deck.length){b.innerHTML=`<div class="empty">${t("nomore")}</div>`;return}
  const code=roomCode();await fdb().ref("rooms/"+code).set({created:Date.now(),host:myId,deck,status:"lobby",players:{[myId]:{name:(USER&&USER.displayName)||state.name||"Host",done:false,n:0}}});joinRoom(code)}
 async function joinRoom(code){code=code.toUpperCase();const ref=fdb().ref("rooms/"+code);const snap=await ref.get();if(!snap.exists()){$("tgbox").innerHTML=`<div class="tg"><p>${t("rmBad")}</p><button class="cta2" id="tgNew">${t("tgNew")}</button></div>`;$("tgNew").onclick=leaveRoom;return}
@@ -546,7 +546,7 @@ async function playResults(){const b=$("playbox");b.innerHTML=`<div class="empty
  items=items.slice(0,10);
  b.innerHTML=`<div class="tg"><h2>${t("playResult")}</h2></div>`+items.map((m,i)=>`<div style="display:flex;gap:8px;align-items:stretch"><div class="rnum" style="padding-top:12px">${i+1}</div><div style="flex:1;min-width:0">${resItem(m)}</div></div>`).join("")+`<button class="cta2" id="pAgain">${t("playAgain")}</button>`;
  wireResults(b,items);$("pAgain").onclick=renderPlay}
-function shareUrl(m){const u=new URL(location.href);u.search="";u.hash="";u.searchParams.set("m",mt(m)+"-"+m.id);return u.toString()}
+function shareUrl(m){const u=new URL("https://movies.dubaikite.ae/");u.search="";u.hash="";u.searchParams.set("m",mt(m)+"-"+m.id);return u.toString()}
 async function shareItem(m){const url=shareUrl(m);const text=t("shareText",{t:m.title,y:String(m.release_date||"").slice(0,4)});
  if(navigator.share){try{await navigator.share({title:m.title,text,url});return}catch(e){if(e.name==="AbortError")return}}
  window.open("https://wa.me/?text="+encodeURIComponent(text+"\n"+url),"_blank")}
@@ -619,7 +619,7 @@ function renderFriends(){const b=$("frbox");
  b.innerHTML=h;
  const lo=$("frLogout");if(lo)lo.onclick=logout;const hs=$("frHSave");if(hs)hs.onclick=async()=>{const ok=await setHandle($("frH").value.trim()||$("frH").placeholder);if(!ok)$("frHErr").textContent=t("frTaken");else renderFriends()};
  const ab=$("frAddBtn");if(ab)ab.onclick=async()=>{const v=$("frAdd").value.trim().replace(/^@/,"");if(!v)return;const ok=await sendRequest(v);$("frAddErr").textContent=ok?t("frPending"):t("frNotFound");$("frAddErr").style.color=ok?"var(--yes)":"var(--no)";if(ok)$("frAdd").value=""};
- const inv=$("frInvite");if(inv)inv.onclick=async()=>{const u=new URL(location.href);u.search="";u.hash="";u.searchParams.set("add",state.handle);const text=t("frShareText",{h:"@"+state.handle});if(navigator.share){try{await navigator.share({text,url:u.toString()});return}catch(e){if(e.name==="AbortError")return}}window.open("https://wa.me/?text="+encodeURIComponent(text+"\n"+u.toString()),"_blank")};
+ const inv=$("frInvite");if(inv)inv.onclick=async()=>{const u=new URL("https://movies.dubaikite.ae/");u.search="";u.hash="";u.searchParams.set("add",state.handle);const text=t("frShareText",{h:"@"+state.handle});if(navigator.share){try{await navigator.share({text,url:u.toString()});return}catch(e){if(e.name==="AbortError")return}}window.open("https://wa.me/?text="+encodeURIComponent(text+"\n"+u.toString()),"_blank")};
  b.querySelectorAll("[data-acc]").forEach(x=>x.onclick=()=>acceptRequest(x.dataset.acc));b.querySelectorAll("[data-dec]").forEach(x=>x.onclick=()=>declineRequest(x.dataset.dec));
  b.querySelectorAll("[data-rm]").forEach(x=>x.onclick=e=>{e.stopPropagation();removeFriend(x.dataset.rm)});b.querySelectorAll("[data-fp]").forEach(x=>x.onclick=()=>showFriend(x.dataset.fp));
  b.querySelectorAll("[data-open]").forEach(x=>x.onclick=()=>{const [ty,id]=x.dataset.open.split("-");showDetail(ty,+id)});}
